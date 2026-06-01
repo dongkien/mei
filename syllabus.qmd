@@ -1,42 +1,64 @@
 ---
-title: "Đề cương học phần"
-subtitle: "Kinh tế lượng"
+title: "Đề cương — Bố kể con nghe khoá này có gì"
+subtitle: "Kinh tế lượng dành cho bé Mei"
 ---
 
-::: {.callout-note appearance="simple"}
-Đề cương đang được hoàn thiện. Các mục dưới đây là khung — nội dung chi tiết sẽ được bổ sung.
+Mei à, đây là tấm bản đồ cả hành trình. Con không cần đọc kỹ trang này đâu — cứ vào thẳng [Buổi 1](lectures/buoi-01.qmd) là được. Nhưng khi nào con (hay người lớn nào tò mò) muốn nhìn toàn cảnh, thì trang này có đủ.
+
+## Khoá này là gì
+
+Một khoá **kinh tế lượng nhập môn** — môn học giúp mình trả lời câu hỏi *"x ảnh hưởng tới y bao nhiêu?"* bằng số liệu thật, và biết khi nào một con số đáng tin, khi nào nên nghi. Bố kể bằng **giọng của bố**, đi **từ trực giác trước, công thức sau**, và hứa **không làm con sợ**.
+
+::: {.callout-tip}
+## 💡 Ba lời hứa của bố
+1. **Ký hiệu chỉ là biệt danh** — gặp cái nào bố dịch sang tiếng người ngay.
+2. **Máy tính lo tính toán** — việc của con là hỏi đúng câu hỏi và đọc hiểu câu trả lời.
+3. **Toán nặng luôn nằm trong hộp "🔍 đào sâu" gập lại** — con bỏ qua vẫn theo trọn mạch chính.
 :::
 
-## Thông tin chung
+## Con cần gì trước khi bắt đầu
 
-- **Tên học phần:** Kinh tế lượng
-- **Số tín chỉ:** *(TBA)*
-- **Học phần tiên quyết:** Thống kê / Xác suất thống kê
-- **Giảng viên:** *(TBA)*
+- Biết cộng trừ nhân chia, và một chút tò mò. **Không cần giỏi toán.**
+- Một cái máy tính để chạy [lab](stata-lab/index.qmd) (Stata, R, hoặc Python — chọn cái con thích).
 
-## Mô tả học phần
+## Tài liệu & công cụ
 
-*(Bổ sung sau.)*
+- **Sách tham khảo cho người lớn:** Wooldridge, *Introductory Econometrics: A Modern Approach* (khi con học sâu hơn).
+- **Sách đọc thêm của nhà mình:** *Bằng chứng đâu? Đọc thế giới bằng tư duy nhân quả* — cuốn bố viết, dạy **chị Ran** (trong sách là cô bé Ngân Giang) tư duy nhân quả. Khoá này dạy con **đo** nhân quả bằng số; cuốn sách dạy **đọc** thế giới bằng tư duy nhân quả qua chuyện kể.
+- **Phần mềm:** Stata · R · Python — mỗi buổi có lab cho cả ba.
 
-## Mục tiêu & Chuẩn đầu ra (CLO)
+## Lộ trình 10 buổi
 
-*(Bổ sung sau.)*
+| Buổi | Tên buổi | Con học được gì |
+|:---:|---|---|
+| 1 | Kinh tế lượng là gì hả Mei? | KTL là gì; ba loại số liệu; đám mây điểm |
+| 2 | Đường thẳng đi xuyên đám mây sao | Hồi quy đơn (OLS), độ dốc, R² |
+| 3 | Khi không chỉ một điều quyết định | Hồi quy bội; "giữ những thứ khác cố định" |
+| 4 | Khi nào con tin được đường mình vừa kẻ? | Các giả định của OLS; đa cộng tuyến |
+| 5 | Thật, hay chỉ là tình cờ? | Kiểm định t & F; khoảng tin cậy |
+| 6 | Khi đường thẳng chịu thua, mình uốn cong nó | Log, bình phương, biến tương tác |
+| 7 | Chuyện "có" hay "không" | Biến giả (dummy); xác định mô hình |
+| 8 | Thủ phạm giấu mặt | Chệch do bỏ sót biến (OVB) — trái tim của môn |
+| 9 | Khi chỗ ồn ào, chỗ lặng yên | Phương sai sai số thay đổi; sai số chuẩn vững |
+| 10 | Những cánh cửa bố mở hé cho con | Logit/probit, dữ liệu bảng, IV + tổng kết |
 
-## Giáo trình & Tài liệu
+Tổ chức theo **5 chương**: Bắt đầu hành trình · Học kẻ đường qua dữ liệu · Đọc hiểu & uốn nắn mô hình · Những cái bẫy phải tránh · Chân trời phía trước. Nhiều buổi có thêm **🇻🇳 Chuyện nước mình** — ví dụ thật của Việt Nam.
 
-- **Giáo trình chính:** Wooldridge, Jeffrey. *Introductory Econometrics: A Modern Approach.*
-- **Tài liệu khác:** *(TBA)*
+## Ba phòng lab song song
 
-## Phần mềm
+Mỗi buổi giảng có một bài lab tương ứng để con **tự tay gõ ra số** — chọn ngôn ngữ con thích:
 
-Stata · R · Python (xem mục [Lab](stata-lab/index.qmd)).
+- [Stata Lab](stata-lab/index.qmd) · [R Lab](r-lab/index.qmd) · [Python Lab](python-lab/index.qmd)
 
-## Đánh giá
+(Mỗi lab có thêm **Lab 0** hướng dẫn cài đặt & làm quen.)
 
-| Thành phần | Trọng số |
-|---|:---:|
-| *(TBA)* | |
+## Sau khoá này, bố mong con
 
-## Nội dung chi tiết
+- **Đọc được** một bảng kết quả hồi quy: hệ số, R², sai số chuẩn, trị số p, khoảng tin cậy.
+- **Nghi đúng chỗ:** phân biệt *tương quan* và *nhân quả*, biết hỏi "có kẻ giấu mặt nào không?".
+- **Tự chạy được** một phân tích đơn giản trên dữ liệu thật bằng Stata/R/Python.
+- Và quan trọng nhất: **không còn sợ** mấy con số và ký hiệu nữa.
 
-Xem [Bài giảng](lectures/index.qmd) và [Lịch học](schedule.qmd).
+## Cách dùng trang này
+
+Đọc tuần tự [Bài giảng](lectures/index.qmd) từ Buổi 1 → 10 (mỗi buổi là một viên gạch), làm lab đi kèm, xem [Lịch học](schedule.qmd) để biết buổi nào nối buổi nào. Cứ thấy hộp **🔍 đào sâu** thì tuỳ con: tò mò thì mở, vội thì bỏ qua.
