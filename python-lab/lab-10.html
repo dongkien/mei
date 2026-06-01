@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="vi" xml:lang="vi"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả – Kinh tế lượng dành cho bé Mei</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3a25ebfbbb03e529eea34e993f2a5140.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-413eec66c1e0235c1f4746abe054c242.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": true,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../styles/custom.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Kinh tế lượng dành cho bé Mei</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Trang chủ</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Đề cương</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../schedule.html"> 
+<span class="menu-text">Lịch học</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../lectures/index.html"> 
+<span class="menu-text">Bài giảng</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-aclab" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">AcLab+</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-aclab">    
+        <li>
+    <a class="dropdown-item" href="../stata-lab/index.html">
+ <span class="dropdown-text">Stata Lab</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../r-lab/index.html">
+ <span class="dropdown-text">R Lab</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../python-lab/index.html">
+ <span class="dropdown-text">Python Lab</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../problem-sets/index.html"> 
+<span class="menu-text">Tiểu luận / Bài tập</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../exams/index.html"> 
+<span class="menu-text">Đánh giá</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../python-lab/lab-01.html">Lab theo buổi</a></li><li class="breadcrumb-item"><a href="../python-lab/lab-10.html">Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">← Trang chủ</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Python Lab</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Hướng dẫn</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/lab-00.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 0 — Cài đặt &amp; làm quen Python</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lab theo buổi</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/lab-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 1 — Nhập &amp; khám phá dữ liệu, thống kê mô tả</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/lab-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 2 — Hồi quy đơn &amp; đọc kết quả</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/lab-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 3 — Hồi quy bội</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/lab-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 4 — Kiểm tra giả định &amp; đa cộng tuyến</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/lab-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 5 — Kiểm định t, F &amp; khoảng tin cậy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/lab-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 6 — Dạng hàm log &amp; bậc hai</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/lab-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 7 — Biến giả &amp; biến tương tác</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/lab-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 8 — Phát hiện &amp; xử lý chệch bỏ sót biến (OVB)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/lab-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 9 — Sai số chuẩn vững (robust SE)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../python-lab/lab-10.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Trong bài</h2>
+   
+  <ul>
+  <li><a href="#bước-0-chuẩn-bị-đồ-nghề" id="toc-bước-0-chuẩn-bị-đồ-nghề" class="nav-link active" data-scroll-target="#bước-0-chuẩn-bị-đồ-nghề">Bước 0 — Chuẩn bị đồ nghề</a></li>
+  <li><a href="#bước-1-vì-sao-không-kéo-đường-thẳng-ols-qua-đây" id="toc-bước-1-vì-sao-không-kéo-đường-thẳng-ols-qua-đây" class="nav-link" data-scroll-target="#bước-1-vì-sao-không-kéo-đường-thẳng-ols-qua-đây">Bước 1 — Vì sao không kéo đường thẳng OLS qua đây</a></li>
+  <li><a href="#bước-2-chạy-logit-đổi-đúng-một-chữ" id="toc-bước-2-chạy-logit-đổi-đúng-một-chữ" class="nav-link" data-scroll-target="#bước-2-chạy-logit-đổi-đúng-một-chữ">Bước 2 — Chạy logit: đổi đúng một chữ</a></li>
+  <li><a href="#bước-3-đọc-xác-suất-cho-dễ-hiểu" id="toc-bước-3-đọc-xác-suất-cho-dễ-hiểu" class="nav-link" data-scroll-target="#bước-3-đọc-xác-suất-cho-dễ-hiểu">Bước 3 — Đọc xác suất cho dễ hiểu</a></li>
+  <li><a href="#bước-4-cùng-trò-chơi-đó-nhưng-gần-con-hơn" id="toc-bước-4-cùng-trò-chơi-đó-nhưng-gần-con-hơn" class="nav-link" data-scroll-target="#bước-4-cùng-trò-chơi-đó-nhưng-gần-con-hơn">Bước 4 — Cùng trò chơi đó, nhưng gần con hơn</a></li>
+  <li><a href="#bước-5-xuất-bảng-nhiều-mô-hình-cạnh-nhau-cho-báo-cáo" id="toc-bước-5-xuất-bảng-nhiều-mô-hình-cạnh-nhau-cho-báo-cáo" class="nav-link" data-scroll-target="#bước-5-xuất-bảng-nhiều-mô-hình-cạnh-nhau-cho-báo-cáo">Bước 5 — Xuất bảng nhiều mô hình cạnh nhau cho báo cáo</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../python-lab/lab-01.html">Lab theo buổi</a></li><li class="breadcrumb-item"><a href="../python-lab/lab-10.html">Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả</h1>
+<p class="subtitle lead">Tương ứng <a href="../lectures/buoi-10.html">Buổi 10</a></p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Mei à, ở <a href="../lectures/buoi-10.html">Buổi 10</a> bố mở hé cho con cánh cửa đầu tiên: khi câu trả lời chỉ là <strong>CÓ hay KHÔNG</strong> — đậu hay rớt, mua hay không mua — thì đường thẳng OLS chịu thua, và mình thay nó bằng cái <strong>máng trượt hình chữ S</strong> gọi là <strong>logit</strong>. Hôm nay mình ngồi xuống tự tay chạy một cái logit thật, đọc kết quả sơ bộ, rồi bố dạy con một mẹo rất đời: cách <strong>xuất bảng nhiều mô hình cạnh nhau</strong> thật đẹp để dán vào báo cáo. Đừng lo con, vẫn là <code>smf</code> quen thuộc, chỉ đổi đúng một chữ thôi.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🎯 Buổi lab này con sẽ làm được
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Chạy một hồi quy <strong>logit</strong> cho biến có/không (đậu/rớt) và đọc kết quả sơ bộ.</li>
+<li>Hiểu vì sao hệ số logit <strong>không đọc thẳng được</strong> như OLS, và mẹo nhìn dấu (+/−).</li>
+<li>Dùng <code>summary_col</code> để <strong>xếp nhiều mô hình cạnh nhau</strong> thành một bảng gọn gàng cho báo cáo.</li>
+</ul>
+</div>
+</div>
+<section id="bước-0-chuẩn-bị-đồ-nghề" class="level2">
+<h2 class="anchored" data-anchor-id="bước-0-chuẩn-bị-đồ-nghề">Bước 0 — Chuẩn bị đồ nghề</h2>
+<p>Bố giả định nhà mình đã có sẵn một bảng dữ liệu tên <code>df</code>, mỗi dòng là một thí sinh, với các cột: <code>dau</code> (đậu = 1, rớt = 0), <code>hoc</code> (số giờ ôn tập mỗi tuần), <code>kinhnghiem</code> (số lần thi thử đã làm), và <code>gioitinh</code> (nam/nữ). Con không cần tự gõ dữ liệu — cứ tưởng tượng nó đã nằm sẵn trong máy.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># df đã có sẵn: các cột dau (0/1), hoc, kinhnghiem, gioitinh</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>smf</code> là biệt danh bố đặt cho <code>statsmodels.formula.api</code> — cái cho phép mình viết mô hình kiểu <code>"y ~ x"</code> đọc như tiếng người: <em>“đậu phụ thuộc vào số giờ ôn và số lần thi thử”</em>.</p>
+<p><strong>Bố chốt cho con:</strong> đồ nghề y hệt mọi buổi trước, chỉ có biến <code>dau</code> lần này là <strong>có/không</strong> chứ không phải con số trải dài.</p>
+</section>
+<section id="bước-1-vì-sao-không-kéo-đường-thẳng-ols-qua-đây" class="level2">
+<h2 class="anchored" data-anchor-id="bước-1-vì-sao-không-kéo-đường-thẳng-ols-qua-đây">Bước 1 — Vì sao không kéo đường thẳng OLS qua đây</h2>
+<p>Để con thấy tận mắt vì sao đường thẳng chịu thua, mình thử ép <code>dau</code> vào OLS xem sao.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mo_hinh_ols <span class="op">=</span> smf.ols(<span class="st">"dau ~ hoc + kinhnghiem"</span>, data<span class="op">=</span>df).fit()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(mo_hinh_ols.summary())</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># xem mô hình OLS đoán xác suất đậu là bao nhiêu</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"xac_suat_ols"</span>] <span class="op">=</span> mo_hinh_ols.fittedvalues</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"xac_suat_ols"</span>].describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Con nhìn dòng <code>max</code> và <code>min</code> của <code>xac_suat_ols</code>: rất có thể con sẽ thấy một con số <strong>trên 1</strong> (tức trên 100%) hoặc <strong>âm</strong>. Mà xác suất đậu thì làm gì có chuyện 120% hay −30%, con nhỉ. Đường thẳng không biết tự dừng ở mép 0 và 1 — nó cứ kéo dài mãi.</p>
+<p><strong>Bố chốt cho con:</strong> OLS không sai về mặt tính toán, nhưng nó <strong>trả lời ngớ ngẩn</strong> khi y là có/không — vì thế mình cần cái máng trượt chữ S.</p>
+</section>
+<section id="bước-2-chạy-logit-đổi-đúng-một-chữ" class="level2">
+<h2 class="anchored" data-anchor-id="bước-2-chạy-logit-đổi-đúng-một-chữ">Bước 2 — Chạy logit: đổi đúng một chữ</h2>
+<p>Đây là phép màu hôm nay: con chỉ đổi <code>smf.ols</code> thành <strong><code>smf.logit</code></strong>. Câu lệnh còn lại y hệt.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mo_hinh_logit <span class="op">=</span> smf.logit(<span class="st">"dau ~ hoc + kinhnghiem"</span>, data<span class="op">=</span>df).fit()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(mo_hinh_logit.summary())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>logit</code> chính là cái <strong>máng trượt hình chữ S</strong> của Buổi 10 — nó ép mọi dự đoán nằm gọn trong khoảng 0% đến 100%, không bao giờ trật ra ngoài.</p>
+<p>Giờ tới chỗ bố phải dặn con kỹ. Trong bảng kết quả, cột hệ số (<code>coef</code>) của logit <strong>không đọc thẳng</strong> như OLS được đâu. Với OLS mình nói “học thêm 1 giờ → xác suất đậu +0,05”. Với logit thì con số trong cột <code>coef</code> là đơn vị “log-odds” — nghe rối, và bố <strong>không bắt con đọc con số đó</strong>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Bố nói nhỏ con nghe: chỉ cần nhìn DẤU trước
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Với logit, lúc mới đọc con đừng vội diễn giải con số. Chỉ cần nhìn <strong>dấu</strong> của hệ số:</p>
+<ul>
+<li>Hệ số <code>hoc</code> <strong>dương (+)</strong> → ôn càng nhiều, xác suất đậu <strong>càng cao</strong>. Hợp lý.</li>
+<li>Nếu nó <strong>âm (−)</strong> → ôn nhiều mà xác suất đậu giảm? Chắc có gì đó sai, con phải dừng lại nghĩ.</li>
+</ul>
+<p>Còn ý nghĩa thống kê (đáng tin hay tình cờ) thì đọc y như Buổi 5: nhìn cột <code>P&gt;|z|</code> (trị số p) — nhỏ hơn 0,05 thì tin được.</p>
+</div>
+</div>
+<p><strong>Bố chốt cho con:</strong> logit chỉ là <code>smf.ols</code> đổi thành <code>smf.logit</code>; lúc đầu con chỉ cần đọc <strong>dấu</strong> và <strong>trị số p</strong>, chưa cần đụng tới con số log-odds.</p>
+</section>
+<section id="bước-3-đọc-xác-suất-cho-dễ-hiểu" class="level2">
+<h2 class="anchored" data-anchor-id="bước-3-đọc-xác-suất-cho-dễ-hiểu">Bước 3 — Đọc xác suất cho dễ hiểu</h2>
+<p>Vì con số <code>coef</code> khó đọc, mình hỏi mô hình một câu dễ hơn nhiều: <em>“vậy rốt cuộc mỗi thí sinh có xác suất đậu bao nhiêu phần trăm?”</em> Mô hình logit trả lời được ngay, và lần này luôn là con số tử tế trong khoảng 0–100%.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"xac_suat_dau"</span>] <span class="op">=</span> mo_hinh_logit.predict(df)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"xac_suat_dau"</span>].describe()   <span class="co"># min và max giờ luôn nằm gọn trong [0, 1]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Con để ý: khác với OLS ở Bước 1, giờ <code>min</code> và <code>max</code> <strong>không bao giờ vượt khỏi 0 và 1</strong>. Đó đúng là cái máng trượt chữ S đang làm việc — nó nhốt mọi dự đoán vào trong khoảng xác suất hợp lệ.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>🧮 Đọc bằng con số cho dễ
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Giả sử mô hình đoán cho hai bạn:</p>
+<ul>
+<li>Bạn An ôn ít, thi thử ít → <code>xac_suat_dau</code> = <strong>0,30</strong> → mô hình nói An có <strong>30%</strong> cơ hội đậu.</li>
+<li>Bạn Bình ôn nhiều, thi thử nhiều → <code>xac_suat_dau</code> = <strong>0,85</strong> → Bình có <strong>85%</strong> cơ hội đậu.</li>
+</ul>
+<p>Thấy không con — thay vì con số log-odds khô khan, mình nói chuyện bằng <strong>phần trăm cơ hội đậu</strong>, ai nghe cũng hiểu. Đó là cách diễn giải logit mà bố muốn con dùng khi viết báo cáo.</p>
+</div>
+</div>
+<p><strong>Bố chốt cho con:</strong> đừng vật lộn với log-odds — cứ bảo mô hình <code>predict</code> ra <strong>xác suất</strong>, rồi nói chuyện bằng phần trăm.</p>
+</section>
+<section id="bước-4-cùng-trò-chơi-đó-nhưng-gần-con-hơn" class="level2">
+<h2 class="anchored" data-anchor-id="bước-4-cùng-trò-chơi-đó-nhưng-gần-con-hơn">Bước 4 — Cùng trò chơi đó, nhưng gần con hơn</h2>
+<p>Bỏ chuyện thi cử sang một bên. Tưởng tượng nhà mình có bảng <code>vuon</code>, mỗi dòng là một cái cây, với cột <code>ra_hoa</code> (cây có ra hoa không: 1/0) và <code>tuoi_nuoc</code> (số ngày trong tuần con tưới nước).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mo_hinh_cay <span class="op">=</span> smf.logit(<span class="st">"ra_hoa ~ tuoi_nuoc"</span>, data<span class="op">=</span>vuon).fit()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(mo_hinh_cay.summary())</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>vuon[<span class="st">"xac_suat_ra_hoa"</span>] <span class="op">=</span> mo_hinh_cay.predict(vuon)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>vuon[<span class="st">"xac_suat_ra_hoa"</span>].head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Vì sao vẫn là logit chứ không phải OLS? Vì câu trả lời ở đây cũng chỉ có <strong>hai cửa</strong>: cây ra hoa hay không. Mình nhìn dấu hệ số <code>tuoi_nuoc</code>: dương thì “tưới đều hơn → khả năng ra hoa cao hơn”. Rồi <code>predict</code> ra con số kiểu <em>“cây này tưới 4 ngày/tuần thì 70% khả năng ra hoa”</em>.</p>
+<p>Cùng một trò chơi, chỉ thay tên hai trục thôi con — bên kia là đậu/rớt theo số giờ ôn, bên này là ra hoa/không theo số ngày tưới 🌱.</p>
+</section>
+<section id="bước-5-xuất-bảng-nhiều-mô-hình-cạnh-nhau-cho-báo-cáo" class="level2">
+<h2 class="anchored" data-anchor-id="bước-5-xuất-bảng-nhiều-mô-hình-cạnh-nhau-cho-báo-cáo">Bước 5 — Xuất bảng nhiều mô hình cạnh nhau cho báo cáo</h2>
+<p>Tới phần thực dụng nhất của hôm nay. Khi viết báo cáo, người ta hiếm khi dán nguyên cái <code>summary()</code> dài lê thê. Thay vào đó họ xếp <strong>nhiều mô hình thành các cột cạnh nhau</strong> trong một bảng gọn — để người đọc thấy ngay con số thay đổi thế nào khi mình thêm bớt biến. <code>statsmodels</code> có sẵn <code>summary_col</code> làm đúng việc đó.</p>
+<p>Mình xây ba mô hình logit, từ đơn giản tới đầy đủ:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.iolib.summary2 <span class="im">import</span> summary_col</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># mô hình 1: chỉ số giờ ôn</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>m1 <span class="op">=</span> smf.logit(<span class="st">"dau ~ hoc"</span>, data<span class="op">=</span>df).fit()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># mô hình 2: thêm số lần thi thử</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>m2 <span class="op">=</span> smf.logit(<span class="st">"dau ~ hoc + kinhnghiem"</span>, data<span class="op">=</span>df).fit()</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># mô hình 3: thêm biến giả giới tính bằng C(...)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>m3 <span class="op">=</span> smf.logit(<span class="st">"dau ~ hoc + kinhnghiem + C(gioitinh)"</span>, data<span class="op">=</span>df).fit()</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>bang <span class="op">=</span> summary_col(</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    [m1, m2, m3],</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    model_names<span class="op">=</span>[<span class="st">"(1)"</span>, <span class="st">"(2)"</span>, <span class="st">"(3)"</span>],</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    stars<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    info_dict<span class="op">=</span>{<span class="st">"Số quan sát"</span>: <span class="kw">lambda</span> m: <span class="ss">f"</span><span class="sc">{</span><span class="bu">int</span>(m.nobs)<span class="sc">}</span><span class="ss">"</span>},</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(bang)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Bố giải thích từng mẩu cho con:</p>
+<ul>
+<li><code>[m1, m2, m3]</code> — danh sách các mô hình, mỗi cái thành <strong>một cột</strong>.</li>
+<li><code>model_names</code> — tên đầu mỗi cột; người ta hay đánh số <code>(1) (2) (3)</code> cho gọn.</li>
+<li><code>stars=True</code> — gắn dấu sao <code>*</code> cho hệ số có ý nghĩa thống kê (càng nhiều sao càng đáng tin), đỡ phải dò trị số p từng cái.</li>
+<li><code>info_dict</code> — thêm dòng phụ ở chân bảng; ở đây bố thêm <strong>số quan sát</strong> mỗi mô hình.</li>
+</ul>
+<p>Con đọc bảng theo <strong>hàng ngang</strong>: cùng biến <code>hoc</code>, hệ số của nó có <strong>đứng vững</strong> khi mình thêm biến khác vào (cột 1 sang cột 2, cột 3) không? Nếu nó nhảy lung tung thì đó là tín hiệu phải suy nghĩ thêm. Đây chính là kiểu bảng con thấy trong mọi bài báo kinh tế lượng nghiêm túc.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Mẹo bố nói nhỏ con nghe
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Mẹo này <strong>không chỉ dùng cho logit</strong> — nó dùng được cho cả OLS, và cho mọi thứ con học mấy buổi trước. Con cứ trộn các mô hình vào chung một bảng:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ols1 <span class="op">=</span> smf.ols(<span class="st">"luong ~ hoc"</span>, data<span class="op">=</span>df2).fit(cov_type<span class="op">=</span><span class="st">"HC1"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ols2 <span class="op">=</span> smf.ols(<span class="st">"luong ~ hoc + kinhnghiem"</span>, data<span class="op">=</span>df2).fit(cov_type<span class="op">=</span><span class="st">"HC1"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># tương tác: học có lợi khác nhau giữa nam/nữ</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>ols3 <span class="op">=</span> smf.ols(<span class="st">"luong ~ hoc * C(gioitinh) + kinhnghiem"</span>, data<span class="op">=</span>df2).fit(cov_type<span class="op">=</span><span class="st">"HC1"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(summary_col([ols1, ols2, ols3], model_names<span class="op">=</span>[<span class="st">"(1)"</span>, <span class="st">"(2)"</span>, <span class="st">"(3)"</span>], stars<span class="op">=</span><span class="va">True</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Để ý ba thứ con đã học gộp lại đây: <code>C(gioitinh)</code> biến giới tính thành <strong>biến giả</strong>, <code>hoc * C(gioitinh)</code> tự tạo cả số hạng <strong>tương tác</strong> (“học có lợi <em>còn tùy</em> nam hay nữ” — Buổi 6), và <code>cov_type="HC1"</code> bật <strong>sai số chuẩn vững</strong> (Buổi 9). Một bảng gọn kể được cả câu chuyện.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>⚠️ Hai cái bẫy bố dặn con tránh
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Đừng đọc con số <code>coef</code> của logit như OLS.</strong> Nó là log-odds, không phải “tăng bao nhiêu phần trăm điểm”. Muốn nói cho người thường hiểu, hãy <code>predict</code> ra <strong>xác suất</strong> rồi nói bằng %.</li>
+<li><strong>Dấu sao chỉ nói “đáng tin”, không nói “quan trọng”.</strong> Nhớ Buổi 5: một hệ số ba sao vẫn có thể bé tí xíu, vô vị trên thực tế. Con luôn hỏi thêm: <em>con số này có lớn đủ để quan tâm không?</em></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🔑 Con vừa làm được gì
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Chạy một hồi quy <strong>logit</strong> cho biến có/không bằng cách đổi <code>smf.ols</code> thành <code>smf.logit</code>, rồi đọc kết quả qua <strong>dấu</strong> và <strong>trị số p</strong>.</li>
+<li>Dùng <code>.predict()</code> để biến con số log-odds khó nhằn thành <strong>xác suất</strong> dễ hiểu, luôn nằm gọn trong 0–100%.</li>
+<li>Dùng <code>summary_col</code> xếp <strong>nhiều mô hình cạnh nhau</strong> thành một bảng đẹp cho báo cáo — mẹo dùng được cho cả OLS lẫn logit.</li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🔍 Khi nào con muốn đào sâu
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Probit</strong> là anh em sinh đôi của logit (máng trượt chữ S hơi khác độ cong); trong <code>statsmodels</code> chỉ cần đổi sang <code>smf.probit("dau ~ hoc + kinhnghiem", data=df).fit()</code>. Kết luận thường gần như nhau.</li>
+<li>Muốn biết “ôn thêm 1 giờ làm xác suất đậu tăng <em>mấy điểm phần trăm</em>”, con tính <strong>tác động biên</strong> (marginal effects): <code>mo_hinh_logit.get_margeff().summary()</code>. Đây là cách dịch log-odds sang ngôn ngữ phần trăm chuẩn mực hơn.</li>
+<li>Logit cũng bật được sai số chuẩn vững như Buổi 9: <code>smf.logit("dau ~ hoc", data=df).fit(cov_type="HC1")</code>.</li>
+<li><code>summary_col</code> còn nhận <code>float_format="%.3f"</code> để chỉnh số chữ số thập phân, và <code>regressor_order=[...]</code> để cố định thứ tự các hàng biến — tiện khi con muốn bảng trông đúng chuẩn bài báo.</li>
+<li>Muốn xuất ra LaTeX để dán vào bài viết: <code>bang.as_latex()</code>. Muốn HTML cho trang web: <code>bang.as_html()</code>.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/dongkien\.github\.io\/mei\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.vi">CC BY-NC-SA 4.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p>Bố viết tặng con — bé Mei ❤️</p>
+</div>
+    <div class="nav-footer-right">
+<p>Tạo bằng <a href="https://quarto.org/">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

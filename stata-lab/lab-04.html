@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="vi" xml:lang="vi"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lab 4 — Kiểm tra giả định &amp; đa cộng tuyến – Kinh tế lượng dành cho bé Mei</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3a25ebfbbb03e529eea34e993f2a5140.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-413eec66c1e0235c1f4746abe054c242.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": true,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../styles/custom.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Kinh tế lượng dành cho bé Mei</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Trang chủ</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Đề cương</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../schedule.html"> 
+<span class="menu-text">Lịch học</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../lectures/index.html"> 
+<span class="menu-text">Bài giảng</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-aclab" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">AcLab+</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-aclab">    
+        <li>
+    <a class="dropdown-item" href="../stata-lab/index.html">
+ <span class="dropdown-text">Stata Lab</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../r-lab/index.html">
+ <span class="dropdown-text">R Lab</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../python-lab/index.html">
+ <span class="dropdown-text">Python Lab</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../problem-sets/index.html"> 
+<span class="menu-text">Tiểu luận / Bài tập</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../exams/index.html"> 
+<span class="menu-text">Đánh giá</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stata-lab/lab-01.html">Lab theo buổi</a></li><li class="breadcrumb-item"><a href="../stata-lab/lab-04.html">Lab 4 — Kiểm tra giả định &amp; đa cộng tuyến</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">← Trang chủ</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stata Lab</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Hướng dẫn</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-00.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 0 — Cài đặt &amp; làm quen Stata</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lab theo buổi</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 1 — Nhập &amp; khám phá dữ liệu, thống kê mô tả</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 2 — Hồi quy đơn &amp; đọc kết quả</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 3 — Hồi quy bội</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-04.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Lab 4 — Kiểm tra giả định &amp; đa cộng tuyến</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 5 — Kiểm định t, F &amp; khoảng tin cậy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 6 — Dạng hàm log &amp; bậc hai</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 7 — Biến giả &amp; biến tương tác</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 8 — Phát hiện &amp; xử lý chệch bỏ sót biến (OVB)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 9 — Sai số chuẩn vững (robust SE)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Trong bài</h2>
+   
+  <ul>
+  <li><a href="#bước-0-làm-quen-cái-bàn-làm-việc-mới" id="toc-bước-0-làm-quen-cái-bàn-làm-việc-mới" class="nav-link active" data-scroll-target="#bước-0-làm-quen-cái-bàn-làm-việc-mới">Bước 0 — Làm quen cái bàn làm việc mới</a></li>
+  <li><a href="#bước-1-mô-hình-lành-mạnh-làm-mốc" id="toc-bước-1-mô-hình-lành-mạnh-làm-mốc" class="nav-link" data-scroll-target="#bước-1-mô-hình-lành-mạnh-làm-mốc">Bước 1 — Mô hình “lành mạnh” làm mốc</a></li>
+  <li><a href="#bước-2-cố-tình-mời-anh-em-sinh-đôi-vào" id="toc-bước-2-cố-tình-mời-anh-em-sinh-đôi-vào" class="nav-link" data-scroll-target="#bước-2-cố-tình-mời-anh-em-sinh-đôi-vào">Bước 2 — Cố tình mời anh em sinh đôi vào</a></li>
+  <li><a href="#bước-3-đo-mức-dính-nhau-bằng-vif" id="toc-bước-3-đo-mức-dính-nhau-bằng-vif" class="nav-link" data-scroll-target="#bước-3-đo-mức-dính-nhau-bằng-vif">Bước 3 — Đo mức dính nhau bằng VIF</a></li>
+  <li><a href="#bước-4-soi-phần-dư-cho-yên-tâm" id="toc-bước-4-soi-phần-dư-cho-yên-tâm" class="nav-link" data-scroll-target="#bước-4-soi-phần-dư-cho-yên-tâm">Bước 4 — Soi phần dư cho yên tâm</a></li>
+  <li><a href="#ví-dụ-gần-con-hơn" id="toc-ví-dụ-gần-con-hơn" class="nav-link" data-scroll-target="#ví-dụ-gần-con-hơn">Ví dụ gần con hơn</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stata-lab/lab-01.html">Lab theo buổi</a></li><li class="breadcrumb-item"><a href="../stata-lab/lab-04.html">Lab 4 — Kiểm tra giả định &amp; đa cộng tuyến</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lab 4 — Kiểm tra giả định &amp; đa cộng tuyến</h1>
+<p class="subtitle lead">Tương ứng <a href="../lectures/buoi-04.html">Buổi 4</a></p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Mei à, ở <a href="../lectures/buoi-04.html">Buổi 4</a> bố kể con nghe về <strong>hai anh em sinh đôi</strong> — hai biến lúc nào cũng dắt tay nhau đi cùng, đến mức mô hình không biết phân biệt ai là ai. Bố gọi chuyện đó là <strong>đa cộng tuyến</strong>.</p>
+<p>Hôm nay con sẽ tự tay dựng ra cảnh đó: bố con mình <strong>cố tình</strong> nhét cả <code>kinhnghiem</code> và <code>tuoi</code> vào cùng một mô hình — hai anh em sinh đôi đúng nghĩa, vì người càng lớn tuổi thường càng nhiều năm đi làm. Rồi con ngồi xem hệ số bắt đầu giở chứng kỳ cục, <strong>sai số chuẩn phình to</strong> ra, và con đo mức “dính nhau” đó bằng một con số tên là <strong>VIF</strong>. Đừng lo, bố đi cùng con từng bước.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🎯 Bố mong sau lab này con sẽ
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Chạy được hồi quy “lành mạnh” trước, rồi thêm một anh em sinh đôi vào và <strong>thấy sai số chuẩn phình to</strong>.</li>
+<li>Tính <code>vif</code> để đo mức cộng tuyến, và biết ngưỡng nào thì bố con mình bắt đầu lo.</li>
+<li>Vẽ phần dư bằng <code>rvfplot</code> để soi xem mô hình có “lành” không.</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Bố nói trước cho con yên tâm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Các khối mã dưới đây bố để ở dạng <strong>đọc – không tự chạy</strong>, vì website chưa gắn dữ liệu thật. Con cứ hình dung mình <strong>đã có sẵn một bộ dữ liệu</strong> với các biến: <code>luong</code> (lương, triệu đồng), <code>hoc</code> (số năm đi học), <code>kinhnghiem</code> (số năm đi làm), <code>tuoi</code> (tuổi), và <code>nu</code> (bằng 1 nếu là nữ). Khi ngồi trước máy Stata thật, con gõ y hệt vậy là chạy được con nhé.</p>
+</div>
+</div>
+<section id="bước-0-làm-quen-cái-bàn-làm-việc-mới" class="level2">
+<h2 class="anchored" data-anchor-id="bước-0-làm-quen-cái-bàn-làm-việc-mới">Bước 0 — Làm quen cái bàn làm việc mới</h2>
+<p>Stata là phần mềm phải mua bản quyền (con sẽ thấy bản <strong>SE</strong> hoặc <strong>MP</strong>), nên ở nhà mình mở bản trường cấp hoặc bản dùng thử. Lần đầu mở ra, con đừng hoảng vì màn hình chia làm nhiều ô. Bố chỉ con bốn cửa sổ chính thôi:</p>
+<ul>
+<li><strong>Command</strong> (ô dưới cùng): nơi con gõ lệnh vào, gõ xong bấm Enter.</li>
+<li><strong>Results</strong> (ô lớn ở giữa): nơi Stata in kết quả ra cho con đọc.</li>
+<li><strong>Variables</strong> (ô bên phải): danh sách các biến đang có trong dữ liệu.</li>
+<li><strong>Review</strong> (ô bên trái): lịch sử những lệnh con đã gõ — bấm lại là chạy lại, tiện lắm.</li>
+</ul>
+<p>Mình làm quen bằng bộ dữ liệu có sẵn của Stata cho dễ:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>* Đặt thư mục làm việc (đổi đường dẫn cho đúng máy con)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cd <span class="st">"C:/Users/Mei/ktl"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>* Mở một bộ dữ liệu mẫu có sẵn trong Stata</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">sysuse</span> auto, <span class="kw">clear</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>* Mở Do-file Editor để lưu lệnh lại cho ngăn nắp</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>doedit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Bố giải thích từng câu cho con:</p>
+<ul>
+<li><code>cd "..."</code> là bảo Stata: <em>“từ giờ làm việc trong thư mục này.”</em> Như chọn ngăn bàn để bày đồ.</li>
+<li><code>sysuse auto, clear</code> mở bộ dữ liệu xe hơi có sẵn (<code>clear</code> là dọn dữ liệu cũ đi trước). Con dùng nó để bấm thử cho quen tay.</li>
+<li><code>doedit</code> mở <strong>Do-file Editor</strong> — một cuốn sổ con chép lệnh vào. Sau này con chỉ cần chạy lại cuốn sổ là ra y hệt kết quả, khỏi gõ lại từng dòng.</li>
+</ul>
+<p><strong>Bố chốt cho con:</strong> đây chỉ là làm quen cái bàn làm việc mới thôi — gõ lệnh ở <strong>Command</strong>, đọc kết quả ở <strong>Results</strong>, và chép lệnh vào <strong>do-file</strong> cho ngăn nắp.</p>
+</section>
+<section id="bước-1-mô-hình-lành-mạnh-làm-mốc" class="level2">
+<h2 class="anchored" data-anchor-id="bước-1-mô-hình-lành-mạnh-làm-mốc">Bước 1 — Mô hình “lành mạnh” làm mốc</h2>
+<p>Trước khi gây rối, mình chạy một mô hình tử tế đã: lương theo <code>hoc</code> và <code>kinhnghiem</code>. Đây là mô hình bố thấy không có vấn đề gì.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>* Mở dữ liệu lương của mình (giả định con đã có file luong.dta)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="st">"luong.dta"</span>, <span class="kw">clear</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>* Nhìn qua dữ liệu cho quen mặt</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">summarize</span> luong hoc kinhnghiem tuoi</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>* Mô hình lành mạnh: chỉ học và kinh nghiệm</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">regress</span> luong hoc kinhnghiem</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> lanh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>summarize</code> cho con thấy trung bình, lớn nhất, nhỏ nhất — như mở hộp đồ ra ngắm trước khi làm.</p>
+<p>Giả sử Stata in ra hệ số <code>kinhnghiem</code> là <strong>0,30</strong> với sai số chuẩn <strong>0,05</strong>. Con đọc thành tiếng người: <em>“thêm 1 năm kinh nghiệm gắn với lương cao hơn 0,30 triệu, và con số này đo khá chắc tay.”</em> Con ghi cặp số <strong>0,30 (0,05)</strong> lên giấy nháp nhé — lát nữa mình sẽ nhìn nó loạng choạng.</p>
+<p><strong>Bố chốt cho con:</strong> mô hình lành cho <code>kinhnghiem</code> = <strong>0,30</strong>, sai số chuẩn <strong>0,05</strong> — nhớ kỹ con số này để so sánh.</p>
+</section>
+<section id="bước-2-cố-tình-mời-anh-em-sinh-đôi-vào" class="level2">
+<h2 class="anchored" data-anchor-id="bước-2-cố-tình-mời-anh-em-sinh-đôi-vào">Bước 2 — Cố tình mời anh em sinh đôi vào</h2>
+<p>Giờ bố con mình nghịch một chút: nhét thêm <code>tuoi</code> vào. Tại sao <code>tuoi</code> và <code>kinhnghiem</code> là <strong>hai anh em sinh đôi</strong>? Vì người càng lớn tuổi thì thường càng nhiều năm đi làm — hai biến này gần như đi đâu cũng có nhau. Mô hình nhìn vào sẽ bối rối: <em>“phần lương tăng này là nhờ tuổi hay nhờ kinh nghiệm? Hai đứa giống nhau quá, tôi không tách được!”</em></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>* Mô hình BỆNH: thêm tuổi vào cạnh kinh nghiệm</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">regress</span> luong hoc kinhnghiem tuoi</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> benh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Giả sử lần này hệ số <code>kinhnghiem</code> thành <strong>0,55</strong> với sai số chuẩn <strong>0,40</strong>, còn <code>tuoi</code> ra <strong>−0,20</strong> với sai số chuẩn <strong>0,38</strong>. Con nhìn kỹ ba chỗ kỳ cục này nhé:</p>
+<ul>
+<li>Hệ số <code>kinhnghiem</code> nhảy từ 0,30 lên <strong>0,55</strong> — loạng choạng hẳn.</li>
+<li>Sai số chuẩn từ 0,05 <strong>phình lên 0,40</strong> — gấp tám lần! Đây là dấu hiệu kinh điển của cộng tuyến.</li>
+<li>Hệ số <code>tuoi</code> còn ra <strong>âm</strong> — vô lý, chẳng lẽ càng già lương càng thấp? Không phải đâu con, đó là mô hình đang “đoán mò” vì không tách nổi hai anh em.</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>🧮 Đọc cú phình bằng số
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Mô hình</th>
+<th>Hệ số <code>kinhnghiem</code></th>
+<th>Sai số chuẩn</th>
+<th>Tình trạng</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(1) Lành mạnh</td>
+<td><strong>0,30</strong></td>
+<td><strong>0,05</strong></td>
+<td>Đo chắc tay</td>
+</tr>
+<tr class="even">
+<td>(2) Thêm <code>tuoi</code></td>
+<td><strong>0,55</strong></td>
+<td><strong>0,40</strong></td>
+<td>Loạng choạng, sai số phình to</td>
+</tr>
+</tbody>
+</table>
+<p>Hệ số không phình to vì sai — nó phình vì mô hình <strong>không chắc chắn</strong> nữa. Hai anh em sinh đôi giành công của nhau, nên con số “độ lắc lư” nở bung ra.</p>
+</div>
+</div>
+<p><strong>Bố chốt cho con:</strong> thêm anh em sinh đôi vào, hệ số <code>kinhnghiem</code> giở chứng và sai số chuẩn phình từ 0,05 lên 0,40 — đó chính là đa cộng tuyến lộ mặt.</p>
+</section>
+<section id="bước-3-đo-mức-dính-nhau-bằng-vif" class="level2">
+<h2 class="anchored" data-anchor-id="bước-3-đo-mức-dính-nhau-bằng-vif">Bước 3 — Đo mức dính nhau bằng VIF</h2>
+<p>Nói “hai đứa giống nhau quá” thì mơ hồ. Mình cần một con số đo cụ thể. Stata có lệnh <code>vif</code> (<strong>Variance Inflation Factor</strong> — hệ số phóng đại phương sai). Tên nghe to tát, nhưng ý nghĩa đơn giản: <em>“sai số chuẩn của biến này bị thổi phồng lên bao nhiêu lần vì nó dính với các biến khác.”</em></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>* Chạy lại mô hình bệnh rồi gọi <span class="kw">vif</span> NGAY SAU đó</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">regress</span> luong hoc kinhnghiem tuoi</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">vif</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Lưu ý con nhé: <code>vif</code> phải gọi <strong>ngay sau</strong> một lệnh <code>regress</code>, vì nó soi cái mô hình con vừa chạy.</p>
+<p>Giả sử Stata in ra VIF của <code>kinhnghiem</code> là <strong>12,5</strong>, của <code>tuoi</code> là <strong>12,1</strong>, còn <code>hoc</code> chỉ <strong>1,3</strong>. Con đọc thế này:</p>
+<ul>
+<li><code>hoc</code> có VIF gần 1 → nó “sống độc lập”, không dính ai, ngoan.</li>
+<li><code>kinhnghiem</code> và <code>tuoi</code> cùng VIF trên 12 → hai đứa dính chặt nhau, sai số chuẩn của chúng bị thổi phồng hơn chục lần.</li>
+</ul>
+<p>Quy tắc ngón tay cái bố dắt túi cho con: <strong>VIF dưới 5 thì yên tâm; trên 10 thì bố con mình phải bàn cách xử lý.</strong></p>
+<p><strong>Bố chốt cho con:</strong> <code>vif</code> cho con một con số rõ ràng — trên 10 là đèn đỏ, đúng như cặp <code>kinhnghiem</code>–<code>tuoi</code> ở đây (≈12).</p>
+</section>
+<section id="bước-4-soi-phần-dư-cho-yên-tâm" class="level2">
+<h2 class="anchored" data-anchor-id="bước-4-soi-phần-dư-cho-yên-tâm">Bước 4 — Soi phần dư cho yên tâm</h2>
+<p>Cộng tuyến mới chỉ là một trong các giả định. Bố tranh thủ dạy con cách soi nhanh xem mô hình có “lành” về mặt phần dư không, bằng <code>rvfplot</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>* Vẽ phần dư theo giá trị dự đoán</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">regress</span> luong hoc kinhnghiem</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">rvfplot</span>, <span class="kw">yline</span>(0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>rvfplot</code> vẽ <strong>phần dư</strong> (chỗ mô hình đoán hụt) theo <strong>giá trị dự đoán</strong>. Con nhìn đám chấm:</p>
+<ul>
+<li>Nếu chúng rải đều quanh đường ngang số 0 như đám mây phẳng → ngoan, mô hình lành.</li>
+<li>Nếu chúng xòe ra <strong>hình cái phễu</strong> (chỗ hẹp chỗ rộng) → đó là dấu hiệu phương sai sai số không đều, lúc đó con thêm <code>vce(robust)</code> vào lệnh <code>regress</code> cho chắc.</li>
+</ul>
+<p><strong>Bố chốt cho con:</strong> <code>rvfplot</code> là cái kính lúp soi phần dư — đám chấm đều quanh số 0 thì yên tâm, xòe hình phễu thì nhớ <code>vce(robust)</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Mẹo nhỏ bố dắt túi cho con
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Khi bắt được hai anh em sinh đôi (VIF cao), con đừng vội hoảng. Hỏi mình một câu trước: <em>“mình thật sự cần cả hai đứa không?”</em></p>
+<ul>
+<li>Nếu con chỉ quan tâm tới <strong>hiệu ứng của học</strong> mà tuổi với kinh nghiệm chỉ là biến đi kèm → cộng tuyến giữa chúng <strong>không làm hỏng</strong> hệ số học (VIF của <code>hoc</code> vẫn thấp). Con cứ để yên.</li>
+<li>Nếu con thật sự cần tách riêng công của tuổi và của kinh nghiệm → thường phải <strong>bỏ bớt một đứa</strong>, hoặc gộp lại thành một biến (ví dụ chỉ giữ <code>kinhnghiem</code>).</li>
+</ul>
+<p>Cộng tuyến không phải “bệnh nan y” — nó chỉ là lời nhắc rằng dữ liệu chưa đủ để tách hai thứ quá giống nhau. 🌱</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>⚠️ Cái bẫy bố dặn con tránh
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>VIF cao không phải lúc nào cũng là vấn đề.</strong> Nếu biến dính nhau không phải biến con quan tâm, con kệ nó cũng được.</li>
+<li><strong>Đừng vứt biến chỉ vì VIF cao mà không suy nghĩ.</strong> Vứt nhầm một biến quan trọng có khi lại tạo ra chệch do bỏ sót biến (chuyện con sẽ gặp ở Lab 8). Cân nhắc, đừng máy móc.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="ví-dụ-gần-con-hơn" class="level2">
+<h2 class="anchored" data-anchor-id="ví-dụ-gần-con-hơn">Ví dụ gần con hơn</h2>
+<p>Bố đổi sân chơi cho con dễ thấy. Con muốn biết: <em>“Tập nhảy dây có giúp con khỏe hơn không?”</em> Con đo hai thứ rất giống nhau: <strong>số phút nhảy dây</strong> và <strong>số lần nhảy</strong>. Nhưng nhảy càng lâu thì số lần càng nhiều — hai con số này gần như là một, chúng là <strong>anh em sinh đôi</strong>.</p>
+<p>Nếu con nhét cả hai vào mô hình giải thích “độ khỏe”, máy sẽ bối rối y hệt: hệ số loạng choạng, sai số chuẩn phình to, VIF vọt lên trên 10. Cách con làm là chọn <strong>một</strong> thước đo thôi — giữ “số phút” chẳng hạn — thế là mô hình tỉnh táo trở lại.</p>
+<p>Thấy không Mei: kinh nghiệm–tuổi hay số phút–số lần nhảy dây — <strong>cùng một trò chơi hai anh em sinh đôi, chỉ thay tên các biến thôi con</strong> 🌱.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🔑 Con vừa làm được gì
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Làm quen cái bàn Stata (Command, Results, Variables, Review), đặt thư mục bằng <code>cd</code> và lưu lệnh vào do-file.</li>
+<li><strong>Cố tình</strong> nhét <code>kinhnghiem</code> và <code>tuoi</code> vào cùng mô hình, thấy hệ số giở chứng và <strong>sai số chuẩn phình từ 0,05 lên 0,40</strong>.</li>
+<li>Dùng <code>vif</code> đo mức cộng tuyến (≈12, đèn đỏ) và <code>rvfplot</code> soi phần dư — hai cái kính lúp kiểm tra giả định cho những buổi sau.</li>
+</ol>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/dongkien\.github\.io\/mei\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.vi">CC BY-NC-SA 4.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p>Bố viết tặng con — bé Mei ❤️</p>
+</div>
+    <div class="nav-footer-right">
+<p>Tạo bằng <a href="https://quarto.org/">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

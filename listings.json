@@ -1,0 +1,65 @@
+[
+  {
+    "listing": "/stata-lab/index.html",
+    "items": [
+      "/stata-lab/lab-00.html",
+      "/stata-lab/lab-01.html",
+      "/stata-lab/lab-02.html",
+      "/stata-lab/lab-03.html",
+      "/stata-lab/lab-04.html",
+      "/stata-lab/lab-05.html",
+      "/stata-lab/lab-06.html",
+      "/stata-lab/lab-07.html",
+      "/stata-lab/lab-08.html",
+      "/stata-lab/lab-09.html",
+      "/stata-lab/lab-10.html"
+    ]
+  },
+  {
+    "listing": "/lectures/index.html",
+    "items": [
+      "/lectures/buoi-01.html",
+      "/lectures/buoi-02.html",
+      "/lectures/buoi-03.html",
+      "/lectures/buoi-04.html",
+      "/lectures/buoi-05.html",
+      "/lectures/buoi-06.html",
+      "/lectures/buoi-07.html",
+      "/lectures/buoi-08.html",
+      "/lectures/buoi-09.html",
+      "/lectures/buoi-10.html"
+    ]
+  },
+  {
+    "listing": "/python-lab/index.html",
+    "items": [
+      "/python-lab/lab-00.html",
+      "/python-lab/lab-01.html",
+      "/python-lab/lab-02.html",
+      "/python-lab/lab-03.html",
+      "/python-lab/lab-04.html",
+      "/python-lab/lab-05.html",
+      "/python-lab/lab-06.html",
+      "/python-lab/lab-07.html",
+      "/python-lab/lab-08.html",
+      "/python-lab/lab-09.html",
+      "/python-lab/lab-10.html"
+    ]
+  },
+  {
+    "listing": "/r-lab/index.html",
+    "items": [
+      "/r-lab/lab-00.html",
+      "/r-lab/lab-01.html",
+      "/r-lab/lab-02.html",
+      "/r-lab/lab-03.html",
+      "/r-lab/lab-04.html",
+      "/r-lab/lab-05.html",
+      "/r-lab/lab-06.html",
+      "/r-lab/lab-07.html",
+      "/r-lab/lab-08.html",
+      "/r-lab/lab-09.html",
+      "/r-lab/lab-10.html"
+    ]
+  }
+]

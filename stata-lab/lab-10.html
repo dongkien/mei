@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="vi" xml:lang="vi"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả – Kinh tế lượng dành cho bé Mei</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3a25ebfbbb03e529eea34e993f2a5140.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-413eec66c1e0235c1f4746abe054c242.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": true,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../styles/custom.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Kinh tế lượng dành cho bé Mei</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Trang chủ</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Đề cương</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../schedule.html"> 
+<span class="menu-text">Lịch học</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../lectures/index.html"> 
+<span class="menu-text">Bài giảng</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-aclab" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">AcLab+</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-aclab">    
+        <li>
+    <a class="dropdown-item" href="../stata-lab/index.html">
+ <span class="dropdown-text">Stata Lab</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../r-lab/index.html">
+ <span class="dropdown-text">R Lab</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../python-lab/index.html">
+ <span class="dropdown-text">Python Lab</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../problem-sets/index.html"> 
+<span class="menu-text">Tiểu luận / Bài tập</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../exams/index.html"> 
+<span class="menu-text">Đánh giá</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stata-lab/lab-01.html">Lab theo buổi</a></li><li class="breadcrumb-item"><a href="../stata-lab/lab-10.html">Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">← Trang chủ</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stata Lab</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Hướng dẫn</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-00.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 0 — Cài đặt &amp; làm quen Stata</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lab theo buổi</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 1 — Nhập &amp; khám phá dữ liệu, thống kê mô tả</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 2 — Hồi quy đơn &amp; đọc kết quả</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 3 — Hồi quy bội</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 4 — Kiểm tra giả định &amp; đa cộng tuyến</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 5 — Kiểm định t, F &amp; khoảng tin cậy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 6 — Dạng hàm log &amp; bậc hai</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 7 — Biến giả &amp; biến tương tác</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 8 — Phát hiện &amp; xử lý chệch bỏ sót biến (OVB)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 9 — Sai số chuẩn vững (robust SE)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-10.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Trong bài</h2>
+   
+  <ul>
+  <li><a href="#bước-0-bộ-dữ-liệu-mình-giả-định" id="toc-bước-0-bộ-dữ-liệu-mình-giả-định" class="nav-link active" data-scroll-target="#bước-0-bộ-dữ-liệu-mình-giả-định">Bước 0 — Bộ dữ liệu mình giả định</a></li>
+  <li><a href="#bước-1-nhìn-biến-cókhông-trước-đã" id="toc-bước-1-nhìn-biến-cókhông-trước-đã" class="nav-link" data-scroll-target="#bước-1-nhìn-biến-cókhông-trước-đã">Bước 1 — Nhìn biến “có/không” trước đã</a></li>
+  <li><a href="#bước-2-chạy-hồi-quy-logit" id="toc-bước-2-chạy-hồi-quy-logit" class="nav-link" data-scroll-target="#bước-2-chạy-hồi-quy-logit">Bước 2 — Chạy hồi quy logit</a></li>
+  <li><a href="#bước-3-đọc-kết-quả-logit" id="toc-bước-3-đọc-kết-quả-logit" class="nav-link" data-scroll-target="#bước-3-đọc-kết-quả-logit">Bước 3 — Đọc kết quả logit</a></li>
+  <li><a href="#bước-4-dịch-logit-sang-tiếng-người" id="toc-bước-4-dịch-logit-sang-tiếng-người" class="nav-link" data-scroll-target="#bước-4-dịch-logit-sang-tiếng-người">Bước 4 — Dịch logit sang tiếng người</a></li>
+  <li><a href="#bước-5-chuẩn-bị-để-xuất-bảng-đẹp" id="toc-bước-5-chuẩn-bị-để-xuất-bảng-đẹp" class="nav-link" data-scroll-target="#bước-5-chuẩn-bị-để-xuất-bảng-đẹp">Bước 5 — Chuẩn bị để xuất bảng đẹp</a></li>
+  <li><a href="#bước-6-xuất-bảng-nhiều-mô-hình-cạnh-nhau" id="toc-bước-6-xuất-bảng-nhiều-mô-hình-cạnh-nhau" class="nav-link" data-scroll-target="#bước-6-xuất-bảng-nhiều-mô-hình-cạnh-nhau">Bước 6 — Xuất bảng nhiều mô hình cạnh nhau</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stata-lab/lab-01.html">Lab theo buổi</a></li><li class="breadcrumb-item"><a href="../stata-lab/lab-10.html">Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả</h1>
+<p class="subtitle lead">Tương ứng <a href="../lectures/buoi-10.html">Buổi 10</a></p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Mei à, ở <a href="../lectures/buoi-10.html">Buổi 10</a> bố con mình đã nói về một loại câu hỏi rất khác: không phải <em>“lương bao nhiêu”</em>, mà là <em>“đậu hay rớt”</em>, <em>“có hay không”</em>. Câu trả lời chỉ có hai cửa — và để máy đoán <strong>xác suất</strong> rơi vào cửa “có”, mình dùng một anh bạn mới tên là <strong>logit</strong>.</p>
+<p>Hôm nay con sẽ tự tay làm ba việc. Chạy một hồi quy logit cho biến “đậu/rớt”. Đọc xem nó nói gì. Rồi học cách <strong>xuất một bảng kết quả thật đẹp</strong> — nhiều mô hình đứng cạnh nhau — để dán thẳng vào báo cáo. Đừng lo con, từng bước một thôi.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🎯 Buổi lab này con sẽ làm được
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Chạy <code>logit</code> cho một biến phụ thuộc <strong>có/không</strong> và đọc dấu hệ số.</li>
+<li>Hiểu vì sao hệ số logit “thô” khó đọc, và mình cứu nó bằng cách nào.</li>
+<li>Dùng <code>esttab</code> xếp <strong>nhiều mô hình cạnh nhau</strong> thành một bảng gọn gàng cho báo cáo.</li>
+</ul>
+</div>
+</div>
+<section id="bước-0-bộ-dữ-liệu-mình-giả-định" class="level2">
+<h2 class="anchored" data-anchor-id="bước-0-bộ-dữ-liệu-mình-giả-định">Bước 0 — Bộ dữ liệu mình giả định</h2>
+<p>Bố giả định trong máy con đã mở sẵn một bộ dữ liệu sinh viên, mỗi dòng là một bạn, với các biến:</p>
+<ul>
+<li><code>dau</code> — bằng <strong>1</strong> nếu bạn đó <strong>đậu</strong> kỳ thi, bằng <strong>0</strong> nếu <strong>rớt</strong>. Đây là biến “có/không” mình muốn giải thích.</li>
+<li><code>hoc</code> — số năm/giờ học (biến số liên tục).</li>
+<li><code>kinhnghiem</code> — kinh nghiệm làm bài (số).</li>
+<li><code>nu</code> — bằng <strong>1</strong> nếu là nữ, <strong>0</strong> nếu nam. Đây là biến nhóm.</li>
+</ul>
+<p>Con không cần gõ lại lệnh <code>use</code> đâu — cứ hình dung dữ liệu đã nằm sẵn trong bộ nhớ Stata.</p>
+</section>
+<section id="bước-1-nhìn-biến-cókhông-trước-đã" class="level2">
+<h2 class="anchored" data-anchor-id="bước-1-nhìn-biến-cókhông-trước-đã">Bước 1 — Nhìn biến “có/không” trước đã</h2>
+<p>Trước khi chạy gì, bố luôn dặn con: <strong>nhìn dữ liệu trước</strong>. Với biến 0/1 thì chỉ cần đếm xem bao nhiêu bạn đậu, bao nhiêu rớt.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>* Đếm số bạn đậu (1) và rớt (0)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">tab</span> dau</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Stata in ra bảng tần suất: ví dụ 60% đậu, 40% rớt. Con cần liếc qua để chắc rằng biến đúng là <strong>chỉ gồm 0 và 1</strong>, và không có cửa nào trống trơn. Nếu 99% đậu hết thì mô hình sẽ khó học — nhưng đó là chuyện sau.</p>
+<p><strong>Bố chốt cho con:</strong> logit là để giải thích một biến 0/1, nên việc đầu tiên là xác nhận biến của mình đúng là 0/1.</p>
+</section>
+<section id="bước-2-chạy-hồi-quy-logit" class="level2">
+<h2 class="anchored" data-anchor-id="bước-2-chạy-hồi-quy-logit">Bước 2 — Chạy hồi quy logit</h2>
+<p>Giờ mình hỏi máy: <em>“Học nhiều hơn thì khả năng ĐẬU tăng hay giảm?”</em> Lệnh chỉ khác <code>regress</code> đúng một chữ.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>* Logit: xác suất đậu phụ thuộc học, kinh nghiệm, và giới tính</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">logit</span> dau hoc kinhnghiem i.nu, <span class="kw">vce</span>(<span class="kw">robust</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Bố giải thích từng mảnh cho con nghe:</p>
+<ul>
+<li><code>logit dau ...</code> — thay vì đoán <em>con số</em> lương, máy đoán <strong>xác suất</strong> biến <code>dau</code> bằng 1.</li>
+<li><code>hoc kinhnghiem</code> — hai biến số bình thường.</li>
+<li><code>i.nu</code> — chữ <code>i.</code> báo cho Stata biết <code>nu</code> là <strong>biến nhóm</strong> (nam/nữ), không phải con số để cộng trừ. Máy sẽ tự lấy một nhóm làm gốc và so nhóm kia với nó.</li>
+<li><code>vce(robust)</code> — xin <strong>sai số chuẩn vững</strong>, đúng như con đã học ở Lab 9, để các con số “đáng tin” không bị méo.</li>
+</ul>
+</section>
+<section id="bước-3-đọc-kết-quả-logit" class="level2">
+<h2 class="anchored" data-anchor-id="bước-3-đọc-kết-quả-logit">Bước 3 — Đọc kết quả logit</h2>
+<p>Stata in ra một bảng có cột <code>Coef.</code> (hệ số). Đây là chỗ con cần bố cầm tay.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>⚠️ Cái bẫy bố dặn con tránh đầu tiên
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Hệ số logit <strong>KHÔNG đọc thẳng được như OLS</strong>. Nếu hệ số của <code>hoc</code> là 0,8, con <strong>không</strong> được nói “học thêm 1 đơn vị thì xác suất đậu tăng 0,8”. Con số 0,8 nằm trong một thang đo cong queo gọi là <em>log-odds</em> — chưa phải tiếng người.</p>
+<p>Ở bước này con <strong>chỉ đọc DẤU thôi</strong>:</p>
+<ul>
+<li>Hệ số <code>hoc</code> <strong>dương</strong> → học nhiều hơn thì <strong>dễ đậu hơn</strong>.</li>
+<li>Hệ số <strong>âm</strong> → học nhiều hơn lại khó đậu hơn (chắc có gì lạ, phải xem lại).</li>
+</ul>
+<p>Còn <em>“nhiều hơn bao nhiêu”</em> thì để Bước 4 trả lời.</p>
+</div>
+</div>
+<p>Con cũng nhìn cột <code>P&gt;|z|</code> (trị số p) y như đã học ở Buổi 5: p nhỏ hơn 0,05 nghĩa là <em>“khó mà tình cờ”</em> → biến đó đáng tin là có ảnh hưởng.</p>
+<p><strong>Bố chốt cho con:</strong> với logit thô, con đọc <strong>dấu</strong> và <strong>trị số p</strong> trước; con số độ lớn để dành cho bước dịch sang tiếng người.</p>
+</section>
+<section id="bước-4-dịch-logit-sang-tiếng-người" class="level2">
+<h2 class="anchored" data-anchor-id="bước-4-dịch-logit-sang-tiếng-người">Bước 4 — Dịch logit sang tiếng người</h2>
+<p>Cách dễ thương nhất để hiểu logit là hỏi máy: <em>“Nếu một bạn học thêm một chút, xác suất đậu nhúc nhích bao nhiêu phần trăm?”</em> Stata có một lệnh làm đúng việc đó.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>* Hiệu ứng biên trung bình: thay đổi xác suất đậu (đơn vị %)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>margins, <span class="kw">dydx</span>(*)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Lệnh <code>margins, dydx(*)</code> cho con những con số <strong>đọc thẳng được</strong>: ví dụ “học thêm 1 đơn vị → xác suất đậu tăng trung bình <strong>6 điểm phần trăm</strong>”. <em>Đó</em> mới là câu con dán vào báo cáo, chứ không phải con số log-odds khó nhằn ở Bước 3.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Bố nói nhỏ con nghe: logit hay probit?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Probit là người anh em sinh đôi của logit — đổi <code>logit</code> thành <code>probit</code> là xong, cách đọc gần như y hệt. Hai anh em hầu như luôn cho cùng một kết luận. Con đừng mất ngủ vì chọn cái nào; bố hay dùng <code>logit</code> vì hiệu ứng của nó (tỷ lệ chênh) dễ kể chuyện hơn một chút.</p>
+</div>
+</div>
+</section>
+<section id="bước-5-chuẩn-bị-để-xuất-bảng-đẹp" class="level2">
+<h2 class="anchored" data-anchor-id="bước-5-chuẩn-bị-để-xuất-bảng-đẹp">Bước 5 — Chuẩn bị để xuất bảng đẹp</h2>
+<p>Báo cáo thật sự hiếm khi chỉ có <strong>một</strong> mô hình. Bố thường chạy vài phiên bản — thêm dần biến vào — rồi đặt chúng <strong>cạnh nhau</strong> để người đọc thấy kết quả có <em>vững</em> không khi mình thêm biến.</p>
+<p>Trước hết con cài gói <code>estout</code> (chỉ một lần cho máy):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>* Cài gói esttab/estout — chỉ cần làm một lần</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">ssc</span> install estout, <span class="kw">replace</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Rồi con chạy vài mô hình và <strong>cất</strong> mỗi cái lại bằng <code>estimates store</code>, đặt cho nó một cái tên:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>* Mô hình 1: chỉ học</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">logit</span> dau hoc, <span class="kw">vce</span>(<span class="kw">robust</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> M1</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>* Mô hình 2: thêm kinh nghiệm</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">logit</span> dau hoc kinhnghiem, <span class="kw">vce</span>(<span class="kw">robust</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> M2</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>* Mô hình 3: thêm giới tính và một biến tương tác <span class="st">"còn tùy"</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="kw">logit</span> dau c.hoc##i.nu kinhnghiem, <span class="kw">vce</span>(<span class="kw">robust</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> M3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Bố chỉ con để ý dòng cuối: <code>c.hoc##i.nu</code>. Dấu <code>c.</code> bảo Stata “<code>hoc</code> là biến số”, <code>i.nu</code> là “nhóm”, và <code>##</code> là <strong>biến tương tác</strong> mà con đã gặp ở Buổi 6 — nó hỏi <em>“tác dụng của học lên việc đậu có khác nhau giữa nam và nữ không?”</em>. Đúng kiểu câu “còn tùy”.</p>
+</section>
+<section id="bước-6-xuất-bảng-nhiều-mô-hình-cạnh-nhau" class="level2">
+<h2 class="anchored" data-anchor-id="bước-6-xuất-bảng-nhiều-mô-hình-cạnh-nhau">Bước 6 — Xuất bảng nhiều mô hình cạnh nhau</h2>
+<p>Giờ là phần vui. Một dòng <code>esttab</code> gom cả ba mô hình thành một bảng gọn:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>* Ba mô hình đứng cạnh nhau, có dấu sao ý nghĩa thống kê</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>esttab M1 M2 M3, <span class="co">///</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    se <span class="kw">star</span>(* 0.10 ** 0.05 *** 0.01) <span class="co">///</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">label</span> mtitles(<span class="st">"Chỉ học"</span> <span class="st">"Thêm KN"</span> <span class="st">"Đầy đủ"</span>) <span class="co">///</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="bn">title</span>(<span class="st">"Bảng 1. Các yếu tố ảnh hưởng khả năng đậu"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Bố giải nghĩa các tùy chọn để con không thấy chúng đáng sợ:</p>
+<ul>
+<li><code>se</code> — in <strong>sai số chuẩn</strong> trong ngoặc dưới mỗi hệ số (báo cáo thường thích kiểu này).</li>
+<li><code>star(...)</code> — gắn dấu sao theo mức ý nghĩa: một sao = 10%, hai sao = 5%, ba sao = 1%. Người đọc liếc qua là thấy ngay cái nào đáng tin.</li>
+<li><code>label</code> — dùng <strong>nhãn tiếng Việt</strong> của biến thay vì tên viết tắt, cho người đọc dễ hiểu.</li>
+<li><code>mtitles(...)</code> — đặt tên cho từng cột mô hình.</li>
+</ul>
+<p>Muốn xuất hẳn ra file để dán vào Word hay LaTeX, con thêm tên file:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>* Xuất ra file Word (RTF) để dán vào báo cáo</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>esttab M1 M2 M3 <span class="kw">using</span> bang1.rtf, <span class="kw">replace</span> <span class="co">///</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    se <span class="kw">star</span>(* 0.10 ** 0.05 *** 0.01) <span class="kw">label</span> <span class="co">///</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    mtitles(<span class="st">"Chỉ học"</span> <span class="st">"Thêm KN"</span> <span class="st">"Đầy đủ"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Mở <code>bang1.rtf</code> lên, con sẽ thấy một bảng sạch sẽ, các con số thẳng hàng — đẹp hơn nhiều so với việc chép tay từng số từ cửa sổ kết quả (vừa mỏi tay vừa dễ sai).</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Mẹo bố hay dùng nhất
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Đừng bao giờ chép số bằng tay vào báo cáo.</strong> Bố từng làm thế hồi trẻ và chép nhầm dấu phẩy, sửa mãi không hết. Để <code>esttab</code> xuất thẳng ra file: số nào sai là sai từ mô hình, không phải từ ngón tay con. Khi chạy lại với dữ liệu mới, con chỉ cần bấm chạy lại — bảng tự cập nhật, con không phải gõ lại một số nào. Đó là món quà lớn nhất của việc làm việc gọn gàng.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>🧮 Cùng một trò chơi, ví dụ gần con hơn
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cứ tưởng tượng thay vì “đậu/rớt”, biến của con là <strong>“hôm nay tưới cây hay quên tưới”</strong> (1 = có tưới, 0 = quên). Con muốn biết: <em>trời nắng thì con có chăm tưới hơn không?</em></p>
+<ul>
+<li><code>logit cótưới nắng</code> — đoán <strong>xác suất</strong> con tưới cây theo độ nắng.</li>
+<li>Hệ số <code>nắng</code> <strong>dương</strong> → trời càng nắng con càng nhớ tưới. <code>margins</code> sẽ nói “nắng thêm một bậc → khả năng tưới tăng 12 điểm phần trăm”.</li>
+<li>Rồi con xếp ba phiên bản (chỉ nắng / thêm “có ở nhà không” / thêm “có bố nhắc không”) cạnh nhau bằng <code>esttab</code> — y hệt bảng đậu/rớt ở trên.</li>
+</ul>
+<p>Thấy không con — cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🔑 Con vừa làm được gì trong Lab 10
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Chạy được <strong><code>logit</code></strong> cho biến có/không, và biết ở bước thô chỉ đọc <strong>dấu</strong> và <strong>trị số p</strong>.</li>
+<li>Dùng <strong><code>margins, dydx(*)</code></strong> để dịch logit sang câu “tăng bao nhiêu điểm phần trăm” — tiếng người thật sự.</li>
+<li>Dùng <strong><code>estimates store</code> + <code>esttab</code></strong> xếp nhiều mô hình cạnh nhau và xuất ra file, không bao giờ phải chép số bằng tay nữa.</li>
+</ol>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/dongkien\.github\.io\/mei\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.vi">CC BY-NC-SA 4.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p>Bố viết tặng con — bé Mei ❤️</p>
+</div>
+    <div class="nav-footer-right">
+<p>Tạo bằng <a href="https://quarto.org/">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

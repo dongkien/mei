@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="vi" xml:lang="vi"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lab 2 — Hồi quy đơn &amp; đọc kết quả – Kinh tế lượng dành cho bé Mei</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3a25ebfbbb03e529eea34e993f2a5140.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-413eec66c1e0235c1f4746abe054c242.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": true,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../styles/custom.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Kinh tế lượng dành cho bé Mei</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Trang chủ</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Đề cương</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../schedule.html"> 
+<span class="menu-text">Lịch học</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../lectures/index.html"> 
+<span class="menu-text">Bài giảng</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-aclab" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">AcLab+</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-aclab">    
+        <li>
+    <a class="dropdown-item" href="../stata-lab/index.html">
+ <span class="dropdown-text">Stata Lab</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../r-lab/index.html">
+ <span class="dropdown-text">R Lab</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../python-lab/index.html">
+ <span class="dropdown-text">Python Lab</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../problem-sets/index.html"> 
+<span class="menu-text">Tiểu luận / Bài tập</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../exams/index.html"> 
+<span class="menu-text">Đánh giá</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../r-lab/lab-01.html">Lab theo buổi</a></li><li class="breadcrumb-item"><a href="../r-lab/lab-02.html">Lab 2 — Hồi quy đơn &amp; đọc kết quả</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">← Trang chủ</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R Lab</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Hướng dẫn</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/lab-00.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 0 — Cài đặt &amp; làm quen R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lab theo buổi</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/lab-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 1 — Nhập &amp; khám phá dữ liệu, thống kê mô tả</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/lab-02.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Lab 2 — Hồi quy đơn &amp; đọc kết quả</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/lab-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 3 — Hồi quy bội</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/lab-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 4 — Kiểm tra giả định &amp; đa cộng tuyến</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/lab-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 5 — Kiểm định t, F &amp; khoảng tin cậy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/lab-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 6 — Dạng hàm log &amp; bậc hai</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/lab-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 7 — Biến giả &amp; biến tương tác</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/lab-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 8 — Phát hiện &amp; xử lý chệch bỏ sót biến (OVB)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/lab-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 9 — Sai số chuẩn vững (robust SE)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-lab/lab-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Trong bài</h2>
+   
+  <ul>
+  <li><a href="#bước-0-dựng-góc-làm-việc" id="toc-bước-0-dựng-góc-làm-việc" class="nav-link active" data-scroll-target="#bước-0-dựng-góc-làm-việc">Bước 0 — Dựng góc làm việc</a></li>
+  <li><a href="#bước-1-nhìn-đám-mây-chấm-trước-đã" id="toc-bước-1-nhìn-đám-mây-chấm-trước-đã" class="nav-link" data-scroll-target="#bước-1-nhìn-đám-mây-chấm-trước-đã">Bước 1 — Nhìn đám mây chấm trước đã</a></li>
+  <li><a href="#bước-2-bảo-máy-tính-kẻ-đường-khớp-nhất" id="toc-bước-2-bảo-máy-tính-kẻ-đường-khớp-nhất" class="nav-link" data-scroll-target="#bước-2-bảo-máy-tính-kẻ-đường-khớp-nhất">Bước 2 — Bảo máy tính kẻ đường khớp nhất</a></li>
+  <li><a href="#bước-3-đọc-độ-dốc-và-điểm-khởi-đầu" id="toc-bước-3-đọc-độ-dốc-và-điểm-khởi-đầu" class="nav-link" data-scroll-target="#bước-3-đọc-độ-dốc-và-điểm-khởi-đầu">Bước 3 — Đọc ĐỘ DỐC và ĐIỂM KHỞI ĐẦU</a></li>
+  <li><a href="#bước-4-đọc-r²-đường-của-mình-khít-cỡ-nào" id="toc-bước-4-đọc-r²-đường-của-mình-khít-cỡ-nào" class="nav-link" data-scroll-target="#bước-4-đọc-r²-đường-của-mình-khít-cỡ-nào">Bước 4 — Đọc R²: đường của mình khít cỡ nào?</a></li>
+  <li><a href="#bước-5-vẽ-đường-khớp-nhất-chồng-lên-đám-mây-chấm" id="toc-bước-5-vẽ-đường-khớp-nhất-chồng-lên-đám-mây-chấm" class="nav-link" data-scroll-target="#bước-5-vẽ-đường-khớp-nhất-chồng-lên-đám-mây-chấm">Bước 5 — Vẽ ĐƯỜNG KHỚP NHẤT chồng lên đám mây chấm</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../r-lab/lab-01.html">Lab theo buổi</a></li><li class="breadcrumb-item"><a href="../r-lab/lab-02.html">Lab 2 — Hồi quy đơn &amp; đọc kết quả</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lab 2 — Hồi quy đơn &amp; đọc kết quả</h1>
+<p class="subtitle lead">Tương ứng <a href="../lectures/buoi-02.html">Buổi 2</a></p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Mei à, ở <a href="../lectures/buoi-02.html">Buổi 2</a> bố kể con nghe chuyện <strong>kẻ một đường thật khít</strong> xuyên qua đám mây chấm — sao cho đường đó vừa lòng tất cả các điểm nhất có thể. Hôm nay con sẽ tự tay bảo máy tính kẻ đường đó, rồi mình ngồi đọc xem nó nói gì với mình.</p>
+<p>Trò chơi chỉ có ba con số thôi con: <strong>độ dốc</strong> (đi học thêm một năm thì lương đổi bao nhiêu), <strong>điểm khởi đầu</strong> (lương lúc chưa đi học ngày nào), và <strong>R²</strong> (đường của mình giải thích được bao nhiêu phần của câu chuyện). Đọc được ba con số này là con đã đứng vững một nửa môn kinh tế lượng rồi đó. Bố đi cùng con từng bước, đừng lo.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🎯 Bố mong sau lab này con sẽ
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Chạy được một hồi quy đơn <code>luong ~ hoc</code> bằng <code>lm()</code> trong R.</li>
+<li>Đọc ra <strong>độ dốc</strong>, <strong>điểm khởi đầu</strong> và <strong>R²</strong> từ bảng <code>summary()</code>.</li>
+<li>Vẽ được <strong>đường khớp nhất</strong> chồng lên đám mây chấm để thấy đường đó “khít” cỡ nào.</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>⚠️ Bố nói trước cho con yên tâm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Các khối mã dưới đây bố để ở dạng <strong>đọc – hiểu</strong>, chưa nối với dữ liệu thật, nên con cứ đọc theo bố trước. Bố <strong>giả định</strong> con đã có một bảng dữ liệu tên <code>df</code> với các cột: <code>luong</code> (lương, triệu đồng/tháng), <code>hoc</code> (số năm đi học), <code>kinhnghiem</code> (số năm đi làm) và <code>nu</code> (1 nếu là nữ). Lab này mình chỉ dùng <code>luong</code> và <code>hoc</code> thôi. Khi nào có dữ liệu thật, con chỉ việc đổ vào đúng tên cột này là chạy được ngay.</p>
+</div>
+</div>
+<section id="bước-0-dựng-góc-làm-việc" class="level2">
+<h2 class="anchored" data-anchor-id="bước-0-dựng-góc-làm-việc">Bước 0 — Dựng góc làm việc</h2>
+<p>Trước khi chạy gì, mình lo chỗ ngồi đã con. Bố hướng dẫn nhanh, làm một lần rồi dùng mãi.</p>
+<ol type="1">
+<li>Vào <strong>cran.r-project.org</strong> tải <strong>R</strong> về cài. Rồi tải thêm <strong>RStudio</strong> (hoặc dùng <strong>VS Code</strong> với extension <strong>R</strong> nếu con quen VS Code).</li>
+<li>Mở RStudio, con sẽ thấy mấy ô: <strong>Console</strong> (gõ lệnh chạy ngay), <strong>Script/Source</strong> (nơi con lưu lệnh lại thành file), <strong>Environment</strong> (xem mình đang giữ những dữ liệu nào), và <strong>Plots</strong> (nơi hình vẽ hiện ra). Đừng sợ vì nhiều ô — con chỉ cần làm quen dần, như làm quen mấy ngăn trong cặp sách thôi.</li>
+<li>Mình hay viết lệnh vào file <strong><code>.R</code></strong> rồi chạy, để sau mở lại còn nhớ mình đã làm gì.</li>
+</ol>
+<p>Việc đầu tiên là gọi đồ nghề ra và đọc dữ liệu vào.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Chạy 1 lần duy nhất để cài (gõ ở Console):</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tidyverse")</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)              <span class="co"># bộ đồ nghề vẽ &amp; xử lý dữ liệu</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"luong.csv"</span>)     <span class="co"># đọc file CSV vào thành bảng tên df</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)                        <span class="co"># ngó vài dòng đầu xem đúng hình hài chưa</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>head(df)</code> in vài dòng đầu cho con liếc mắt xem dữ liệu có đúng dạng mình mong không — như sờ trán xem con có sốt không vậy. Thấy có cột <code>luong</code> và <code>hoc</code> là yên tâm chạy tiếp.</p>
+<p><strong>Bố chốt cho con:</strong> cài R + RStudio một lần, gọi gói, đọc dữ liệu, ngó một cái — rồi mới chạy.</p>
+</section>
+<section id="bước-1-nhìn-đám-mây-chấm-trước-đã" class="level2">
+<h2 class="anchored" data-anchor-id="bước-1-nhìn-đám-mây-chấm-trước-đã">Bước 1 — Nhìn đám mây chấm trước đã</h2>
+<p>Trước khi kẻ đường, mình nhìn đám điểm cái đã. Mắt người giỏi lắm con — nhìn là biết câu chuyện đi lên hay đi xuống.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>hoc, df<span class="sc">$</span>luong,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Số năm đi học"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Lương (triệu đồng)"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Lương theo số năm đi học"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Con nhìn đám chấm: nếu chúng nghiêng lên từ trái sang phải, nghĩa là <strong>học nhiều thường đi với lương cao hơn</strong>. Mình chưa kết luận gì vội, chỉ là chào hỏi dữ liệu thôi. Nhiệm vụ của hồi quy là kẻ một đường thẳng đi xuyên giữa đám mây này sao cho khít nhất.</p>
+<p><strong>Bố chốt cho con:</strong> luôn nhìn đám mây chấm trước khi kẻ đường — để biết mình sắp kẻ đường lên dốc hay xuống dốc.</p>
+</section>
+<section id="bước-2-bảo-máy-tính-kẻ-đường-khớp-nhất" class="level2">
+<h2 class="anchored" data-anchor-id="bước-2-bảo-máy-tính-kẻ-đường-khớp-nhất">Bước 2 — Bảo máy tính kẻ đường khớp nhất</h2>
+<p>Giờ tới phần chính. Một dòng thôi con:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(luong <span class="sc">~</span> hoc, <span class="at">data =</span> df)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Bố đọc cho con cái dòng <code>luong ~ hoc</code> này: dấu <code>~</code> đọc là <em>“giải thích theo”</em> — mình đang nói với R <em>“hãy giải thích <strong>lương</strong> theo <strong>số năm học</strong>.”</em> <code>lm</code> là viết tắt của <em>linear model</em>, tức là <em>kẻ một đường thẳng</em>. Con cất kết quả vào cái hộp tên <code>m1</code>, rồi <code>summary(m1)</code> mở hộp ra cho mình đọc.</p>
+<p><strong>Bố chốt cho con:</strong> <code>lm(y ~ x)</code> chính là câu lệnh “kẻ giùm con đường thật khít qua đám mây” mà bố kể ở Buổi 2.</p>
+</section>
+<section id="bước-3-đọc-độ-dốc-và-điểm-khởi-đầu" class="level2">
+<h2 class="anchored" data-anchor-id="bước-3-đọc-độ-dốc-và-điểm-khởi-đầu">Bước 3 — Đọc ĐỘ DỐC và ĐIỂM KHỞI ĐẦU</h2>
+<p>Bảng <code>summary()</code> nhìn rậm rạp, nhưng con chỉ cần dòm đúng khối <code>Coefficients</code>. Bố giả sử R in ra cho con như thế này:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Coefficients:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#             Estimate Std. Error t value Pr(&gt;|t|)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (Intercept)   3.0        ...      ...      ...</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># hoc           0.9        ...      ...      ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Hai con số ở cột <code>Estimate</code> là tất cả những gì con cần đọc lúc này:</p>
+<ul>
+<li><strong><code>hoc</code> = 0,9 → đây là ĐỘ DỐC.</strong> Con đọc: <em>“thêm 1 năm đi học thì lương cao hơn trung bình 0,9 triệu.”</em> Độ dốc chính là <strong>độ nghiêng của đường</strong> con vừa kẻ — đường nghiêng lên thì số này dương.</li>
+<li><strong><code>(Intercept)</code> = 3,0 → đây là ĐIỂM KHỞI ĐẦU (hằng số).</strong> Con đọc: <em>“người chưa đi học năm nào thì lương khoảng 3 triệu.”</em> Đó là chỗ đường cắt trục đứng, lúc <code>hoc = 0</code>.</li>
+</ul>
+<p>Vậy đường khớp nhất của con là: <strong>lương = 3,0 + 0,9 × số năm học.</strong> Muốn đoán lương của người học 12 năm? Con thay vào: 3,0 + 0,9 × 12 = 13,8 triệu. Đường thẳng vừa kẻ chính là cái máy đoán nho nhỏ đó.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>⚠️ Cái bẫy bố dặn con tránh
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Điểm khởi đầu (3,0) chỉ có ý nghĩa thật khi <code>hoc = 0</code> <strong>nằm trong vùng dữ liệu</strong> của con. Nếu trong bảng chẳng ai học dưới 5 năm, thì con số “lương lúc chưa đi học” chỉ là chỗ đường thẳng kéo dài ra cho vui, đừng diễn giải nó quá nghiêm túc. Con cứ tập trung vào <strong>độ dốc</strong> — đó mới là nhân vật chính.</p>
+</div>
+</div>
+<p><strong>Bố chốt cho con:</strong> độ dốc trả lời <em>“đi học thêm thì lương đổi bao nhiêu”</em>, điểm khởi đầu chỉ là chỗ đường cắt trục đứng. Nhìn cột <code>Estimate</code> là thấy cả hai.</p>
+</section>
+<section id="bước-4-đọc-r²-đường-của-mình-khít-cỡ-nào" class="level2">
+<h2 class="anchored" data-anchor-id="bước-4-đọc-r²-đường-của-mình-khít-cỡ-nào">Bước 4 — Đọc R²: đường của mình khít cỡ nào?</h2>
+<p>Kéo mắt xuống cuối bảng <code>summary()</code>, con sẽ thấy một dòng kiểu:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Multiple R-squared:  0.42,   Adjusted R-squared:  0.41</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Con số <strong>R² = 0,42</strong> này đọc là: <em>“đường của mình giải thích được khoảng <strong>42%</strong> sự khác nhau về lương giữa mọi người, dựa trên mỗi việc họ học bao nhiêu năm.”</em> Còn lại 58% là do những thứ khác mà mô hình chưa nhìn thấy (kinh nghiệm, ngành nghề, may mắn…).</p>
+<p>Bố dặn con: <strong>R² không phải điểm thi.</strong> R² cao hay thấp không nói mô hình “đúng” hay “sai” — nó chỉ nói <strong>đám chấm bám sát đường tới mức nào</strong>. Với dữ liệu con người, R² 0,3–0,5 đã là chuyện rất bình thường rồi, vì đời người phức tạp lắm, một cái biến sao mà gói hết được.</p>
+<p><strong>Bố chốt cho con:</strong> R² là tỉ lệ câu chuyện mà đường của con kể được — đọc nó như “khít cỡ nào”, đừng coi nó như điểm số.</p>
+</section>
+<section id="bước-5-vẽ-đường-khớp-nhất-chồng-lên-đám-mây-chấm" class="level2">
+<h2 class="anchored" data-anchor-id="bước-5-vẽ-đường-khớp-nhất-chồng-lên-đám-mây-chấm">Bước 5 — Vẽ ĐƯỜNG KHỚP NHẤT chồng lên đám mây chấm</h2>
+<p>Đây là khoảnh khắc bố thích nhất. Mình vẽ lại đám mây chấm, rồi đặt cái đường con vừa kẻ chồng lên trên cho con thấy tận mắt nó “khít” thế nào.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>hoc, df<span class="sc">$</span>luong,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Số năm đi học"</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Lương (triệu đồng)"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Đường khớp nhất chồng lên đám mây chấm"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(m1, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)   <span class="co"># vẽ đường khớp nhất từ mô hình m1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>abline(m1, ...)</code> lấy đúng độ dốc (0,9) và điểm khởi đầu (3,0) ở trên rồi kẻ thành một đường đỏ. Con nhìn xem: đường đỏ có đi xuyên giữa đám chấm, để các chấm rải đều hai bên không? Nếu có, nghĩa là đường khớp nhất đang làm tốt việc của nó — đứng ở chỗ ai cũng tạm hài lòng nhất, không thiên về điểm nào.</p>
+<p>Đây chính là hình ảnh của Buổi 2 mà bố hứa: máy tính đã <strong>trượt cái thước cho tới khi tổng khoảng cách tới mọi chấm là nhỏ nhất</strong>, và đường đỏ này là kết quả.</p>
+<p><strong>Bố chốt cho con:</strong> đường đỏ trên hình chính là <code>lương = 3,0 + 0,9 × học</code> được vẽ ra — con vừa nhìn thấy ba con số ở Bước 3 và 4 hóa thành một đường thật.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Mẹo bố dặn con
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Khi muốn đường mượt và có thêm <strong>dải tin cậy</strong> (vùng mờ quanh đường cho biết mình chắc chắn tới đâu), con vẽ bằng <code>ggplot</code> của <code>tidyverse</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> hoc, <span class="at">y =</span> luong)) <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>geom_point()</code> rải đám chấm, <code>geom_smooth(method = "lm")</code> tự chạy lại hồi quy và vẽ luôn đường khớp nhất kèm dải tin cậy. Cùng một câu chuyện như <code>abline</code>, chỉ là mặc thêm bộ đồ đẹp thôi con.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🔑 Con vừa làm được gì
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Chạy <code>lm(luong ~ hoc, data = df)</code> và <code>summary()</code> để <strong>bảo máy tính kẻ đường khớp nhất</strong> qua đám mây chấm.</li>
+<li>Đọc được ba con số quan trọng: <strong>độ dốc</strong> (<code>hoc</code>, đi học thêm 1 năm lương đổi bao nhiêu), <strong>điểm khởi đầu</strong> (<code>Intercept</code>), và <strong>R²</strong> (đường khít cỡ nào).</li>
+<li>Vẽ được <strong>đường khớp nhất chồng lên đám mây chấm</strong> bằng <code>abline(m1)</code> — nhìn tận mắt cái đường mà bố kể ở Buổi 2.</li>
+</ol>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/dongkien\.github\.io\/mei\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.vi">CC BY-NC-SA 4.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p>Bố viết tặng con — bé Mei ❤️</p>
+</div>
+    <div class="nav-footer-right">
+<p>Tạo bằng <a href="https://quarto.org/">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

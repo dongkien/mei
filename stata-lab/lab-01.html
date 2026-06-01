@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="vi" xml:lang="vi"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lab 1 — Nhập &amp; khám phá dữ liệu, thống kê mô tả – Kinh tế lượng dành cho bé Mei</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-3a25ebfbbb03e529eea34e993f2a5140.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-413eec66c1e0235c1f4746abe054c242.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": true,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="../styles/custom.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Kinh tế lượng dành cho bé Mei</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Trang chủ</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Đề cương</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../schedule.html"> 
+<span class="menu-text">Lịch học</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../lectures/index.html"> 
+<span class="menu-text">Bài giảng</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-aclab" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">AcLab+</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-aclab">    
+        <li>
+    <a class="dropdown-item" href="../stata-lab/index.html">
+ <span class="dropdown-text">Stata Lab</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../r-lab/index.html">
+ <span class="dropdown-text">R Lab</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../python-lab/index.html">
+ <span class="dropdown-text">Python Lab</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../problem-sets/index.html"> 
+<span class="menu-text">Tiểu luận / Bài tập</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../exams/index.html"> 
+<span class="menu-text">Đánh giá</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stata-lab/lab-01.html">Lab theo buổi</a></li><li class="breadcrumb-item"><a href="../stata-lab/lab-01.html">Lab 1 — Nhập &amp; khám phá dữ liệu, thống kê mô tả</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">← Trang chủ</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Stata Lab</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Hướng dẫn</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-00.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 0 — Cài đặt &amp; làm quen Stata</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lab theo buổi</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-01.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Lab 1 — Nhập &amp; khám phá dữ liệu, thống kê mô tả</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 2 — Hồi quy đơn &amp; đọc kết quả</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 3 — Hồi quy bội</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 4 — Kiểm tra giả định &amp; đa cộng tuyến</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 5 — Kiểm định t, F &amp; khoảng tin cậy</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 6 — Dạng hàm log &amp; bậc hai</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 7 — Biến giả &amp; biến tương tác</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 8 — Phát hiện &amp; xử lý chệch bỏ sót biến (OVB)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 9 — Sai số chuẩn vững (robust SE)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stata-lab/lab-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 10 — Logit/Probit, panel &amp; báo cáo kết quả</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Trong bài</h2>
+   
+  <ul>
+  <li><a href="#bước-0-làm-quen-cái-bàn-làm-việc-mới" id="toc-bước-0-làm-quen-cái-bàn-làm-việc-mới" class="nav-link active" data-scroll-target="#bước-0-làm-quen-cái-bàn-làm-việc-mới">Bước 0 — Làm quen cái bàn làm việc mới</a></li>
+  <li><a href="#bước-1-mở-dữ-liệu-và-nhìn-vài-dòng-đầu" id="toc-bước-1-mở-dữ-liệu-và-nhìn-vài-dòng-đầu" class="nav-link" data-scroll-target="#bước-1-mở-dữ-liệu-và-nhìn-vài-dòng-đầu">Bước 1 — Mở dữ liệu và nhìn vài dòng đầu</a></li>
+  <li><a href="#bước-2-xem-thống-kê-mô-tả" id="toc-bước-2-xem-thống-kê-mô-tả" class="nav-link" data-scroll-target="#bước-2-xem-thống-kê-mô-tả">Bước 2 — Xem thống kê mô tả</a></li>
+  <li><a href="#bước-3-vẽ-histogram-của-lương" id="toc-bước-3-vẽ-histogram-của-lương" class="nav-link" data-scroll-target="#bước-3-vẽ-histogram-của-lương">Bước 3 — Vẽ histogram của lương</a></li>
+  <li><a href="#bước-4-vẽ-đám-mây-chấm-lương-theo-số-năm-học" id="toc-bước-4-vẽ-đám-mây-chấm-lương-theo-số-năm-học" class="nav-link" data-scroll-target="#bước-4-vẽ-đám-mây-chấm-lương-theo-số-năm-học">Bước 4 — Vẽ đám mây chấm: lương theo số năm học</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stata-lab/lab-01.html">Lab theo buổi</a></li><li class="breadcrumb-item"><a href="../stata-lab/lab-01.html">Lab 1 — Nhập &amp; khám phá dữ liệu, thống kê mô tả</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Lab 1 — Nhập &amp; khám phá dữ liệu, thống kê mô tả</h1>
+<p class="subtitle lead">Tương ứng <a href="../lectures/buoi-01.html">Buổi 1</a></p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Mei à, ở <a href="../lectures/buoi-01.html">Buổi 1</a> bố kể con nghe về <strong>đám mây chấm</strong> — cách mình rải dữ liệu ra một tờ giấy có hai trục, rồi nhìn xem nó có nghiêng theo hướng nào không. Hôm nay con sẽ tự tay làm việc đó trên máy.</p>
+<p>Nhưng trước hết, mình làm quen cái <strong>bàn làm việc mới</strong> đã. Lần đầu mở Stata, con sẽ thấy mấy cửa sổ lạ hoắc. Đừng lo con — bố ngồi cạnh, mình đi từng góc một. Xong rồi con sẽ thấy nó hiền lắm.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🎯 Bố mong sau lab này con sẽ
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Mở được dữ liệu, nhìn vài dòng đầu cho quen mặt.</li>
+<li>Xem được thống kê mô tả: trung bình, nhỏ nhất, lớn nhất.</li>
+<li>Vẽ được <strong>histogram</strong> của lương và <strong>đám mây chấm</strong> lương theo số năm học.</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Bố nói trước cho con yên tâm
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Stata là phần mềm phải mua (bản SE hoặc MP — ở trường con thường có sẵn). Các khối mã dưới đây bố để ở dạng <strong>đọc — không tự chạy</strong>, vì website chưa gắn dữ liệu thật. Con cứ hình dung mình <strong>đã có sẵn một bộ dữ liệu</strong> tên <code>luong.dta</code> với mấy biến: <code>luong</code> (lương, triệu đồng), <code>hoc</code> (số năm đi học), <code>kinhnghiem</code> (số năm đi làm), và <code>nu</code> (bằng 1 nếu là nữ). Khi ngồi trước máy Stata thật, con gõ y hệt là chạy được con nhé.</p>
+</div>
+</div>
+<section id="bước-0-làm-quen-cái-bàn-làm-việc-mới" class="level2">
+<h2 class="anchored" data-anchor-id="bước-0-làm-quen-cái-bàn-làm-việc-mới">Bước 0 — Làm quen cái bàn làm việc mới</h2>
+<p>Con mở Stata lên. Màn hình chia thành 4 ô, bố gọi tên từng ô:</p>
+<ul>
+<li><strong>Command</strong> (ô nhỏ phía dưới) — chỗ con <strong>gõ lệnh</strong> vào rồi bấm Enter. Đây là chỗ mình nói chuyện với Stata.</li>
+<li><strong>Results</strong> (ô lớn ở giữa) — chỗ Stata <strong>trả lời</strong> con: bảng số, kết quả hiện ra ở đây.</li>
+<li><strong>Variables</strong> (ô bên phải) — danh sách <strong>các biến</strong> trong dữ liệu đang mở. Mở dữ liệu xong con sẽ thấy <code>luong</code>, <code>hoc</code>… hiện lên đây.</li>
+<li><strong>Review</strong> (ô bên trái) — <strong>lịch sử</strong> những lệnh con đã gõ. Lỡ gõ sai, con bấm lại lệnh cũ ở đây cho nhanh.</li>
+</ul>
+<p>Thấy chưa Mei — chỉ là <strong>làm quen một cái bàn làm việc mới</strong> thôi, chứ chẳng có gì đáng sợ.</p>
+<p>Trước khi mở dữ liệu, con báo cho Stata biết mình đang ngồi ở <strong>thư mục nào</strong> bằng lệnh <code>cd</code> (viết tắt của <em>change directory</em> — đổi thư mục).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>* Đặt thư mục làm việc (con thay bằng đường dẫn trên máy con)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cd <span class="st">"C:/Users/Mei/ktl"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Bố chốt cho con:</strong> 4 cửa sổ là Command (gõ), Results (xem), Variables (biến), Review (lịch sử) — và <code>cd</code> là cách con báo Stata mình đang ngồi ở đâu.</p>
+</section>
+<section id="bước-1-mở-dữ-liệu-và-nhìn-vài-dòng-đầu" class="level2">
+<h2 class="anchored" data-anchor-id="bước-1-mở-dữ-liệu-và-nhìn-vài-dòng-đầu">Bước 1 — Mở dữ liệu và nhìn vài dòng đầu</h2>
+<p>Mình mở bộ dữ liệu ra. Bố cho con tập với dữ liệu mẫu có sẵn trong Stata tên <code>auto</code> trước, vì máy nào cũng có — con khỏi cần file gì.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>* Mở dữ liệu mẫu có sẵn trong Stata (để con tập tay)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">sysuse</span> auto, <span class="kw">clear</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>* Khi đã có file của mình, con mở bằng:</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>* <span class="kw">use</span> <span class="st">"luong.dta"</span>, <span class="kw">clear</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>* Nhìn 5 dòng đầu cho quen mặt dữ liệu</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ot">list</span> <span class="kw">in</span> 1/5</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Bố giải thích từng chữ:</p>
+<ul>
+<li><code>sysuse auto, clear</code> — mở dữ liệu mẫu <code>auto</code>. Chữ <code>clear</code> nghĩa là <em>“dọn sạch dữ liệu cũ trong bộ nhớ trước đã”</em>, để khỏi lẫn lộn.</li>
+<li><code>list in 1/5</code> — in <strong>5 dòng đầu tiên</strong>. Mình không cần xem hết cả nghìn dòng, chỉ liếc vài dòng để biết dữ liệu trông thế nào: mỗi dòng là một người (hay một chiếc xe), mỗi cột là một biến.</li>
+</ul>
+<p>Nhìn vài dòng đầu giống như mở hộp đồ ra ngắm trước khi bắt tay vào — con quen mặt dữ liệu rồi mới làm tiếp.</p>
+<p><strong>Bố chốt cho con:</strong> <code>sysuse auto, clear</code> để mở, <code>list in 1/5</code> để liếc vài dòng đầu cho quen.</p>
+</section>
+<section id="bước-2-xem-thống-kê-mô-tả" class="level2">
+<h2 class="anchored" data-anchor-id="bước-2-xem-thống-kê-mô-tả">Bước 2 — Xem thống kê mô tả</h2>
+<p>Giờ mình hỏi dữ liệu mấy câu cơ bản: <em>“Lương trung bình bao nhiêu? Người thấp nhất, cao nhất là bao nhiêu?”</em> — đó là <strong>thống kê mô tả</strong>, và lệnh để hỏi là <code>summarize</code> (gõ tắt <code>su</code> cũng được).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>* Xem trung bình, nhỏ nhất, lớn nhất của từng biến</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">summarize</span> luong hoc kinhnghiem</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Stata sẽ trả về một bảng, mỗi dòng một biến, với mấy cột bố dịch cho con:</p>
+<ul>
+<li><strong>Obs</strong> — số quan sát (bao nhiêu người trong dữ liệu).</li>
+<li><strong>Mean</strong> — <strong>trung bình</strong>. Ví dụ <code>luong</code> trung bình <strong>9,5</strong> nghĩa là lương trung bình khoảng 9,5 triệu.</li>
+<li><strong>Min</strong> và <strong>Max</strong> — người <strong>thấp nhất</strong> và <strong>cao nhất</strong>. Ví dụ lương từ <strong>3</strong> đến <strong>40</strong> triệu.</li>
+</ul>
+<p>Con đọc thành tiếng người: <em>“Trong nhóm này, lương trung bình 9,5 triệu, thấp nhất 3, cao nhất 40.”</em> Vậy là con đã biết dữ liệu của mình “nằm trong khoảng nào” rồi.</p>
+<p><strong>Bố chốt cho con:</strong> <code>summarize</code> cho con trung bình, nhỏ nhất, lớn nhất — bức ảnh chụp nhanh toàn cảnh dữ liệu.</p>
+</section>
+<section id="bước-3-vẽ-histogram-của-lương" class="level2">
+<h2 class="anchored" data-anchor-id="bước-3-vẽ-histogram-của-lương">Bước 3 — Vẽ histogram của lương</h2>
+<p>Bảng số gọn nhưng khô. Mình vẽ một cái <strong>histogram</strong> để <em>thấy</em> lương phân bố ra sao — chỗ nào đông người, chỗ nào thưa.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>* Vẽ <span class="kw">histogram</span> của lương</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">histogram</span> luong, <span class="kw">percent</span> <span class="co">///</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="bn">title</span>(<span class="st">"Lương phân bố thế nào"</span>) <span class="co">///</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="bn">xtitle</span>(<span class="st">"Lương (triệu đồng)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Histogram chia trục lương thành nhiều <strong>ngăn nhỏ</strong>, rồi xếp người vào ngăn — ngăn nào càng cao nghĩa là càng đông người có mức lương đó. Bố giải thích mấy nút:</p>
+<ul>
+<li><code>percent</code> — cột cao thấp tính theo <strong>phần trăm</strong> số người, dễ đọc hơn đếm đầu người.</li>
+<li><code>title(...)</code> và <code>xtitle(...)</code> — đặt tên cho cả hình và trục ngang, để sau này nhìn lại con không quên hình này nói gì.</li>
+</ul>
+<p>Nhìn hình, con thường thấy lương <strong>dồn về bên trái</strong> (nhiều người lương vừa phải) và có một cái <strong>đuôi dài bên phải</strong> (ít người lương rất cao). Đó là chuyện rất thường gặp với dữ liệu lương đấy con.</p>
+<p><strong>Bố chốt cho con:</strong> <code>histogram</code> biến cột số khô khan thành một bức tranh — con thấy ngay lương dồn ở đâu, thưa ở đâu.</p>
+</section>
+<section id="bước-4-vẽ-đám-mây-chấm-lương-theo-số-năm-học" class="level2">
+<h2 class="anchored" data-anchor-id="bước-4-vẽ-đám-mây-chấm-lương-theo-số-năm-học">Bước 4 — Vẽ đám mây chấm: lương theo số năm học</h2>
+<p>Đây là phần bố hứa với con từ <a href="../lectures/buoi-01.html">Buổi 1</a> — <strong>đám mây chấm</strong>. Mỗi người là một chấm: trục ngang là số năm đi học, trục dọc là lương. Rải hết ra, mình xem đám mây có <strong>nghiêng lên</strong> không.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>* Đám mây chấm: lương (trục dọc) theo số năm học (trục ngang)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">scatter</span> luong hoc, <span class="co">///</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="bn">title</span>(<span class="st">"Học nhiều thì lương có cao hơn không"</span>) <span class="co">///</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="bn">ytitle</span>(<span class="st">"Lương (triệu đồng)"</span>) <span class="co">///</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="bn">xtitle</span>(<span class="st">"Số năm đi học"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Bố dặn con một điều quan trọng về thứ tự: <code>scatter luong hoc</code> đặt biến <strong>đầu tiên</strong> (<code>luong</code>) lên <strong>trục dọc</strong>, biến <strong>thứ hai</strong> (<code>hoc</code>) lên <strong>trục ngang</strong>. Stata luôn đọc theo kiểu <em>“y trước, x sau”</em>. Con nhớ kỹ chỗ này kẻo vẽ ngược.</p>
+<p>Nhìn đám mây, nếu các chấm có xu hướng <strong>đi lên từ trái sang phải</strong> — nghĩa là người học nhiều hơn thường có lương cao hơn. Đám mây nghiêng lên chính là <strong>trực giác</strong> đầu tiên về mối liên hệ, trước cả khi mình vẽ đường thẳng hay tính con số nào. Con chưa cần kết luận gì chắc chắn — chỉ cần <em>thấy</em> cái nghiêng đó là con đã làm đúng việc của Buổi 1 rồi.</p>
+<p><strong>Bố chốt cho con:</strong> <code>scatter luong hoc</code> rải đám mây với lương trên trục dọc, học trên trục ngang — đám mây nghiêng lên là tín hiệu đầu tiên “học nhiều, lương cao hơn”.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>💡 Mẹo nhỏ bố dắt túi cho con
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Đừng gõ lệnh một lần rồi quên. Con mở <strong>Do-file Editor</strong> bằng cách gõ <code>doedit</code> vào ô Command (hoặc bấm nút biểu tượng có cây bút). Đó là một <strong>cuốn sổ</strong> để con dán hết các lệnh vào, lưu lại thành file <code>.do</code>.</p>
+<p>Lợi ích bố thấy rõ nhất: hôm sau mở lại, con bấm chạy một phát là ra y nguyên kết quả cũ — khỏi gõ lại từ đầu, mà cũng không sợ quên mình đã làm gì. Bố luôn làm việc trong do-file, không gõ tay lung tung ở Command. 🌱</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>⚠️ Cái bẫy bố dặn con tránh
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Vẽ scatter ngược trục.</strong> <code>scatter A B</code> là A lên trục dọc, B lên trục ngang — không phải ngược lại. Gõ vội là vẽ lộn câu hỏi đấy con.</li>
+<li><strong>Quên <code>clear</code> khi mở dữ liệu mới.</strong> Nếu trong bộ nhớ còn dữ liệu cũ, Stata sẽ báo lỗi không cho mở. Cứ thêm <code>, clear</code> cho yên.</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>🔑 Con vừa làm được gì
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Làm quen <strong>4 cửa sổ</strong> của Stata và đặt thư mục làm việc bằng <code>cd</code>.</li>
+<li>Mở dữ liệu, liếc vài dòng đầu (<code>list in 1/5</code>), và xem thống kê mô tả bằng <code>summarize</code> — trung bình, nhỏ nhất, lớn nhất.</li>
+<li>Vẽ <strong>histogram</strong> của lương và <strong>đám mây chấm</strong> lương theo số năm học — đúng cái đám mây bố kể ở Buổi 1, giờ con tự tay rải ra được rồi.</li>
+</ol>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/dongkien\.github\.io\/mei\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.vi">CC BY-NC-SA 4.0</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p>Bố viết tặng con — bé Mei ❤️</p>
+</div>
+    <div class="nav-footer-right">
+<p>Tạo bằng <a href="https://quarto.org/">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
