@@ -2,58 +2,58 @@
   {
     "objectID": "syllabus.html",
     "href": "syllabus.html",
-    "title": "Đề cương học phần",
+    "title": "Đề cương — Bố kể con nghe khoá này có gì",
     "section": "",
-    "text": "Đề cương đang được hoàn thiện. Các mục dưới đây là khung — nội dung chi tiết sẽ được bổ sung."
+    "text": "Mei à, đây là tấm bản đồ cả hành trình. Con không cần đọc kỹ trang này đâu — cứ vào thẳng Buổi 1 là được. Nhưng khi nào con (hay người lớn nào tò mò) muốn nhìn toàn cảnh, thì trang này có đủ."
   },
   {
-    "objectID": "syllabus.html#thông-tin-chung",
-    "href": "syllabus.html#thông-tin-chung",
-    "title": "Đề cương học phần",
-    "section": "Thông tin chung",
-    "text": "Thông tin chung\n\nTên học phần: Kinh tế lượng\nSố tín chỉ: (TBA)\nHọc phần tiên quyết: Thống kê / Xác suất thống kê\nGiảng viên: (TBA)"
+    "objectID": "syllabus.html#khoá-này-là-gì",
+    "href": "syllabus.html#khoá-này-là-gì",
+    "title": "Đề cương — Bố kể con nghe khoá này có gì",
+    "section": "Khoá này là gì",
+    "text": "Khoá này là gì\nMột khoá kinh tế lượng nhập môn — môn học giúp mình trả lời câu hỏi “x ảnh hưởng tới y bao nhiêu?” bằng số liệu thật, và biết khi nào một con số đáng tin, khi nào nên nghi. Bố kể bằng giọng của bố, đi từ trực giác trước, công thức sau, và hứa không làm con sợ.\n\n\n\n\n\n\nTip💡 Ba lời hứa của bố\n\n\n\n\nKý hiệu chỉ là biệt danh — gặp cái nào bố dịch sang tiếng người ngay.\nMáy tính lo tính toán — việc của con là hỏi đúng câu hỏi và đọc hiểu câu trả lời.\nToán nặng luôn nằm trong hộp “🔍 đào sâu” gập lại — con bỏ qua vẫn theo trọn mạch chính."
   },
   {
-    "objectID": "syllabus.html#mô-tả-học-phần",
-    "href": "syllabus.html#mô-tả-học-phần",
-    "title": "Đề cương học phần",
-    "section": "Mô tả học phần",
-    "text": "Mô tả học phần\n(Bổ sung sau.)"
+    "objectID": "syllabus.html#con-cần-gì-trước-khi-bắt-đầu",
+    "href": "syllabus.html#con-cần-gì-trước-khi-bắt-đầu",
+    "title": "Đề cương — Bố kể con nghe khoá này có gì",
+    "section": "Con cần gì trước khi bắt đầu",
+    "text": "Con cần gì trước khi bắt đầu\n\nBiết cộng trừ nhân chia, và một chút tò mò. Không cần giỏi toán.\nMột cái máy tính để chạy lab (Stata, R, hoặc Python — chọn cái con thích)."
   },
   {
-    "objectID": "syllabus.html#mục-tiêu-chuẩn-đầu-ra-clo",
-    "href": "syllabus.html#mục-tiêu-chuẩn-đầu-ra-clo",
-    "title": "Đề cương học phần",
-    "section": "Mục tiêu & Chuẩn đầu ra (CLO)",
-    "text": "Mục tiêu & Chuẩn đầu ra (CLO)\n(Bổ sung sau.)"
+    "objectID": "syllabus.html#tài-liệu-công-cụ",
+    "href": "syllabus.html#tài-liệu-công-cụ",
+    "title": "Đề cương — Bố kể con nghe khoá này có gì",
+    "section": "Tài liệu & công cụ",
+    "text": "Tài liệu & công cụ\n\nSách tham khảo cho người lớn: Wooldridge, Introductory Econometrics: A Modern Approach (khi con học sâu hơn).\nSách đọc thêm của nhà mình: Bằng chứng đâu? Đọc thế giới bằng tư duy nhân quả — cuốn bố viết, dạy chị Ran (trong sách là cô bé Ngân Giang) tư duy nhân quả. Khoá này dạy con đo nhân quả bằng số; cuốn sách dạy đọc thế giới bằng tư duy nhân quả qua chuyện kể.\nPhần mềm: Stata · R · Python — mỗi buổi có lab cho cả ba."
   },
   {
-    "objectID": "syllabus.html#giáo-trình-tài-liệu",
-    "href": "syllabus.html#giáo-trình-tài-liệu",
-    "title": "Đề cương học phần",
-    "section": "Giáo trình & Tài liệu",
-    "text": "Giáo trình & Tài liệu\n\nGiáo trình chính: Wooldridge, Jeffrey. Introductory Econometrics: A Modern Approach.\nTài liệu khác: (TBA)"
+    "objectID": "syllabus.html#lộ-trình-10-buổi",
+    "href": "syllabus.html#lộ-trình-10-buổi",
+    "title": "Đề cương — Bố kể con nghe khoá này có gì",
+    "section": "Lộ trình 10 buổi",
+    "text": "Lộ trình 10 buổi\n\n\n\n\n\n\n\n\nBuổi\nTên buổi\nCon học được gì\n\n\n\n\n1\nKinh tế lượng là gì hả Mei?\nKTL là gì; ba loại số liệu; đám mây điểm\n\n\n2\nĐường thẳng đi xuyên đám mây sao\nHồi quy đơn (OLS), độ dốc, R²\n\n\n3\nKhi không chỉ một điều quyết định\nHồi quy bội; “giữ những thứ khác cố định”\n\n\n4\nKhi nào con tin được đường mình vừa kẻ?\nCác giả định của OLS; đa cộng tuyến\n\n\n5\nThật, hay chỉ là tình cờ?\nKiểm định t & F; khoảng tin cậy\n\n\n6\nKhi đường thẳng chịu thua, mình uốn cong nó\nLog, bình phương, biến tương tác\n\n\n7\nChuyện “có” hay “không”\nBiến giả (dummy); xác định mô hình\n\n\n8\nThủ phạm giấu mặt\nChệch do bỏ sót biến (OVB) — trái tim của môn\n\n\n9\nKhi chỗ ồn ào, chỗ lặng yên\nPhương sai sai số thay đổi; sai số chuẩn vững\n\n\n10\nNhững cánh cửa bố mở hé cho con\nLogit/probit, dữ liệu bảng, IV + tổng kết\n\n\n\nTổ chức theo 5 chương: Bắt đầu hành trình · Học kẻ đường qua dữ liệu · Đọc hiểu & uốn nắn mô hình · Những cái bẫy phải tránh · Chân trời phía trước. Nhiều buổi có thêm 🇻🇳 Chuyện nước mình — ví dụ thật của Việt Nam."
   },
   {
-    "objectID": "syllabus.html#phần-mềm",
-    "href": "syllabus.html#phần-mềm",
-    "title": "Đề cương học phần",
-    "section": "Phần mềm",
-    "text": "Phần mềm\nStata · R · Python (xem mục Lab)."
+    "objectID": "syllabus.html#ba-phòng-lab-song-song",
+    "href": "syllabus.html#ba-phòng-lab-song-song",
+    "title": "Đề cương — Bố kể con nghe khoá này có gì",
+    "section": "Ba phòng lab song song",
+    "text": "Ba phòng lab song song\nMỗi buổi giảng có một bài lab tương ứng để con tự tay gõ ra số — chọn ngôn ngữ con thích:\n\nStata Lab · R Lab · Python Lab\n\n(Mỗi lab có thêm Lab 0 hướng dẫn cài đặt & làm quen.)"
   },
   {
-    "objectID": "syllabus.html#đánh-giá",
-    "href": "syllabus.html#đánh-giá",
-    "title": "Đề cương học phần",
-    "section": "Đánh giá",
-    "text": "Đánh giá\n\n\n\nThành phần\nTrọng số\n\n\n\n\n(TBA)"
+    "objectID": "syllabus.html#sau-khoá-này-bố-mong-con",
+    "href": "syllabus.html#sau-khoá-này-bố-mong-con",
+    "title": "Đề cương — Bố kể con nghe khoá này có gì",
+    "section": "Sau khoá này, bố mong con",
+    "text": "Sau khoá này, bố mong con\n\nĐọc được một bảng kết quả hồi quy: hệ số, R², sai số chuẩn, trị số p, khoảng tin cậy.\nNghi đúng chỗ: phân biệt tương quan và nhân quả, biết hỏi “có kẻ giấu mặt nào không?”.\nTự chạy được một phân tích đơn giản trên dữ liệu thật bằng Stata/R/Python.\nVà quan trọng nhất: không còn sợ mấy con số và ký hiệu nữa."
   },
   {
-    "objectID": "syllabus.html#nội-dung-chi-tiết",
-    "href": "syllabus.html#nội-dung-chi-tiết",
-    "title": "Đề cương học phần",
-    "section": "Nội dung chi tiết",
-    "text": "Nội dung chi tiết\nXem Bài giảng và Lịch học."
+    "objectID": "syllabus.html#cách-dùng-trang-này",
+    "href": "syllabus.html#cách-dùng-trang-này",
+    "title": "Đề cương — Bố kể con nghe khoá này có gì",
+    "section": "Cách dùng trang này",
+    "text": "Cách dùng trang này\nĐọc tuần tự Bài giảng từ Buổi 1 → 10 (mỗi buổi là một viên gạch), làm lab đi kèm, xem Lịch học để biết buổi nào nối buổi nào. Cứ thấy hộp 🔍 đào sâu thì tuỳ con: tò mò thì mở, vội thì bỏ qua."
   },
   {
     "objectID": "stata-lab/lab-09.html",
