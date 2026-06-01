@@ -1,0 +1,7 @@
+---
+title: "Lab 1 — Nhập & khám phá dữ liệu"
+subtitle: "Tương ứng [Buổi 1](../lectures/buoi-01.qmd)"
+reading-time: "~20 phút"
+---
+
+*(Nội dung lab Python — điền sau.)*

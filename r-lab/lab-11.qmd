@@ -1,0 +1,7 @@
+---
+title: "Lab 11 — Biến giả & biến tương tác"
+subtitle: "Tương ứng [Buổi 11](../lectures/buoi-11.qmd)"
+reading-time: "~20 phút"
+---
+
+*(Nội dung lab R — điền sau.)*

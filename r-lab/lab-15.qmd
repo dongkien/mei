@@ -1,0 +1,7 @@
+---
+title: "Lab 15 — Báo cáo kết quả hồi quy (bảng đẹp)"
+subtitle: "Tương ứng [Buổi 15](../lectures/buoi-15.qmd)"
+reading-time: "~20 phút"
+---
+
+*(Nội dung lab R — điền sau.)*

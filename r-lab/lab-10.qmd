@@ -1,0 +1,7 @@
+---
+title: "Lab 10 — Dạng hàm log & bậc hai"
+subtitle: "Tương ứng [Buổi 10](../lectures/buoi-10.qmd)"
+reading-time: "~20 phút"
+---
+
+*(Nội dung lab R — điền sau.)*

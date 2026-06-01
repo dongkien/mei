@@ -1,0 +1,7 @@
+---
+title: "Lab 5 — Hồi quy bội"
+subtitle: "Tương ứng [Buổi 5](../lectures/buoi-05.qmd)"
+reading-time: "~20 phút"
+---
+
+*(Nội dung lab Stata — điền sau.)*

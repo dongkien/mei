@@ -1,0 +1,7 @@
+---
+title: "Lab 6 — Kiểm tra giả định cổ điển"
+subtitle: "Tương ứng [Buổi 6](../lectures/buoi-06.qmd)"
+reading-time: "~20 phút"
+---
+
+*(Nội dung lab Stata — điền sau.)*

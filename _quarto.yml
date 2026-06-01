@@ -1,0 +1,225 @@
+# ============================================================
+# Kinh tế lượng — Học liệu mở FTU
+# Quarto Website project
+# ============================================================
+
+project:
+  type: website
+  output-dir: _site
+  resources:
+    - "data/"
+
+execute:
+  freeze: auto      # không re-run code chưa đổi → render nhanh
+  echo: true        # mặc định hiện code cho sinh viên đọc
+  warning: false
+
+# Code (Stata/R/Python) chạy với cwd = thư mục project
+execute-dir: project
+
+# ----- Site config -----
+website:
+  title: "Kinh tế lượng"
+  description: "Học liệu mở môn Kinh tế lượng. Bộ môn Kinh tế và Quản lý, Viện Kinh tế và Kinh doanh Quốc tế, Trường ĐH Ngoại Thương."
+  search:
+    location: navbar
+    type: overlay
+    copy-button: true
+
+  navbar:
+    background: primary
+    pinned: true
+    left:
+      - href: index.qmd
+        text: "Trang chủ"
+      - href: syllabus.qmd
+        text: "Đề cương"
+      - href: schedule.qmd
+        text: "Lịch học"
+      - href: lectures/index.qmd
+        text: "Bài giảng"
+      - text: "AcLab+"
+        menu:
+          - href: stata-lab/index.qmd
+            text: "Stata Lab"
+          - href: r-lab/index.qmd
+            text: "R Lab"
+          - href: python-lab/index.qmd
+            text: "Python Lab"
+      - href: problem-sets/index.qmd
+        text: "Tiểu luận / Bài tập"
+      - href: exams/index.qmd
+        text: "Đánh giá"
+
+  sidebar:
+    - id: python-lab
+      title: "Python Lab"
+      style: docked
+      align: left
+      collapse-level: 2
+      contents:
+        - text: "← Trang chủ"
+          href: index.qmd
+        - python-lab/index.qmd
+        - section: "Hướng dẫn"
+          contents:
+            - python-lab/lab-00.qmd
+        - section: "Lab theo buổi"
+          contents:
+            - python-lab/lab-01.qmd
+            - python-lab/lab-02.qmd
+            - python-lab/lab-03.qmd
+            - python-lab/lab-04.qmd
+            - python-lab/lab-05.qmd
+            - python-lab/lab-06.qmd
+            - python-lab/lab-07.qmd
+            - python-lab/lab-08.qmd
+            - python-lab/lab-09.qmd
+            - python-lab/lab-10.qmd
+            - python-lab/lab-11.qmd
+            - python-lab/lab-12.qmd
+            - python-lab/lab-13.qmd
+            - python-lab/lab-14.qmd
+            - python-lab/lab-15.qmd
+    - id: r-lab
+      title: "R Lab"
+      style: docked
+      align: left
+      collapse-level: 2
+      contents:
+        - text: "← Trang chủ"
+          href: index.qmd
+        - r-lab/index.qmd
+        - section: "Hướng dẫn"
+          contents:
+            - r-lab/lab-00.qmd
+        - section: "Lab theo buổi"
+          contents:
+            - r-lab/lab-01.qmd
+            - r-lab/lab-02.qmd
+            - r-lab/lab-03.qmd
+            - r-lab/lab-04.qmd
+            - r-lab/lab-05.qmd
+            - r-lab/lab-06.qmd
+            - r-lab/lab-07.qmd
+            - r-lab/lab-08.qmd
+            - r-lab/lab-09.qmd
+            - r-lab/lab-10.qmd
+            - r-lab/lab-11.qmd
+            - r-lab/lab-12.qmd
+            - r-lab/lab-13.qmd
+            - r-lab/lab-14.qmd
+            - r-lab/lab-15.qmd
+    - id: stata-lab
+      title: "Stata Lab"
+      style: docked
+      align: left
+      collapse-level: 2
+      contents:
+        - text: "← Trang chủ"
+          href: index.qmd
+        - stata-lab/index.qmd
+        - section: "Hướng dẫn"
+          contents:
+            - stata-lab/lab-00.qmd
+        - section: "Lab theo buổi"
+          contents:
+            - stata-lab/lab-01.qmd
+            - stata-lab/lab-02.qmd
+            - stata-lab/lab-03.qmd
+            - stata-lab/lab-04.qmd
+            - stata-lab/lab-05.qmd
+            - stata-lab/lab-06.qmd
+            - stata-lab/lab-07.qmd
+            - stata-lab/lab-08.qmd
+            - stata-lab/lab-09.qmd
+            - stata-lab/lab-10.qmd
+            - stata-lab/lab-11.qmd
+            - stata-lab/lab-12.qmd
+            - stata-lab/lab-13.qmd
+            - stata-lab/lab-14.qmd
+            - stata-lab/lab-15.qmd
+    - id: bai-giang
+      title: "Bài giảng"
+      style: docked
+      align: left
+      collapse-level: 2
+      contents:
+        - text: "← Trang chủ"
+          href: index.qmd
+        - section: "Chương 1 — Nhập môn & nền tảng thống kê"
+          contents:
+            - lectures/buoi-01.qmd
+            - lectures/buoi-02.qmd
+        - section: "Chương 2 — Hồi quy tuyến tính đơn"
+          contents:
+            - lectures/buoi-03.qmd
+            - lectures/buoi-04.qmd
+        - section: "Chương 3 — Hồi quy bội"
+          contents:
+            - lectures/buoi-05.qmd
+            - lectures/buoi-06.qmd
+            - lectures/buoi-07.qmd
+        - section: "Chương 4 — Suy diễn & kiểm định giả thuyết"
+          contents:
+            - lectures/buoi-08.qmd
+            - lectures/buoi-09.qmd
+        - section: "Chương 5 — Dạng hàm, biến giả & xác định mô hình"
+          contents:
+            - lectures/buoi-10.qmd
+            - lectures/buoi-11.qmd
+        - section: "Chương 6 — Các vấn đề của OLS"
+          contents:
+            - lectures/buoi-12.qmd
+            - lectures/buoi-13.qmd
+        - section: "Chương 7 — Mở rộng"
+          contents:
+            - lectures/buoi-14.qmd
+        - section: "Seminar / Ôn tập"
+          contents:
+            - lectures/buoi-15.qmd
+
+  page-footer:
+    border: true
+    background: light
+    left: |
+      © 2026 — Bộ môn Kinh tế và Quản lý, Viện Kinh tế và Kinh doanh Quốc tế, ĐH Ngoại Thương · [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.vi)
+    center: "TS. Đỗ Ngọc Kiên — Trưởng Bộ môn"
+    right: "Tạo bằng [Quarto](https://quarto.org/)"
+
+# ----- Format -----
+format:
+  html:
+    theme:
+      light: [cosmo, styles/custom.scss]
+    css: styles/custom.css
+    highlight-style: arrow
+    toc: true
+    toc-depth: 3
+    toc-title: "Trong bài"
+    toc-location: right
+    number-sections: false
+    code-fold: false
+    code-tools: false
+    code-link: false
+    code-copy: true
+    code-overflow: wrap
+    smooth-scroll: true
+    link-external-newwindow: true
+    link-external-icon: true
+    anchor-sections: true
+    fig-cap-location: bottom
+    tbl-cap-location: top
+    citations-hover: true
+    footnotes-hover: true
+    lang: vi
+    mainfont: "Lora, Georgia, serif"
+    monofont: "JetBrains Mono, ui-monospace, monospace"
+    fontsize: "1.05rem"
+    linestretch: 1.7
+    grid:
+      sidebar-width: 280px
+      body-width: 800px
+      margin-width: 220px
+
+lang: vi

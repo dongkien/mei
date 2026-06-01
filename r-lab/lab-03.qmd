@@ -1,0 +1,7 @@
+---
+title: "Lab 3 — Hồi quy đơn"
+subtitle: "Tương ứng [Buổi 3](../lectures/buoi-03.qmd)"
+reading-time: "~20 phút"
+---
+
+*(Nội dung lab R — điền sau.)*

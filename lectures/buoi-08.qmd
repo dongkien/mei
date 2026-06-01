@@ -1,0 +1,14 @@
+---
+title: "Buổi 8 — Suy diễn (1) — phân phối mẫu, khoảng tin cậy, kiểm định t"
+subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+reading-time: "Chương 4"
+---
+
+::: {.callout-note appearance="simple"}
+## 🎯 Mục tiêu Buổi 8
+*(Sẽ bổ sung.)*
+:::
+
+## Nội dung
+
+*(Khung bài giảng Buổi 8 — điền sau.)*

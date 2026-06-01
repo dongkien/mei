@@ -1,0 +1,14 @@
+---
+title: "Buổi 9 — Suy diễn (2) — kiểm định F, ý nghĩa thống kê vs ý nghĩa kinh tế"
+subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+reading-time: "Chương 4"
+---
+
+::: {.callout-note appearance="simple"}
+## 🎯 Mục tiêu Buổi 9
+*(Sẽ bổ sung.)*
+:::
+
+## Nội dung
+
+*(Khung bài giảng Buổi 9 — điền sau.)*

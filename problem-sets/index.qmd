@@ -1,0 +1,11 @@
+---
+title: "Tiểu luận / Bài tập"
+subtitle: "Kinh tế lượng"
+toc: false
+---
+
+::: {.callout-note appearance="simple"}
+Khu vực bài tập và tiểu luận — nội dung sẽ được bổ sung.
+:::
+
+*(Đề bài tập theo buổi, tiểu luận giữa kỳ, hướng dẫn nộp bài… điền sau.)*

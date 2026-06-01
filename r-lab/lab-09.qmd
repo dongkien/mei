@@ -1,0 +1,7 @@
+---
+title: "Lab 9 — Kiểm định F & kiểm định gộp"
+subtitle: "Tương ứng [Buổi 9](../lectures/buoi-09.qmd)"
+reading-time: "~20 phút"
+---
+
+*(Nội dung lab R — điền sau.)*

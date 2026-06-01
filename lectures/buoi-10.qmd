@@ -1,0 +1,14 @@
+---
+title: "Buổi 10 — Dạng hàm & biến đổi — log, bậc hai, tương tác"
+subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+reading-time: "Chương 5"
+---
+
+::: {.callout-note appearance="simple"}
+## 🎯 Mục tiêu Buổi 10
+*(Sẽ bổ sung.)*
+:::
+
+## Nội dung
+
+*(Khung bài giảng Buổi 10 — điền sau.)*

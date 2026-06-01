@@ -1,0 +1,7 @@
+---
+title: "Lab 0 — Cài đặt & làm quen R"
+subtitle: "Chuẩn bị môi trường trước khi vào 15 lab"
+reading-time: "~30 phút"
+---
+
+*(Hướng dẫn cài đặt R, thiết lập thư mục làm việc, mở dữ liệu mẫu — bổ sung sau.)*

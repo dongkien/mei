@@ -1,0 +1,52 @@
+---
+title: "Kinh tế lượng"
+subtitle: "Bộ môn Kinh tế và Quản lý, Viện KT&KDQT, ĐH Ngoại Thương"
+toc: false
+page-layout: full
+---
+
+::: {.column-page}
+
+## Về học phần
+
+**Kinh tế lượng** trang bị cho sinh viên công cụ phân tích dữ liệu để **ước lượng độ lớn các quan hệ kinh tế** và **kiểm định giả thuyết** bằng dữ liệu thực tế. Môn học đi từ hồi quy tuyến tính đơn đến hồi quy bội, suy diễn thống kê, và các vấn đề thường gặp của mô hình (chệch do bỏ sót biến, phương sai sai số thay đổi…), kèm thực hành trên **Stata, R và Python**.
+
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-8}
+
+### Cách tiếp cận
+
+Lý thuyết được minh hoạ bằng **dữ liệu thực tế** và **ba lab song song** (Stata · R · Python) để sinh viên vừa hiểu trực giác vừa biết thao tác. Giáo trình tham chiếu: **Wooldridge — *Introductory Econometrics: A Modern Approach***.
+
+### Cấu trúc học phần (15 buổi)
+
+| Chương | Buổi | Trọng tâm |
+|---|:---:|---|
+| **1** — Nhập môn & nền tảng | 1–2 | Kinh tế lượng là gì; ôn xác suất, thống kê |
+| **2** — Hồi quy đơn | 3–4 | OLS, R², giả định cổ điển |
+| **3** — Hồi quy bội | 5–7 | Mô hình k biến, giả định, đa cộng tuyến |
+| **4** — Suy diễn | 8–9 | Khoảng tin cậy, kiểm định t & F |
+| **5** — Dạng hàm & biến giả | 10–11 | Log, bậc hai, tương tác, dummy, xác định mô hình |
+| **6** — Vấn đề của OLS | 12–13 | Chệch bỏ sót biến, phương sai sai số thay đổi |
+| **7** — Mở rộng | 14 | Biến phụ thuộc nhị phân, dữ liệu bảng, IV |
+| **Seminar** | 15 | Ôn tập & trình bày kết quả hồi quy |
+
+:::
+
+::: {.g-col-12 .g-col-md-4}
+
+::: {.callout-note appearance="simple"}
+## 📚 Bắt đầu nhanh
+
+- 📋 [Đề cương](syllabus.qmd)
+- 🗓️ [Lịch học](schedule.qmd)
+- 📖 [Bài giảng](lectures/index.qmd)
+- 💻 [Stata Lab](stata-lab/index.qmd) · [R Lab](r-lab/index.qmd) · [Python Lab](python-lab/index.qmd)
+:::
+
+:::
+
+:::
+
+:::

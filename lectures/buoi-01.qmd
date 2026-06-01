@@ -1,0 +1,14 @@
+---
+title: "Buổi 1 — Nhập môn Kinh tế lượng — dữ liệu, mô hình, câu hỏi nhân quả"
+subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+reading-time: "Chương 1"
+---
+
+::: {.callout-note appearance="simple"}
+## 🎯 Mục tiêu Buổi 1
+*(Sẽ bổ sung.)*
+:::
+
+## Nội dung
+
+*(Khung bài giảng Buổi 1 — điền sau.)*

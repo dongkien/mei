@@ -1,0 +1,7 @@
+---
+title: "Lab 2 — Thống kê mô tả & phân phối"
+subtitle: "Tương ứng [Buổi 2](../lectures/buoi-02.qmd)"
+reading-time: "~20 phút"
+---
+
+*(Nội dung lab Stata — điền sau.)*

@@ -1,0 +1,14 @@
+---
+title: "Buổi 11 — Biến giả (dummy) & xác định mô hình"
+subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+reading-time: "Chương 5"
+---
+
+::: {.callout-note appearance="simple"}
+## 🎯 Mục tiêu Buổi 11
+*(Sẽ bổ sung.)*
+:::
+
+## Nội dung
+
+*(Khung bài giảng Buổi 11 — điền sau.)*

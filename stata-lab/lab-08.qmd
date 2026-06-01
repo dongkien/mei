@@ -1,0 +1,7 @@
+---
+title: "Lab 8 — Khoảng tin cậy & kiểm định t"
+subtitle: "Tương ứng [Buổi 8](../lectures/buoi-08.qmd)"
+reading-time: "~20 phút"
+---
+
+*(Nội dung lab Stata — điền sau.)*

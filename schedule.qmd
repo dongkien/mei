@@ -1,0 +1,26 @@
+---
+title: "Lịch học"
+subtitle: "15 buổi"
+---
+
+::: {.callout-note appearance="simple"}
+Lịch cụ thể (ngày/giờ) sẽ được cập nhật theo từng kỳ.
+:::
+
+| Buổi | Chương | Nội dung | Lab tương ứng |
+|:---:|:---:|---|:---:|
+| 1 | 1 | Nhập môn Kinh tế lượng | Lab 1 |
+| 2 | 1 | Ôn tập xác suất & thống kê | Lab 2 |
+| 3 | 2 | Hồi quy tuyến tính đơn (1) | Lab 3 |
+| 4 | 2 | Hồi quy tuyến tính đơn (2) | Lab 4 |
+| 5 | 3 | Hồi quy bội (1) | Lab 5 |
+| 6 | 3 | Hồi quy bội (2) | Lab 6 |
+| 7 | 3 | Hồi quy bội (3) | Lab 7 |
+| 8 | 4 | Suy diễn (1) — kiểm định t | Lab 8 |
+| 9 | 4 | Suy diễn (2) — kiểm định F | Lab 9 |
+| 10 | 5 | Dạng hàm & biến đổi | Lab 10 |
+| 11 | 5 | Biến giả & xác định mô hình | Lab 11 |
+| 12 | 6 | Chệch do bỏ sót biến (OVB) | Lab 12 |
+| 13 | 6 | Phương sai sai số thay đổi | Lab 13 |
+| 14 | 7 | Mở rộng — logit/probit, panel, IV | Lab 14 |
+| 15 | — | Seminar / Ôn tập | Lab 15 |

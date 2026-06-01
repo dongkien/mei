@@ -1,0 +1,11 @@
+---
+title: "Đánh giá"
+subtitle: "Kinh tế lượng"
+toc: false
+---
+
+::: {.callout-note appearance="simple"}
+Thông tin về kiểm tra giữa kỳ, thi cuối kỳ và đề mẫu — sẽ được bổ sung.
+:::
+
+*(Cấu trúc đánh giá, đề mẫu, hướng dẫn ôn tập… điền sau.)*

@@ -1,0 +1,14 @@
+---
+title: "Buổi 7 — Hồi quy bội (3) — độ phù hợp, đa cộng tuyến"
+subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+reading-time: "Chương 3"
+---
+
+::: {.callout-note appearance="simple"}
+## 🎯 Mục tiêu Buổi 7
+*(Sẽ bổ sung.)*
+:::
+
+## Nội dung
+
+*(Khung bài giảng Buổi 7 — điền sau.)*

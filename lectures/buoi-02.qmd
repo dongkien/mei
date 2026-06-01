@@ -1,0 +1,14 @@
+---
+title: "Buổi 2 — Ôn tập xác suất & thống kê — biến ngẫu nhiên, kỳ vọng, phân phối"
+subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+reading-time: "Chương 1"
+---
+
+::: {.callout-note appearance="simple"}
+## 🎯 Mục tiêu Buổi 2
+*(Sẽ bổ sung.)*
+:::
+
+## Nội dung
+
+*(Khung bài giảng Buổi 2 — điền sau.)*

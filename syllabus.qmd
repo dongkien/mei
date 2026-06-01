@@ -1,0 +1,42 @@
+---
+title: "Đề cương học phần"
+subtitle: "Kinh tế lượng"
+---
+
+::: {.callout-note appearance="simple"}
+Đề cương đang được hoàn thiện. Các mục dưới đây là khung — nội dung chi tiết sẽ được bổ sung.
+:::
+
+## Thông tin chung
+
+- **Tên học phần:** Kinh tế lượng
+- **Số tín chỉ:** *(TBA)*
+- **Học phần tiên quyết:** Thống kê / Xác suất thống kê
+- **Giảng viên:** *(TBA)*
+
+## Mô tả học phần
+
+*(Bổ sung sau.)*
+
+## Mục tiêu & Chuẩn đầu ra (CLO)
+
+*(Bổ sung sau.)*
+
+## Giáo trình & Tài liệu
+
+- **Giáo trình chính:** Wooldridge, Jeffrey. *Introductory Econometrics: A Modern Approach.*
+- **Tài liệu khác:** *(TBA)*
+
+## Phần mềm
+
+Stata · R · Python (xem mục [Lab](stata-lab/index.qmd)).
+
+## Đánh giá
+
+| Thành phần | Trọng số |
+|---|:---:|
+| *(TBA)* | |
+
+## Nội dung chi tiết
+
+Xem [Bài giảng](lectures/index.qmd) và [Lịch học](schedule.qmd).

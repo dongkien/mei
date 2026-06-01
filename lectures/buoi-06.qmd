@@ -1,0 +1,14 @@
+---
+title: "Buổi 6 — Hồi quy bội (2) — các giả định & tính chất của ước lượng"
+subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+reading-time: "Chương 3"
+---
+
+::: {.callout-note appearance="simple"}
+## 🎯 Mục tiêu Buổi 6
+*(Sẽ bổ sung.)*
+:::
+
+## Nội dung
+
+*(Khung bài giảng Buổi 6 — điền sau.)*

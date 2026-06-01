@@ -1,0 +1,7 @@
+---
+title: "Lab 4 — Đánh giá độ phù hợp & phần dư"
+subtitle: "Tương ứng [Buổi 4](../lectures/buoi-04.qmd)"
+reading-time: "~20 phút"
+---
+
+*(Nội dung lab R — điền sau.)*

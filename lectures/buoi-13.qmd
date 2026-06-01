@@ -1,0 +1,14 @@
+---
+title: "Buổi 13 — Phương sai sai số thay đổi & sai số chuẩn vững (robust)"
+subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+reading-time: "Chương 6"
+---
+
+::: {.callout-note appearance="simple"}
+## 🎯 Mục tiêu Buổi 13
+*(Sẽ bổ sung.)*
+:::
+
+## Nội dung
+
+*(Khung bài giảng Buổi 13 — điền sau.)*

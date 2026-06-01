@@ -1,0 +1,14 @@
+---
+title: "Buổi 3 — Hồi quy tuyến tính đơn (1) — mô hình & ước lượng OLS"
+subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+reading-time: "Chương 2"
+---
+
+::: {.callout-note appearance="simple"}
+## 🎯 Mục tiêu Buổi 3
+*(Sẽ bổ sung.)*
+:::
+
+## Nội dung
+
+*(Khung bài giảng Buổi 3 — điền sau.)*

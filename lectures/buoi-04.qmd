@@ -1,0 +1,14 @@
+---
+title: "Buổi 4 — Hồi quy tuyến tính đơn (2) — độ phù hợp R² và các giả định cổ điển"
+subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+reading-time: "Chương 2"
+---
+
+::: {.callout-note appearance="simple"}
+## 🎯 Mục tiêu Buổi 4
+*(Sẽ bổ sung.)*
+:::
+
+## Nội dung
+
+*(Khung bài giảng Buổi 4 — điền sau.)*
