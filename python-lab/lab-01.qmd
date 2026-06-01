@@ -1,7 +1,129 @@
 ---
-title: "Lab 1 — Nhập & khám phá dữ liệu"
+title: "Lab 1 — Nhập & khám phá dữ liệu, thống kê mô tả"
 subtitle: "Tương ứng [Buổi 1](../lectures/buoi-01.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Python — điền sau.)*
+Mei à, ở [Buổi 1](../lectures/buoi-01.qmd) bố kể con nghe về **đám mây chấm** — mỗi người trong dữ liệu là một chấm, và mình đi tìm cái đường xu hướng chạy xuyên qua đám mây ấy. Hôm nay con sẽ tự tay mở dữ liệu ra nhìn, và vẽ chính đám mây chấm đó bằng Python.
+
+Đừng lo con. Hôm nay mình chưa tính toán gì ghê gớm đâu — chỉ làm quen, mở dữ liệu, ngó vài dòng, rồi vẽ ra cho mắt mình thấy. Cứ như lần đầu con dẫn xe đạp ra sân, chưa đạp vội, làm quen tay lái trước đã.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Mở được bộ dữ liệu và **nhìn vài dòng đầu** để biết mình đang có gì trong tay.
+- Xem **thống kê mô tả**: trung bình, nhỏ nhất, lớn nhất của mỗi cột.
+- Vẽ được **histogram** của lương và **đám mây chấm** lương theo số năm học.
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Trước hết con cần cài **Python** vào máy. Bố khuyên con tải bản **Anaconda** — nó gói sẵn mọi thứ con cần, khỏi phải lắp từng mảnh. Cài xong, con mở **Jupyter Notebook** hoặc **VS Code** lên.
+
+Trong Jupyter, màn hình chia thành những **ô lệnh** (tiếng Anh gọi là *cell*). Con gõ lệnh vào một ô, rồi bấm **Shift + Enter** để chạy. Kết quả hiện ngay bên dưới ô đó. Cứ hình dung mỗi ô là một câu con nói với máy, bấm Shift+Enter là máy trả lời. Sai thì sửa lại ô đó chạy lại, không hỏng gì cả con — bố cũng gõ sai suốt mà.
+
+Việc đầu tiên là gọi hai người giúp việc ra:
+
+```python
+import pandas as pd
+import statsmodels.formula.api as smf
+```
+
+`pandas` (mình gọi tắt là `pd`) là người chuyên **bê bảng dữ liệu**: mở file, lọc cột, tính trung bình. `statsmodels` (`smf`) là người lo phần **hồi quy** — buổi sau mình mới cần tới nhiều, hôm nay cứ mời ra trước cho quen mặt.
+
+**Bố chốt cho con:** `import ... as ...` chỉ là *"gọi người giúp việc ra và đặt cho cái tên gọi ngắn"*. Chưa có gì đáng sợ cả.
+
+## Bước 1 — Mở dữ liệu ra
+
+Giả sử bố để sẵn cho con một file tên `luong.csv`, mỗi dòng là một người mình đã đi hỏi, với các cột: `luong` (lương, triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ, 0 nếu là nam).
+
+Mình dùng `pd.read_csv` để đọc file đó vào một cái bảng, đặt tên là `df`:
+
+```python
+df = pd.read_csv("luong.csv")
+```
+
+Chạy ô này xong, con chưa thấy gì hiện ra cả — đúng rồi, vì mình mới chỉ *bê bảng vào nhà*, chưa mở ra xem. Cái bảng giờ đang nằm gọn trong `df`, chờ con gọi tên.
+
+**Bố chốt cho con:** `df` là tên bố đặt cho bảng dữ liệu (viết tắt của *data frame*). Từ giờ hễ muốn làm gì với dữ liệu, con gọi `df` ra là được.
+
+## Bước 2 — Nhìn vài dòng đầu
+
+Mở bảng ra ngó vài dòng đầu cho biết mặt mũi dữ liệu:
+
+```python
+df.head()
+```
+
+`head()` đưa con xem **5 dòng đầu tiên**. Con sẽ thấy một bảng nhỏ: mỗi hàng là một người, mỗi cột là một thông tin. Ví dụ dòng đầu có thể là một người lương 12 triệu, học 16 năm, đi làm 5 năm, là nữ. Con nhìn qua để chắc rằng các cột đúng tên, các con số trông hợp lý — không có ai lương âm hay học 200 năm.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe
+Muốn xem nhiều hơn 5 dòng, con cho số vào trong ngoặc: `df.head(10)` xem 10 dòng. Muốn biết bảng có **bao nhiêu hàng, bao nhiêu cột**, gõ `df.shape` — nó trả về kiểu `(1000, 4)`, nghĩa là 1000 người và 4 cột.
+:::
+
+**Bố chốt cho con:** trước khi tính bất cứ thứ gì, luôn `head()` một cái để *nhìn tận mắt* dữ liệu mình đang cầm. Bố không bao giờ bỏ bước này.
+
+## Bước 3 — Xem thống kê mô tả
+
+Giờ mình hỏi máy: *"mỗi cột này trung bình bao nhiêu, nhỏ nhất bao nhiêu, lớn nhất bao nhiêu?"* Chỉ một lệnh:
+
+```python
+df.describe()
+```
+
+Máy trả về một bảng tóm tắt cho từng cột số. Con để mắt vào mấy dòng này:
+
+- `mean` — **giá trị trung bình**. Ví dụ `luong` có `mean` là 10,5 nghĩa là trung bình mọi người trong dữ liệu lương khoảng 10,5 triệu.
+- `min` — **giá trị nhỏ nhất**. `max` — **lớn nhất**. Nhìn hai số này để bắt lỗi: nếu `min` của `luong` là -3 thì chắc chắn dữ liệu có vấn đề.
+- `std` — độ lệch chuẩn, đo mức **tản mát**. Con cứ tạm hiểu: số này càng lớn thì người trong dữ liệu lương càng *chênh nhau nhiều*.
+
+Con chưa cần thuộc hết. Hôm nay chỉ cần đọc được ba chữ: **trung bình, nhỏ nhất, lớn nhất**. Bấy nhiêu là đủ để con "bắt mạch" dữ liệu rồi.
+
+**Bố chốt cho con:** `describe()` là cái máy đo sức khỏe nhanh của dữ liệu. Liếc qua `mean`, `min`, `max` là con biết ngay dữ liệu của mình có chỗ nào kỳ lạ không.
+
+## Bước 4 — Vẽ histogram của lương
+
+Con số thì khô khan, mình vẽ ra cho mắt nhìn. Trước hết là **histogram** của lương — nó kể cho con biết *"đa số mọi người lương quanh khoảng nào, và có ai lương cao chót vót không"*:
+
+```python
+df["luong"].hist(bins=30)
+```
+
+`df["luong"]` là cách con **chỉ tay vào riêng cột lương**. `hist` chia trục lương thành nhiều cột nhỏ rồi đếm xem mỗi khoảng có bao nhiêu người — cột nào cao là khoảng đó đông người. `bins=30` là chia thành 30 khoảng; con đổi số đó to nhỏ tùy ý cho biểu đồ mịn hay thô.
+
+Nhìn hình, con sẽ thấy một cái "gò": phần đông tụ lại ở giữa, rồi thưa dần về hai bên. Thường lương sẽ có cái đuôi dài bên phải — vài người lương rất cao kéo đuôi ra. Đó là chuyện bình thường, lương hay lệch như vậy.
+
+**Bố chốt cho con:** histogram trả lời câu *"dữ liệu của mình trông như thế nào"* chỉ trong một cái nhìn — đông ở đâu, thưa ở đâu, có ai lạc loài không.
+
+## Bước 5 — Vẽ đám mây chấm: lương theo số năm học
+
+Đây là cái bố hứa với con từ Buổi 1 — **đám mây chấm**. Mình đặt số năm học lên trục ngang, lương lên trục đứng, mỗi người là một chấm:
+
+```python
+df.plot.scatter(x="hoc", y="luong")
+```
+
+Chạy xong, con sẽ thấy một đám chấm lấm tấm. `x="hoc"` bảo máy đặt số năm học nằm ngang, `y="luong"` đặt lương dựng đứng. Mỗi chấm là một người: chấm nằm bên phải = học nhiều năm, chấm nằm cao = lương cao.
+
+Con nghiêng đầu nhìn cả đám mây xem nó **nghiêng lên hay nghiêng xuống**. Nếu đám chấm có xu hướng đi từ góc dưới-trái lên góc trên-phải, nghĩa là *học càng nhiều thì lương có xu hướng càng cao*. Đó chính xác là cái đường xu hướng mà buổi sau mình sẽ học cách kẻ chính giữa đám mây này. Hôm nay con chỉ cần **thấy** nó nghiêng thôi — vậy là quá giỏi rồi.
+
+::: {.callout-tip}
+## 💡 Cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱
+Bỏ chuyện lương đi, mình về với con. Con ghi lại: mỗi ngày con **luyện đàn bao nhiêu phút** và hôm sau con **đánh trôi chảy được mấy bài**. Mỗi ngày là một chấm: trục ngang là số phút luyện, trục đứng là số bài trôi chảy.
+
+Vẽ đám mây chấm đó lên, con cũng sẽ thấy nó **nghiêng lên** — luyện nhiều thì đánh trôi hơn. Y hệt đám mây lương–học vậy. Cùng một trò chơi, chỉ thay tên hai trục thôi con. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+1. **Thấy nghiêng chưa phải là nhân quả.** Đám mây nghiêng lên chỉ nói *học và lương đi cùng chiều*, chưa chứng minh học *làm cho* lương tăng. Chuyện nhân quả mình để dành các buổi sau.
+2. **Đừng quên `head()` và `describe()` trước khi vẽ.** Một con số nhập sai (lương 9999) có thể làm cả biểu đồ méo xẹo mà con không hay.
+3. **Tên cột phải gõ đúng từng chữ.** `df["Luong"]` viết hoa sẽ báo lỗi nếu cột thật tên là `luong`. Máy khó tính khoản này, con để ý.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. **Mở dữ liệu** bằng `pd.read_csv` và **nhìn vài dòng đầu** bằng `df.head()`.
+2. Xem **thống kê mô tả** bằng `df.describe()` — đọc được trung bình, nhỏ nhất, lớn nhất.
+3. Vẽ **histogram** lương bằng `.hist()` và **đám mây chấm** lương–học bằng `.plot.scatter()`, rồi thấy tận mắt nó nghiêng lên.
+:::

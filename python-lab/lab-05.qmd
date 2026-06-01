@@ -1,7 +1,151 @@
 ---
-title: "Lab 5 — Hồi quy bội"
+title: "Lab 5 — Kiểm định t, F & khoảng tin cậy"
 subtitle: "Tương ứng [Buổi 5](../lectures/buoi-05.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Python — điền sau.)*
+Mei à, ở [Buổi 5](../lectures/buoi-05.qmd) bố kể con nghe câu hỏi lớn nhất của cả môn này: con số mình tìm được là **thật**, hay chỉ là **tình cờ** mà ra? Hôm nay con sẽ tự tay trả lời câu đó bằng Python.
+
+Cách trả lời nằm gọn trong **bốn cái cột** của bảng kết quả: sai số chuẩn, trị số t, trị số p, và khoảng tin cậy 95%. Bố sẽ dắt con đọc từng cột một, chậm rãi. Rồi cuối buổi mình làm thêm một **kiểm định F** — hỏi cả một nhóm biến cùng lúc xem chúng có thật sự đáng kể không. Đừng lo con, mình đi từng bước nhỏ thôi.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Đọc được bốn cột **sai số chuẩn, t, p, khoảng tin cậy 95%** từ bảng `statsmodels`.
+- Tự kết luận được một hệ số là "thật" hay "tình cờ" mà không cần học thuộc công thức.
+- Làm một **kiểm định F** để hỏi cả một nhóm biến cùng một lúc.
+:::
+
+## Bước 0 — Cài đồ nghề & làm quen "ô lệnh"
+
+Trước khi chạy, con cần một chỗ để gõ Python. Bố khuyên con cài **Anaconda** (gõ "Anaconda download" là ra) — nó gói sẵn Python cùng mọi thứ mình cần, khỏi lắp lẻ từng món. Cài xong, con mở **Jupyter Notebook** hoặc **VS Code**.
+
+Trong Jupyter, màn hình chia thành những **ô lệnh** (gọi là *cell*). Con gõ lệnh vào một ô, rồi bấm **Shift + Enter** là ô đó chạy và in kết quả ngay bên dưới. Cứ hình dung mỗi ô là một câu con nói với máy, bấm Shift+Enter là máy trả lời. Sai thì sửa lại ô đó rồi chạy lại — không hỏng gì đâu con, bố hứa.
+
+Giả sử bố đã để sẵn cho con một file `duong-luong.csv`, bên trong có các cột: `luong` (lương, triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ, 0 nếu là nam). Con đọc nó vào như sau:
+
+```python
+import pandas as pd
+import statsmodels.formula.api as smf
+
+df = pd.read_csv("duong-luong.csv")
+df.head()
+```
+
+`pandas` là người giúp con cầm bảng dữ liệu; `statsmodels.formula.api` (gọi tắt `smf`) là người chạy hồi quy. `df.head()` cho con xem 5 dòng đầu để chắc chắn dữ liệu vào đúng.
+
+**Bố chốt cho con:** chưa có gì đáng sợ — mới chỉ là mở cửa và bày đồ ra bàn thôi.
+
+## Bước 1 — Chạy hồi quy & gọi bảng kết quả
+
+Mình hỏi câu quen thuộc: *"lương phụ thuộc vào học và kinh nghiệm thế nào?"*
+
+```python
+mo_hinh = smf.ols("luong ~ hoc + kinhnghiem", data=df).fit()
+print(mo_hinh.summary())
+```
+
+Màn hình sẽ hiện một bảng to. Con đừng hốt — phần mình cần chỉ là **khúc giữa**, chỗ liệt kê từng biến. Bố giả sử dòng `hoc` hiện ra thế này:
+
+| | coef | std err | t | P>\|t\| | [0.025 | 0.975] |
+|---|---|---|---|---|---|---|
+| hoc | 0.5200 | 0.1300 | 4.00 | 0.000 | 0.265 | 0.775 |
+
+Bốn cột cuối chính là bốn người bạn mình sẽ làm quen hôm nay. Mình đọc lần lượt nhé.
+
+**Bố chốt cho con:** cả bảng dài thế, nhưng câu chuyện "thật hay tình cờ" chỉ nằm ở bốn cột bên phải dòng biến.
+
+## Bước 2 — Đọc cột SAI SỐ CHUẨN (`std err`)
+
+Cột `std err` của `hoc` là **0,13**. Sai số chuẩn là **thước đo độ rung tay** của con số ước lượng. Nếu bố đi hỏi một mẫu người khác, hệ số sẽ không ra y hệt 0,52 — nó sẽ nhảy lung tung quanh đó. Sai số chuẩn cho biết nó nhảy mạnh cỡ nào.
+
+- Sai số chuẩn **nhỏ** → con số chắc tay, tin được.
+- Sai số chuẩn **lớn** so với hệ số → con số lỏng lẻo, đừng vội tin.
+
+Ở đây hệ số 0,52 mà sai số chỉ 0,13 — tức là tay khá chắc. Con cứ nhớ: cột này một mình chưa kết luận gì, nhưng nó là nguyên liệu để tính ba cột còn lại.
+
+**Bố chốt cho con:** `std err` là độ rung tay; rung càng ít thì con số càng đáng tin.
+
+## Bước 3 — Đọc trị số t và trị số p
+
+**Trị số t** (cột `t`) chỉ là một phép chia đơn giản: lấy hệ số chia cho sai số chuẩn. Ở đây 0,52 chia 0,13 ra đúng **4,00**. Con hình dung t là câu hỏi: *"hệ số này to gấp mấy lần độ rung tay của nó?"* Gấp 4 lần — tức là tín hiệu vượt xa cái nhiễu. Theo lệ, **|t| lớn hơn 2** thì mình bắt đầu tin con số là thật.
+
+**Trị số p** (cột `P>|t|`) dịch cái t đó sang tiếng người: *"nếu thật ra `hoc` chẳng ảnh hưởng gì tới lương, thì khả năng mình tình cờ thấy một con số mạnh thế này là bao nhiêu?"* Ở đây p là **0,000** — gần như không thể tình cờ. Vậy mình kết luận: ảnh hưởng của học **là thật**.
+
+Bố dặn con cái mốc quen thuộc:
+
+- p **< 0,05** → coi như "thật" (có ý nghĩa thống kê).
+- p **> 0,05** → "chưa đủ bằng chứng", rất có thể chỉ là tình cờ.
+
+Muốn lấy riêng mấy con số này ra (thay vì đọc trong bảng to), con gọi thẳng:
+
+```python
+print(mo_hinh.tvalues)   # trị số t của từng biến
+print(mo_hinh.pvalues)   # trị số p của từng biến
+```
+
+**Bố chốt cho con:** t = hệ số chia sai số chuẩn, |t| > 2 là tín hiệu mạnh; p < 0,05 nghĩa là "thật, không phải tình cờ".
+
+## Bước 4 — Đọc KHOẢNG TIN CẬY 95%
+
+Hai cột cuối `[0.025` và `0.975]` ghép lại thành **khoảng tin cậy 95%**: từ **0,265 đến 0,775**. Bố thích cột này nhất, vì nó nói thẳng bằng tiếng người:
+
+> "Bố khá chắc — chắc cỡ 95% — rằng học thêm 1 năm làm lương tăng đâu đó **giữa 0,27 và 0,78 triệu**."
+
+Thay vì một con số khô khan 0,52, con có cả một **khoảng** hợp lý. Và đây là mẹo đọc nhanh nhất bố muốn con nhớ:
+
+- Khoảng **không chứa số 0** (như 0,27 đến 0,78) → hệ số là thật.
+- Khoảng **vắt qua số 0** (ví dụ −0,1 đến 0,4) → chưa chắc, có thể bằng 0, tức là "không ảnh hưởng".
+
+Lấy bảng khoảng tin cậy ra riêng cũng dễ:
+
+```python
+print(mo_hinh.conf_int())          # mặc định 95%
+print(mo_hinh.conf_int(alpha=0.10))  # đổi sang khoảng 90% nếu con muốn
+```
+
+**Bố chốt cho con:** nhìn khoảng tin cậy có "nuốt" số 0 không là cách nhanh nhất để biết một hệ số có thật hay không.
+
+## Bước 5 — Kiểm định F: hỏi cả một NHÓM biến cùng lúc
+
+Trị số t hỏi từng biến một. Nhưng nhiều lúc con muốn hỏi gộp: *"cả `kinhnghiem` lẫn `nu` cộng lại, có thật sự đáng kể không, hay bỏ cả hai đi cũng được?"* Đó là việc của **kiểm định F**.
+
+Mình bảo statsmodels kiểm tra giả thuyết "cả hai hệ số này đều bằng 0":
+
+```python
+gia_thuyet = "kinhnghiem = 0, nu = 0"
+ket_qua_F = mo_hinh.f_test(gia_thuyet)
+print(ket_qua_F)
+```
+
+Kết quả in ra một trị số F và một trị số p đi kèm. Con đọc **đúng cái cột p** y như ở Bước 3:
+
+- p **< 0,05** → ít nhất một trong nhóm này là thật; **đừng** bỏ cả nhóm.
+- p **> 0,05** → cả nhóm yếu, có thể bỏ đi cho mô hình gọn.
+
+Giả sử p ra **0,002** — vậy nhóm `kinhnghiem` và `nu` cộng lại rõ ràng đáng giữ. Con thấy không: cùng một câu hỏi "thật hay tình cờ", chỉ là lần này mình hỏi cho cả một nhóm cùng lúc thay vì từng người.
+
+**Bố chốt cho con:** F là phiên bản "hỏi cả nhóm" của t; vẫn nhìn p < 0,05 để quyết là nhóm đó đáng giữ hay nên bỏ.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe — một mẹo đọc bảng cho nhanh
+Khi nhìn một dòng biến, con đừng đọc cả bốn cột rồi mới nghĩ. Bố chỉ liếc **một chỗ duy nhất**: khoảng tin cậy có chứa số 0 không. Không chứa 0 thì biến đó là thật, khỏi bấm máy tính t hay p làm gì. Bốn cột kia chỉ là bốn cách nói cùng một câu chuyện thôi con — sai số chuẩn, t, p và khoảng tin cậy luôn ăn khớp với nhau.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱
+Bỏ chuyện lương đi, mình về với con. Con đo: *"mỗi ngày luyện đàn thêm 10 phút có giúp con đánh hay hơn không?"* Con chạy ra hệ số dương — nhưng khoan đã. Nếu khoảng tin cậy của con là từ −2 đến +5 điểm, tức là nó **vắt qua số 0**, thì bố sẽ bảo: *"chưa chắc đâu con, biết đâu chỉ tình cờ."* Còn nếu khoảng là +2 đến +5, không nuốt số 0, thì bố tin: luyện đàn thật sự có ích. Cùng một trò chơi đọc khoảng tin cậy, chỉ thay tên hai trục thôi con. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+1. **p < 0,05 không có nghĩa là "quan trọng".** Nó chỉ nói "khó tình cờ", chứ chưa nói ảnh hưởng *to* hay *nhỏ*. To hay nhỏ phải nhìn hệ số và khoảng tin cậy.
+2. **Đừng dùng t để bỏ cả nhóm biến.** Từng biến có thể t yếu, nhưng cả nhóm vẫn đáng kể (hoặc ngược lại). Muốn xét nhóm thì phải dùng **F**.
+3. **p = 0,06 không phải là "thất bại".** Nó chỉ là "chưa đủ bằng chứng với mẫu này". Mẫu lớn hơn có khi đổi kết luận. Đừng buồn vì một con số sát mốc.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Đọc được bốn cột của bảng kết quả: **sai số chuẩn** (độ rung tay), **t** (hệ số chia sai số chuẩn), **p** (khả năng tình cờ), và **khoảng tin cậy 95%**.
+2. Biết mẹo nhanh nhất: **khoảng tin cậy có nuốt số 0 không** — không nuốt thì hệ số là thật.
+3. Làm được một **kiểm định F** bằng `mo_hinh.f_test(...)` để hỏi cả một nhóm biến cùng lúc, vẫn nhìn p < 0,05 để kết luận.
+:::

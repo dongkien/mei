@@ -1,26 +1,21 @@
 ---
 title: "Lịch học"
-subtitle: "15 buổi"
+subtitle: "10 buổi — mỗi buổi một câu chuyện"
 ---
 
 ::: {.callout-note appearance="simple"}
-Lịch cụ thể (ngày/giờ) sẽ được cập nhật theo từng kỳ.
+Lịch cụ thể (ngày/giờ) sẽ được cập nhật theo từng đợt học.
 :::
 
-| Buổi | Chương | Nội dung | Lab tương ứng |
-|:---:|:---:|---|:---:|
-| 1 | 1 | Nhập môn Kinh tế lượng | Lab 1 |
-| 2 | 1 | Ôn tập xác suất & thống kê | Lab 2 |
-| 3 | 2 | Hồi quy tuyến tính đơn (1) | Lab 3 |
-| 4 | 2 | Hồi quy tuyến tính đơn (2) | Lab 4 |
-| 5 | 3 | Hồi quy bội (1) | Lab 5 |
-| 6 | 3 | Hồi quy bội (2) | Lab 6 |
-| 7 | 3 | Hồi quy bội (3) | Lab 7 |
-| 8 | 4 | Suy diễn (1) — kiểm định t | Lab 8 |
-| 9 | 4 | Suy diễn (2) — kiểm định F | Lab 9 |
-| 10 | 5 | Dạng hàm & biến đổi | Lab 10 |
-| 11 | 5 | Biến giả & xác định mô hình | Lab 11 |
-| 12 | 6 | Chệch do bỏ sót biến (OVB) | Lab 12 |
-| 13 | 6 | Phương sai sai số thay đổi | Lab 13 |
-| 14 | 7 | Mở rộng — logit/probit, panel, IV | Lab 14 |
-| 15 | — | Seminar / Ôn tập | Lab 15 |
+| Buổi | Chương | Tên buổi | Chủ đề | Lab |
+|:---:|:---:|---|---|:---:|
+| 1 | 1 | Kinh tế lượng là gì hả Mei? | Nhập môn & nền tảng | Lab 1 |
+| 2 | 2 | Đường thẳng đi xuyên đám mây sao | Hồi quy đơn & OLS | Lab 2 |
+| 3 | 2 | Khi không chỉ một điều quyết định | Hồi quy bội | Lab 3 |
+| 4 | 2 | Khi nào con tin được đường mình vừa kẻ? | Giả định & đa cộng tuyến | Lab 4 |
+| 5 | 3 | Thật, hay chỉ là tình cờ? | Kiểm định t và F | Lab 5 |
+| 6 | 3 | Khi đường thẳng chịu thua, mình uốn cong nó | Dạng hàm: log, bậc hai, tương tác | Lab 6 |
+| 7 | 3 | Chuyện "có" hay "không" | Biến giả & xác định mô hình | Lab 7 |
+| 8 | 4 | Thủ phạm giấu mặt | Chệch do bỏ sót biến (OVB) | Lab 8 |
+| 9 | 4 | Khi chỗ ồn ào, chỗ lặng yên | Phương sai sai số thay đổi | Lab 9 |
+| 10 | 5 | Những cánh cửa bố mở hé cho con | Logit/probit, panel, IV + tổng kết | Lab 10 |

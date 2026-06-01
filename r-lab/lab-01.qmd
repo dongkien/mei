@@ -1,7 +1,157 @@
 ---
-title: "Lab 1 — Nhập & khám phá dữ liệu"
+title: "Lab 1 — Nhập & khám phá dữ liệu, thống kê mô tả"
 subtitle: "Tương ứng [Buổi 1](../lectures/buoi-01.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab R — điền sau.)*
+Mei à, ở [Buổi 1](../lectures/buoi-01.qmd) bố vẽ cho con cái **đám mây chấm** — mỗi người là một chấm, trục ngang là số năm đi học, trục dọc là lương. Hôm nay con sẽ tự tay mở dữ liệu ra và vẽ lại đúng cái đám mây đó bằng R.
+
+Đây là lab đầu tiên, nên bố đi thật chậm. Con chưa cần hiểu hồi quy là gì đâu. Việc của hôm nay chỉ là: mở dữ liệu, nhìn ngó nó một lượt, rồi vẽ vài bức tranh. Như lần đầu con vào bếp — bố chỉ cho con biết cái nồi để đâu, con dao để đâu, chứ chưa nấu món gì cầu kỳ. Mình bắt đầu nhé.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Mở được file dữ liệu vào R và **nhìn vài dòng đầu** để biết nó có đúng hình hài không.
+- Xem được **thống kê mô tả**: trung bình, nhỏ nhất, lớn nhất của mỗi cột.
+- Vẽ được **histogram** của lương và **đám mây chấm** lương theo số năm học.
+:::
+
+## Bước 0 — Cài đồ nghề, đừng lo con
+
+Trước khi chạy gì, con cần hai thứ trên máy. Bố dặn từng bước, con cứ làm theo, hỏng đâu bố sửa đó.
+
+1. **Cài R**: vào trang `cran.r-project.org`, tải bản cho hệ điều hành của con, bấm cài như mọi phần mềm bình thường. R là cái máy tính toán phía sau.
+2. **Cài RStudio** (hoặc VS Code kèm extension *R*): đây là cái "bàn làm việc" cho dễ nhìn. Bố khuyên con dùng RStudio cho lần đầu vì nó chia sẵn các ô gọn gàng.
+
+Mở RStudio lên, con sẽ thấy mấy ô. Bố giới thiệu nhanh:
+
+- **Console** (góc dưới trái): chỗ con gõ lệnh và R trả lời ngay.
+- **Script / Source** (góc trên trái): chỗ con viết lệnh rồi lưu lại thành file `.R` để dùng lại sau.
+- **Environment** (góc trên phải): danh sách các "hộp" dữ liệu con đang giữ trong tay.
+- **Plots** (góc dưới phải): chỗ các bức tranh con vẽ hiện ra.
+
+Bố dặn con: **đừng gõ lệnh thẳng vào Console rồi quên**. Hãy viết vào ô Script, lưu thành một file ví dụ `lab01.R`, để mai mốt mở lại là chạy lại được hết.
+
+Giờ cài gói `tidyverse` — một bộ đồ nghề gọn để xử lý và vẽ dữ liệu. Con chỉ cài **một lần** cho cả máy:
+
+```r
+install.packages("tidyverse")   # cài 1 lần duy nhất, hơi lâu, cứ chờ
+```
+
+**Bố chốt cho con:** R là cái máy, RStudio là cái bàn, `tidyverse` là bộ đồ nghề. Cài xong ba thứ là con sẵn sàng.
+
+::: {.callout-warning}
+## ⚠️ Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – hiểu**, chưa nối với dữ liệu thật, nên con cứ đọc theo bố trước. Bố **giả định** con có một file `luong.csv` với các cột: `luong` (lương, triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ, 0 nếu nam). Khi nào có file thật, con chỉ việc đổi tên file là chạy được ngay.
+:::
+
+## Bước 1 — Mở dữ liệu vào R
+
+Gọi bộ đồ nghề ra, rồi đọc file CSV vào một "hộp" tên `df`:
+
+```r
+library(tidyverse)              # gọi đồ nghề ra dùng (mỗi lần mở R đều gọi)
+
+df <- read.csv("luong.csv")     # đọc file CSV, cất vào hộp tên df
+```
+
+Dấu mũi tên `<-` nghĩa là *"cất vào"*: bố bảo R đọc file `luong.csv` rồi **cất vào** cái hộp tên `df`. Từ giờ mỗi khi con gõ `df`, R hiểu là con đang nhắc tới bảng dữ liệu đó.
+
+Nếu R kêu *"cannot open file"*, đừng hoảng con — nghĩa là R đang tìm file ở chỗ khác chỗ con để file. Cứ để file `luong.csv` cùng thư mục với file `.R` của con là xong.
+
+**Bố chốt cho con:** `read.csv("...")` để đọc file, `<-` để cất vào hộp. Hộp tên gì cũng được, bố quen đặt là `df`.
+
+## Bước 2 — Nhìn vài dòng đầu
+
+Mở dữ liệu mới, việc đầu tiên bố luôn làm là **liếc vài dòng đầu** xem nó có đúng hình hài mình mong không:
+
+```r
+head(df)        # in 6 dòng đầu cho con ngó qua
+```
+
+`head(df)` in ra 6 dòng đầu tiên. Con nhìn xem: có đủ các cột `luong`, `hoc`, `kinhnghiem`, `nu` không? Các con số trong cột `luong` có hợp lý không (vài chục triệu, chứ không phải số âm hay số lạ)? Đây giống như sờ trán xem con có sốt không vậy đó — một cái liếc nhanh để biết dữ liệu "khỏe mạnh".
+
+Muốn biết bảng có bao nhiêu dòng, bao nhiêu cột, con gõ thêm:
+
+```r
+dim(df)         # số dòng và số cột
+str(df)         # tên từng cột và kiểu dữ liệu của nó
+```
+
+`dim(df)` cho con hai số: số người trong dữ liệu và số biến. `str(df)` liệt kê từng cột kèm kiểu của nó (số hay chữ).
+
+**Bố chốt cho con:** mở dữ liệu là `head()` ngay một cái. Nhìn trước, tin sau.
+
+## Bước 3 — Thống kê mô tả: trung bình, nhỏ nhất, lớn nhất
+
+Giờ mình hỏi dữ liệu vài câu cơ bản: lương trung bình bao nhiêu? Người lương thấp nhất, cao nhất là bao nhiêu? Một lệnh duy nhất trả lời hết:
+
+```r
+summary(df)     # tóm tắt mỗi cột: min, trung bình, max...
+```
+
+Với mỗi cột số, `summary` in ra một loạt con số. Bố chỉ con đọc ba cái quan trọng nhất:
+
+- **Min** — giá trị nhỏ nhất (người lương thấp nhất).
+- **Mean** — trung bình (lương "trung bình" của cả nhóm).
+- **Max** — giá trị lớn nhất (người lương cao nhất).
+
+Ví dụ R in ra cột `luong` có `Min = 5`, `Mean = 12`, `Max = 40`, con đọc: *"người thấp nhất lương 5 triệu, trung bình cả nhóm 12 triệu, cao nhất 40 triệu."* Chỉ vậy thôi, con đã hiểu khái quát bức tranh lương rồi.
+
+Muốn riêng một con số, con gọi thẳng tên cột bằng dấu `$`:
+
+```r
+mean(df$luong)  # riêng lương trung bình
+min(df$luong)   # lương thấp nhất
+max(df$luong)   # lương cao nhất
+```
+
+`df$luong` nghĩa là *"cột luong trong hộp df"*. Dấu `$` như ngón tay chỉ vào đúng cột con muốn.
+
+**Bố chốt cho con:** `summary(df)` cho con cái nhìn tổng quát; `mean/min/max(df$cot)` khi con muốn moi đúng một con số.
+
+## Bước 4 — Vẽ histogram của lương
+
+Con số thì khô, hình mới dễ cảm. Histogram là bức tranh trả lời: *"lương mọi người tụ lại quanh khoảng nào, có ai lương cao chót vót không?"*
+
+```r
+hist(df$luong,
+     main = "Phân bố lương",
+     xlab = "Lương (triệu đồng)",
+     col  = "skyblue")
+```
+
+R chia trục lương thành nhiều khoảng, rồi dựng mỗi khoảng một cái cột — cột càng cao nghĩa là càng nhiều người rơi vào khoảng lương đó. Con nhìn cái "bướu" cao nhất là biết phần đông mọi người lương tầm bao nhiêu. Nếu có cái đuôi dài kéo về bên phải, đó là vài người lương cao vượt trội.
+
+`main` là tên bức tranh, `xlab` là nhãn trục ngang, `col` là màu cột — bố cho màu xanh cho dễ nhìn thôi.
+
+**Bố chốt cho con:** histogram cho con thấy lương **tụ ở đâu** và có ai **lệch hẳn ra** không, chỉ trong một cái liếc.
+
+## Bước 5 — Vẽ đám mây chấm: lương theo số năm học
+
+Đây là khoảnh khắc bố chờ — vẽ lại đúng **đám mây chấm** ở [Buổi 1](../lectures/buoi-01.qmd). Mỗi người là một chấm: trục ngang là số năm đi học, trục dọc là lương.
+
+```r
+plot(df$hoc, df$luong,
+     main = "Lương theo số năm đi học",
+     xlab = "Số năm đi học",
+     ylab = "Lương (triệu đồng)",
+     pch  = 19)
+```
+
+R chấm từng người lên mặt phẳng. Con lùi ra nhìn cả đám: nếu các chấm có xu hướng **đi lên từ trái sang phải** — học nhiều thì lương cao hơn — thì đó chính là cái "đường xu hướng" ẩn mà ở Buổi 1 bố nói tới. Mình chưa vẽ đường đó vội; hôm nay chỉ ngắm đám mây thôi. Buổi sau bố mới dạy con cách kẻ đường xuyên qua nó.
+
+`pch = 19` chỉ là kiểu chấm tròn đặc cho dễ nhìn. Con đổi số khác sẽ ra kiểu chấm khác, cứ thử cho vui.
+
+**Bố chốt cho con:** đám mây chấm là bức tranh đầu tiên của gần như mọi câu chuyện kinh tế lượng. Nhìn nó đi lên hay đi xuống, con đã đoán được mối liên hệ rồi.
+
+::: {.callout-tip}
+## 💡 Mẹo bố dặn con
+Mỗi khi mở một bộ dữ liệu mới, con hãy chạy đúng **ba lệnh** này theo thứ tự, như một thói quen: `head(df)` để liếc hình hài, `summary(df)` để xem con số tổng quát, rồi vẽ một bức tranh (`hist` hoặc `plot`) để cảm bằng mắt. Ba bước nhỏ này giúp con bắt được lỗi sớm — ví dụ một cột lương lỡ ghi nhầm thành số âm, con sẽ thấy ngay ở `summary` hoặc ở đám chấm lạc lõng, trước khi nó kịp làm hỏng cả phân tích về sau.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Cài R + RStudio + `tidyverse`, làm quen các ô Console / Script / Environment / Plots, và đọc file bằng `read.csv()`.
+2. Khám phá dữ liệu bằng `head()`, `dim()`, `str()` và xem thống kê mô tả bằng `summary()` cùng `mean/min/max(df$cot)`.
+3. Vẽ **histogram** của lương bằng `hist()` và vẽ lại **đám mây chấm** lương–học bằng `plot()` — đúng bức tranh mở màn ở Buổi 1.
+:::

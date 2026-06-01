@@ -1,7 +1,149 @@
 ---
-title: "Lab 9 — Kiểm định F & kiểm định gộp"
+title: "Lab 9 — Sai số chuẩn vững (robust SE)"
 subtitle: "Tương ứng [Buổi 9](../lectures/buoi-09.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab R — điền sau.)*
+Mei à, ở [Buổi 9](../lectures/buoi-09.qmd) bố kể chuyện cái phễu: với người lương thấp, dữ liệu nằm sát đường thẳng; với người lương cao, dữ liệu văng tung toé. Phần dư (chỗ lệch giữa thật và dự đoán) **không lắc đều** — chỗ ít chỗ nhiều. Bố gọi đó là *phương sai thay đổi*.
+
+Khi đó, hệ số mình ước lượng vẫn ổn — nhưng cái **sai số chuẩn** (đo độ lắc lư của hệ số) thì máy in **sai**. Hôm nay con tự tay làm ba việc nhỏ: in sai số chuẩn **thường**, in sai số chuẩn **vững (robust)**, rồi so hai cái. Và con vẽ cái phễu để *thấy tận mắt*. Đừng lo con, mỗi bước chỉ vài dòng thôi.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy một hồi quy rồi in được **cả hai** loại sai số chuẩn cạnh nhau.
+- Vẽ **đồ thị phần dư theo giá trị dự đoán** và nhận ra hình cái phễu.
+- Nhớ một câu lệnh để **bật robust mặc định**, không phải lo lắng nữa.
+:::
+
+Bố giả định con đã có sẵn một bảng dữ liệu tên `luong` trong R, mỗi dòng là một người, với các cột: `luong` (lương, triệu đồng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ, 0 nếu nam). Site chưa kèm file dữ liệu thật nên con đừng bấm chạy — cứ đọc và hình dung kết quả theo lời bố.
+
+## Bước 1 — Chạy hồi quy bình thường như mọi khi
+
+```r
+# Cài một lần cho cả máy (nếu chưa có hai gói này)
+# install.packages(c("lmtest", "sandwich"))
+
+library(lmtest)    # cho hàm coeftest() — in lại bảng hệ số với SE tuỳ chọn
+library(sandwich)  # cho hàm vcovHC()  — tính "ma trận robust"
+
+# Mô hình quen thuộc: lương phụ thuộc học và kinh nghiệm
+m <- lm(luong ~ hoc + kinhnghiem, data = luong)
+
+summary(m)
+```
+
+Bảng `summary()` cho con cột `Estimate` (hệ số) và cột `Std. Error` (sai số chuẩn). Cái sai số chuẩn này là loại **thường** — nó tin rằng phần dư lắc đều như nhau ở mọi người. Nếu thật ra có cái phễu, con số này đang **nói dối** con đấy. Mình kiểm tra ngay ở bước sau.
+
+**Bố chốt cho con:** `lm()` lo phần hệ số rất tốt; chỗ mình phải dè chừng là cột sai số chuẩn bên cạnh nó.
+
+## Bước 2 — Nhìn cái phễu tận mắt
+
+Trước khi sửa, mình *xem có cần sửa không đã*. Con vẽ phần dư theo giá trị dự đoán: trục ngang là lương mô hình **đoán**, trục dọc là phần dư (đoán hụt bao nhiêu).
+
+```r
+plot(fitted(m), resid(m),
+     xlab = "Lương mô hình dự đoán",
+     ylab = "Phần dư (thật trừ dự đoán)",
+     main = "Phần dư có loe ra như cái phễu không?")
+abline(h = 0, col = "red", lwd = 2)   # đường mốc số 0 cho dễ nhìn
+```
+
+Con nhìn đám chấm: nếu bên trái (lương thấp) chúng **xúm sát** đường đỏ, còn bên phải (lương cao) chúng **văng xa dần** — đó chính là **cái phễu**, dấu hiệu phương sai thay đổi. Nếu đám chấm dày đều như một dải băng nằm ngang, thì mình đỡ phải lo.
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số
+Giả sử ở nhóm lương thấp phần dư chỉ lệch cỡ ±1 triệu, còn ở nhóm lương cao lệch tới ±8 triệu. Phễu rõ ràng. Lúc này sai số chuẩn **thường** của hệ số `hoc` máy in ra là **0,08**, nhưng sai số chuẩn **vững** đúng ra phải là **0,14** — gần gấp đôi! Nếu con tin con số 0,08, con sẽ tưởng hệ số chắc chắn hơn thực tế nhiều.
+:::
+
+**Bố chốt cho con:** thấy phễu thì biết ngay cột sai số chuẩn thường đang quá lạc quan — phải đổi sang robust.
+
+## Bước 3 — In sai số chuẩn VỮNG (robust) và so sánh
+
+Đây là phần chính. Con không chạy lại mô hình; con chỉ yêu cầu R *tính lại cột sai số chuẩn* theo kiểu vững.
+
+```r
+# Sai số chuẩn THƯỜNG (như summary đã in)
+coeftest(m)
+
+# Sai số chuẩn VỮNG (robust) — chỉ thêm tham số vcov
+coeftest(m, vcov = vcovHC(m, type = "HC1"))
+```
+
+Con đặt hai bảng cạnh nhau mà soi cột `Std. Error`:
+
+- Cột `Estimate` (hệ số) ở hai bảng **giống hệt nhau** — vì robust *không đụng tới hệ số*, nó chỉ sửa cách đo độ lắc lư.
+- Cột `Std. Error` thường **to lên** ở bảng robust khi có phễu. Sai số chuẩn to hơn → trị số t nhỏ lại → trị số p lớn lên → mình **khiêm tốn hơn** về độ chắc chắn. Đó đúng là điều mình muốn: thành thật với dữ liệu.
+
+`type = "HC1"` chỉ là tên một công thức robust thông dụng (đúng cái mà Stata gọi là `, robust`) — con cứ dùng nó cho khớp, đừng bận tâm chữ viết tắt.
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+Đừng tưởng robust làm hệ số "đẹp" lên. Nó **không sửa hệ số**, không chữa được biến bị bỏ sót, không biến tương quan thành nhân quả. Nó chỉ làm **một việc**: cho con cột sai số chuẩn **thành thật** khi phần dư lắc không đều. Đừng đòi nó nhiều hơn thế.
+:::
+
+## Bước 4 — Xuất một bảng đẹp so hai cột cạnh nhau
+
+Để báo cáo gọn, con dùng `modelsummary` in luôn hai phiên bản sai số chuẩn trong cùng một bảng:
+
+```r
+# install.packages("modelsummary")
+library(modelsummary)
+
+modelsummary(
+  list(
+    "SE thường" = m,
+    "SE vững"   = m
+  ),
+  vcov = list("classical", "HC1"),   # cột 1 dùng SE thường, cột 2 dùng robust
+  stars = TRUE
+)
+```
+
+Hai cột chung một hệ số, khác nhau ở con số trong ngoặc (sai số chuẩn) bên dưới. Người đọc nhìn phát thấy ngay: hệ số y nguyên, độ chắc chắn thì mình đã đo lại cho tử tế.
+
+## Bước 5 — Vài tình huống con hay gặp
+
+Robust gắn được vào *mọi* mô hình con học rồi, chỉ cần đổi phần `vcov`:
+
+```r
+# Có biến giả: factor() biến cột chữ/nhóm thành các biến 0/1
+m_giả <- lm(luong ~ hoc + factor(vung), data = luong)
+coeftest(m_giả, vcov = vcovHC(m_giả, type = "HC1"))
+
+# Có tương tác "còn tuỳ": học lợi cho nam và nữ khác nhau
+m_tt <- lm(luong ~ hoc * nu, data = luong)        # hoc*nu = hoc + nu + hoc:nu
+coeftest(m_tt, vcov = vcovHC(m_tt, type = "HC1"))
+
+# Mô hình logit (kết quả 0/1, vd: có việc làm hay không)
+m_logit <- glm(coviec ~ hoc + kinhnghiem, data = luong, family = binomial)
+coeftest(m_logit, vcov = vcovHC(m_logit, type = "HC1"))
+```
+
+**Bố chốt cho con:** cùng một mánh — giữ nguyên mô hình, thay cột sai số chuẩn bằng robust. Học một lần, dùng cho cả nhà các mô hình.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe — bật robust cho gọn
+Gõ `vcovHC(...)` mỗi lần hơi mỏi tay. Con đặt cho nó một câu lệnh ngắn dùng lại:
+
+```r
+# Một hàm nhỏ tự đặt: đưa mô hình vào, nó trả về bảng robust luôn
+robust <- function(model) coeftest(model, vcov = vcovHC(model, type = "HC1"))
+
+robust(m)        # gọn thế này thôi
+robust(m_tt)
+```
+
+Trong R, robust **không bật sẵn** — mình phải gọi tay. Đây là khác biệt lớn với Stata (chỉ thêm `, robust`). Bố dặn con: cứ tập **mặc định luôn báo cáo robust**, vì nó hầu như không bao giờ hại, mà phòng được cái phễu lặng lẽ. 🌱
+:::
+
+::: {.callout-tip}
+## 💡 Cùng một trò chơi, gần con hơn
+Tưởng tượng con đo **chiều cao** đám bạn rồi đoán cân nặng. Với mấy bạn nhỏ xíu, con đoán trượt chỉ một hai cân; với mấy bạn cao lớn, con đoán trượt cả chục cân — sai số **loe ra** đúng như cái phễu lương vậy. Đường thẳng con vẽ vẫn dùng được, nhưng câu "bố chắc chắn cỡ nào về độ dốc" thì phải đo lại cho thành thật. Robust làm đúng việc đó. Cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Chạy một hồi quy rồi in **cả SE thường lẫn SE vững** bằng `coeftest()` + `vcovHC(..., "HC1")` — và thấy **hệ số không đổi, chỉ sai số chuẩn đổi**.
+2. Vẽ **phần dư theo giá trị dự đoán** và nhận ra **cái phễu** — dấu hiệu phải dùng robust.
+3. Biết robust gắn vào `lm()`, `factor()`, tương tác `x*group`, và `glm(family=binomial)`; và tự đặt một hàm `robust()` để **mặc định luôn báo cáo robust**.
+:::

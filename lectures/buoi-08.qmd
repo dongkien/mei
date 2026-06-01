@@ -1,14 +1,132 @@
 ---
-title: "Buổi 8 — Suy diễn (1) — phân phối mẫu, khoảng tin cậy, kiểm định t"
-subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+title: "Buổi 8 — Thủ phạm giấu mặt"
+subtitle: "Chệch do bỏ sót biến (OVB)"
 reading-time: "Chương 4"
 ---
 
+Mei à, bố kể con nghe một chuyện ngộ nghĩnh mà các nhà thống kê hay đem ra nhắc nhau.
+
+Sáng nào cũng vậy: con **gà trống gáy** một hồi, rồi **mặt trời mới mọc**. Ngày nào cũng đúng thứ tự ấy, chẳng sai bao giờ. Một chú gà vênh váo có thể tự hào: *"Thấy chưa! Nhờ tôi gáy nên mặt trời mới chịu lên đấy!"*
+
+Con thấy buồn cười đúng không. Gà làm sao mà gọi nổi mặt trời. Nhưng đúng là hai chuyện **luôn đi cùng nhau**, sáng nào cũng thế. Vậy nếu không phải gà gọi mặt trời, thì **ai mới là thủ phạm thật sự** khiến cả hai cùng xảy ra? Hôm nay bố con mình đi tìm **kẻ giấu mặt** — và bố nói trước, đây là buổi **quan trọng nhất** của cả môn, là cái vương miện. Con học chắc buổi này thì nửa kia của kinh tế lượng tự nhiên sáng ra.
+
 ::: {.callout-note appearance="simple"}
-## 🎯 Mục tiêu Buổi 8
-*(Sẽ bổ sung.)*
+## 🎯 Bố mong sau buổi này con sẽ
+- Hiểu vì sao một con số đẹp đẽ vẫn có thể **lừa con** — vì có **kẻ giấu mặt** đứng sau.
+- Nói được khi nào một biến bị bỏ sót sẽ làm hệ số của mình **lệch đi**.
+- Biết hai cách đối phó: **lôi kẻ đó ra ánh sáng** (đo và đưa vào mô hình), hoặc — nếu không đo được — **cần mẹo cao tay hơn** (hé lộ Buổi 10).
 :::
 
-## Nội dung
+## Phá án vụ gà gáy gọi mặt trời
 
-*(Khung bài giảng Buổi 8 — điền sau.)*
+Bố vẽ lại hiện trường cho con. Có một **kẻ thứ ba** mà lúc đầu mình không để ý: **TRỜI SẮP SÁNG** (bình minh đang tới).
+
+- Trời sắp sáng → gà cảm nhận được → **gà cất tiếng gáy**.
+- Trời sắp sáng → đương nhiên một lát sau → **mặt trời mọc**.
+
+Thấy chưa con. Bình minh khiến **cả hai** cùng xảy ra. Gà gáy và mặt trời mọc chỉ là **hai dấu hiệu chung của một nguyên nhân**. Chúng đi cùng nhau không phải vì cái này gây ra cái kia, mà vì **cùng được một kẻ thứ ba báo giờ**.
+
+Khi mình quên mất chuyện trời sắp sáng — không đo nó, không đưa vào mô hình — thì trong con mắt của mô hình, công "gọi mặt trời" bị **đổ hết lên đầu con gà**. Gà bị **gánh oan** (lần này là gánh… công lao).
+
+**Bố chốt cho con:** hai thứ đi cùng nhau chưa chắc cái này gây ra cái kia — rất có thể có một **kẻ giấu mặt** đứng sau khiến cả hai cùng xảy ra.
+
+## Khi nào kẻ giấu mặt mới thật sự gây hại?
+
+Không phải biến bỏ sót nào cũng làm hỏng chuyện. Bố cho con một quy tắc nhỏ, dễ nhớ. Một biến bị bỏ quên chỉ gây **chệch** (làm hệ số sai lệch) khi nó hội đủ **hai điều cùng lúc**:
+
+1. **Nó có ảnh hưởng tới y** (tới cái mình muốn giải thích) — bình minh đúng là thứ kéo mặt trời mọc.
+2. **Nó liên hệ với x đang xét** — bình minh đúng là đi kèm với chuyện gà gáy.
+
+Thiếu một trong hai thì không sao. Một biến ảnh hưởng tới y nhưng **chẳng dính gì** tới x của mình → bỏ quên cũng không làm lệch hệ số (chỉ làm mô hình hơi kém chính xác thôi). Nhưng khi đủ **cả hai chân**, kẻ giấu mặt sẽ luồn ảnh hưởng của nó vào hệ số của x.
+
+::: {.callout-tip}
+## 💡 Hình dung cái "gánh oan"
+Con cứ hình dung hệ số của x như một **cái sọt**. Đáng lẽ trong sọt chỉ có phần ảnh hưởng *thật* của x. Nhưng vì mình quên không cho kẻ giấu mặt một cái sọt riêng, nên ảnh hưởng của hắn **không có chỗ đựng** — nó bèn trèo nhờ vào sọt của x. Sọt của x vì thế **nặng hơn (hoặc nhẹ hơn) sự thật**. Đó chính là chệch.
+:::
+
+**Bố chốt cho con:** kẻ giấu mặt chỉ gây họa khi nó vừa **đụng tới y**, vừa **dính với x**. Đủ hai chân, hệ số của x mới bị gánh oan.
+
+## Vụ án người lớn: lương, học, và năng lực bẩm sinh
+
+Con nhớ con số quen thuộc của mình chứ — "học thêm 1 năm thì lương cao hơn 0,4 triệu". Bố hỏi con số đó có **đáng tin hoàn toàn** không?
+
+Có một kẻ giấu mặt rất khó chịu nấp ở đây: **năng lực bẩm sinh** (thông minh, chăm chỉ, kiên trì — những thứ trời cho mỗi người mỗi khác).
+
+- Người có năng lực bẩm sinh cao thường **học được nhiều hơn, học lâu hơn** → dính với x (số năm học).
+- Người có năng lực bẩm sinh cao cũng thường **làm việc giỏi hơn, lương cao hơn** ngay cả khi học bằng nhau → ảnh hưởng tới y (lương).
+
+Đủ hai chân rồi con thấy không. Vậy khi mình bỏ quên năng lực bẩm sinh, hệ số "học" sẽ **gánh oan** một phần công của năng lực. Con số 0,4 vì thế bị **thổi phồng** — một phần trong đó thật ra là công của *người ấy vốn giỏi sẵn*, chứ không phải của *việc đi học thêm*.
+
+**Bố chốt cho con:** trong vụ lương–học, năng lực bẩm sinh là kẻ giấu mặt làm hệ số "học" **to hơn sự thật** — mình tưởng đi học lợi 0,4, thật ra đi học lợi ít hơn thế.
+
+## Đóng vòng cung về Buổi 1
+
+Mei còn nhớ buổi đầu tiên bố dặn con câu gì không: **"tương quan chưa chắc là nhân quả."** Hồi đó bố mới chỉ nói cho con *nhớ*. Hôm nay bố mới chỉ cho con **vì sao** câu đó đúng.
+
+Lý do sâu xa nhất khiến tương quan không phải nhân quả — chính là **kẻ giấu mặt** này đây. Gà gáy và mặt trời mọc "đi cùng nhau" vì có bình minh. Học và lương "tương quan" mạnh hơn sự thật vì có năng lực bẩm sinh. Mỗi lần con thấy hai thứ đi cùng nhau mà vội nghĩ tới nhân quả, bố muốn con **dừng lại nửa giây và hỏi**: *"Có ai đang giấu mặt sau lưng hai đứa này không?"*
+
+**Bố chốt cho con:** chệch do bỏ sót biến chính là **bộ mặt thật** của câu "tương quan ≠ nhân quả" mà bố dặn con từ Buổi 1.
+
+## Bắt kẻ giấu mặt: hai cách
+
+Biết có kẻ giấu mặt rồi thì làm gì? Bố cho con hai con đường.
+
+**Cách 1 — Đo nó và đưa nó vào mô hình.** Nếu kẻ giấu mặt **đo được**, con cứ làm như Buổi 3: cho nó một cột dữ liệu, đưa vào hồi quy cùng với x. Khi hắn đã có **sọt riêng** để đựng ảnh hưởng của mình, hắn không còn trèo nhờ sọt của x nữa. Hệ số của x trở về **đúng phần của nó**. Trong vụ con gà, chỉ cần thêm vào mô hình cột "lúc đó trời đã hửng sáng chưa", lập tức hệ số của tiếng gà co lại gần bằng 0 — đúng sự thật: con gà **vô tội**.
+
+**Cách 2 — Khi không đo được thì sao?** Đây mới là chỗ đau đầu. Có những kẻ giấu mặt **rất khó đo** — như "năng lực bẩm sinh". Con đâu có cái thước nào đo được sự thông minh, chăm chỉ, kiên trì của một người. Không đo được thì không đưa vào mô hình được, và hệ số "học" vẫn cứ bị thổi phồng.
+
+Lúc đó mình cần **mẹo cao tay hơn**: thiết kế một **thí nghiệm** (chia nhóm ngẫu nhiên để kẻ giấu mặt được "rải đều"), dùng **dữ liệu bảng** (theo dõi cùng một người qua thời gian, để cái bẩm sinh không đổi tự triệt tiêu), hoặc dùng **biến công cụ** (một mẹo rất đẹp). Bố để dành mấy món này cho **Buổi 10** — con đừng lo, từ từ bố dạy con hết.
+
+**Bố chốt cho con:** đo được kẻ giấu mặt thì **lôi nó vào mô hình** là xong; không đo được thì cần **mẹo cao tay** (thí nghiệm, dữ liệu bảng, biến công cụ — Buổi 10).
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số
+Giả sử **sự thật** là: học thêm 1 năm chỉ làm lương cao hơn **0,25 triệu**, và năng lực bẩm sinh mới là thứ kéo lương lên mạnh.
+
+- **Bỏ quên năng lực bẩm sinh:** mô hình in ra hệ số "học" = **0,40**. Trong 0,40 này có 0,25 là công thật của việc học, còn **0,15 là phần gánh oan** cho năng lực bẩm sinh (vì người giỏi sẵn vừa học nhiều vừa lương cao).
+- **Đưa năng lực vào mô hình** (giả sử đo được): hệ số "học" tụt về **0,25** — đúng sự thật, vì năng lực đã có sọt riêng để đựng ảnh hưởng của nó.
+
+Một con số 0,40 trông rất "đẹp", "có ý nghĩa thống kê" hẳn hoi (Buổi 5) — mà vẫn **sai lệch tới hơn nửa**. Đó là lý do bố sợ buổi này nhất, và muốn con chắc nhất.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng trò chơi đó, nhưng gần con hơn
+
+**Vụ con gà gọi mặt trời** đã ngộ nghĩnh và gần gũi rồi — kẻ giấu mặt là **bình minh**. Bố cho con thêm một vụ nữa, lần này về **chính con**:
+
+Năm nay con vừa **cao thêm mấy phân**, lại vừa **đọc được nhiều chữ hơn hẳn năm ngoái**. Hai thứ cùng lên. Liệu có phải **cao lên làm con biết đọc** không? Nhỡ đâu cứ kéo con cho cao thật nhanh là con đọc giỏi?
+
+Buồn cười đúng không Mei. Chiều cao chẳng dạy con chữ nào cả. Kẻ giấu mặt ở đây là **con đang LỚN dần lên (tuổi)**: lớn lên thì xương dài ra (cao hơn), *và* não trưởng thành, được học nhiều hơn (đọc giỏi hơn). Tuổi giật dây **cả hai** cùng lên — y hệt bình minh khiến gà gáy và mặt trời cùng tới.
+
+Cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+1. **Đừng vội kết luận nhân quả** khi thấy hai thứ đi cùng nhau. Hỏi ngay: *"có kẻ giấu mặt nào không?"*
+2. **Hệ số "đẹp" và "có ý nghĩa thống kê" vẫn có thể sai bét** nếu bỏ sót một kẻ giấu mặt. Trị số p nhỏ (Buổi 5) **không** cứu con khỏi chệch.
+3. **Đừng nhồi đại mọi biến vào cho "an toàn".** Chỉ những kẻ **đủ hai chân** (đụng y, dính x) mới đáng đưa vào. Nhồi bừa biến không liên quan lại sinh rắc rối khác — chuyện đó để buổi sau.
+:::
+
+## Thấy bằng số
+
+Tự tay con dựng lại vụ án: chạy mô hình **bỏ quên** kẻ giấu mặt, xem hệ số bị thổi phồng ra sao; rồi **thêm nó vào**, xem hệ số co về sự thật:
+
+- 💻 [Stata Lab 8](../stata-lab/lab-08.qmd) · [R Lab 8](../r-lab/lab-08.qmd) · [Python Lab 8](../python-lab/lab-08.qmd)
+
+::: {.callout-note}
+## 🔑 Ba điều bố muốn con mang về từ Buổi 8
+1. Hai thứ đi cùng nhau có thể chỉ vì một **kẻ giấu mặt** đứng sau cả hai (gà gáy ↔ mặt trời mọc, thủ phạm là **bình minh**).
+2. Một biến bỏ sót gây **chệch** khi nó **đủ hai chân**: vừa **đụng tới y**, vừa **dính với x** — lúc đó hệ số của x bị **gánh oan** (lương–học bị thổi phồng vì **năng lực bẩm sinh**). Đây chính là gốc rễ của "tương quan ≠ nhân quả".
+3. Cách xử: **đo được thì đưa vào mô hình**; **không đo được thì cần mẹo cao tay** (thí nghiệm, dữ liệu bảng, biến công cụ — Buổi 10).
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu — hướng của chệch
+- Người ta gọi đầy đủ là **chệch do bỏ sót biến** (omitted variable bias, viết tắt **OVB**).
+- Hệ số bị lệch theo công thức gọn: $\hat\beta_{\text{ta thấy}} \approx \beta_{\text{thật}} + (\text{ảnh hưởng của kẻ giấu mặt lên } y)\times(\text{liên hệ giữa kẻ giấu mặt và } x)$. Số hạng cộng thêm chính là **độ chệch** — và nó đúng bằng tích **hai chân** bố nói ở trên. Một chân bằng 0 thì chệch bằng 0.
+- **Hướng của chệch** đọc từ dấu của tích hai chân đó:
+  - Hai chân **cùng dấu** (kẻ giấu mặt làm $y$ tăng *và* đi cùng chiều với $x$) → chệch **dương** → hệ số bị **thổi phồng lên** (như lương–học: năng lực làm lương ↑ và làm học ↑ → "học" bị thổi lên).
+  - Hai chân **ngược dấu** → chệch **âm** → hệ số bị **kéo xuống** (có khi xuống thấp hơn cả sự thật, thậm chí đổi dấu).
+- Vì sao đưa kẻ giấu mặt vào lại chữa được: khi hắn có cột riêng trong hồi quy bội (Buổi 3), OLS đo ảnh hưởng của $x$ **sau khi đã gạt phần của hắn ra** — nên ảnh hưởng của hắn không còn rò vào sọt của $x$ nữa.
+:::

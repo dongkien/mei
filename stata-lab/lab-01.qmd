@@ -1,7 +1,142 @@
 ---
-title: "Lab 1 — Nhập & khám phá dữ liệu"
+title: "Lab 1 — Nhập & khám phá dữ liệu, thống kê mô tả"
 subtitle: "Tương ứng [Buổi 1](../lectures/buoi-01.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Stata — điền sau.)*
+Mei à, ở [Buổi 1](../lectures/buoi-01.qmd) bố kể con nghe về **đám mây chấm** — cách mình rải dữ liệu ra một tờ giấy có hai trục, rồi nhìn xem nó có nghiêng theo hướng nào không. Hôm nay con sẽ tự tay làm việc đó trên máy.
+
+Nhưng trước hết, mình làm quen cái **bàn làm việc mới** đã. Lần đầu mở Stata, con sẽ thấy mấy cửa sổ lạ hoắc. Đừng lo con — bố ngồi cạnh, mình đi từng góc một. Xong rồi con sẽ thấy nó hiền lắm.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Mở được dữ liệu, nhìn vài dòng đầu cho quen mặt.
+- Xem được thống kê mô tả: trung bình, nhỏ nhất, lớn nhất.
+- Vẽ được **histogram** của lương và **đám mây chấm** lương theo số năm học.
+:::
+
+::: {.callout-tip}
+## 💡 Bố nói trước cho con yên tâm
+Stata là phần mềm phải mua (bản SE hoặc MP — ở trường con thường có sẵn). Các khối mã dưới đây bố để ở dạng **đọc — không tự chạy**, vì website chưa gắn dữ liệu thật. Con cứ hình dung mình **đã có sẵn một bộ dữ liệu** tên `luong.dta` với mấy biến: `luong` (lương, triệu đồng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ). Khi ngồi trước máy Stata thật, con gõ y hệt là chạy được con nhé.
+:::
+
+## Bước 0 — Làm quen cái bàn làm việc mới
+
+Con mở Stata lên. Màn hình chia thành 4 ô, bố gọi tên từng ô:
+
+- **Command** (ô nhỏ phía dưới) — chỗ con **gõ lệnh** vào rồi bấm Enter. Đây là chỗ mình nói chuyện với Stata.
+- **Results** (ô lớn ở giữa) — chỗ Stata **trả lời** con: bảng số, kết quả hiện ra ở đây.
+- **Variables** (ô bên phải) — danh sách **các biến** trong dữ liệu đang mở. Mở dữ liệu xong con sẽ thấy `luong`, `hoc`… hiện lên đây.
+- **Review** (ô bên trái) — **lịch sử** những lệnh con đã gõ. Lỡ gõ sai, con bấm lại lệnh cũ ở đây cho nhanh.
+
+Thấy chưa Mei — chỉ là **làm quen một cái bàn làm việc mới** thôi, chứ chẳng có gì đáng sợ.
+
+Trước khi mở dữ liệu, con báo cho Stata biết mình đang ngồi ở **thư mục nào** bằng lệnh `cd` (viết tắt của *change directory* — đổi thư mục).
+
+```stata
+* Đặt thư mục làm việc (con thay bằng đường dẫn trên máy con)
+cd "C:/Users/Mei/ktl"
+```
+
+**Bố chốt cho con:** 4 cửa sổ là Command (gõ), Results (xem), Variables (biến), Review (lịch sử) — và `cd` là cách con báo Stata mình đang ngồi ở đâu.
+
+## Bước 1 — Mở dữ liệu và nhìn vài dòng đầu
+
+Mình mở bộ dữ liệu ra. Bố cho con tập với dữ liệu mẫu có sẵn trong Stata tên `auto` trước, vì máy nào cũng có — con khỏi cần file gì.
+
+```stata
+* Mở dữ liệu mẫu có sẵn trong Stata (để con tập tay)
+sysuse auto, clear
+
+* Khi đã có file của mình, con mở bằng:
+* use "luong.dta", clear
+
+* Nhìn 5 dòng đầu cho quen mặt dữ liệu
+list in 1/5
+```
+
+Bố giải thích từng chữ:
+
+- `sysuse auto, clear` — mở dữ liệu mẫu `auto`. Chữ `clear` nghĩa là *"dọn sạch dữ liệu cũ trong bộ nhớ trước đã"*, để khỏi lẫn lộn.
+- `list in 1/5` — in **5 dòng đầu tiên**. Mình không cần xem hết cả nghìn dòng, chỉ liếc vài dòng để biết dữ liệu trông thế nào: mỗi dòng là một người (hay một chiếc xe), mỗi cột là một biến.
+
+Nhìn vài dòng đầu giống như mở hộp đồ ra ngắm trước khi bắt tay vào — con quen mặt dữ liệu rồi mới làm tiếp.
+
+**Bố chốt cho con:** `sysuse auto, clear` để mở, `list in 1/5` để liếc vài dòng đầu cho quen.
+
+## Bước 2 — Xem thống kê mô tả
+
+Giờ mình hỏi dữ liệu mấy câu cơ bản: *"Lương trung bình bao nhiêu? Người thấp nhất, cao nhất là bao nhiêu?"* — đó là **thống kê mô tả**, và lệnh để hỏi là `summarize` (gõ tắt `su` cũng được).
+
+```stata
+* Xem trung bình, nhỏ nhất, lớn nhất của từng biến
+summarize luong hoc kinhnghiem
+```
+
+Stata sẽ trả về một bảng, mỗi dòng một biến, với mấy cột bố dịch cho con:
+
+- **Obs** — số quan sát (bao nhiêu người trong dữ liệu).
+- **Mean** — **trung bình**. Ví dụ `luong` trung bình **9,5** nghĩa là lương trung bình khoảng 9,5 triệu.
+- **Min** và **Max** — người **thấp nhất** và **cao nhất**. Ví dụ lương từ **3** đến **40** triệu.
+
+Con đọc thành tiếng người: *"Trong nhóm này, lương trung bình 9,5 triệu, thấp nhất 3, cao nhất 40."* Vậy là con đã biết dữ liệu của mình "nằm trong khoảng nào" rồi.
+
+**Bố chốt cho con:** `summarize` cho con trung bình, nhỏ nhất, lớn nhất — bức ảnh chụp nhanh toàn cảnh dữ liệu.
+
+## Bước 3 — Vẽ histogram của lương
+
+Bảng số gọn nhưng khô. Mình vẽ một cái **histogram** để *thấy* lương phân bố ra sao — chỗ nào đông người, chỗ nào thưa.
+
+```stata
+* Vẽ histogram của lương
+histogram luong, percent ///
+    title("Lương phân bố thế nào") ///
+    xtitle("Lương (triệu đồng)")
+```
+
+Histogram chia trục lương thành nhiều **ngăn nhỏ**, rồi xếp người vào ngăn — ngăn nào càng cao nghĩa là càng đông người có mức lương đó. Bố giải thích mấy nút:
+
+- `percent` — cột cao thấp tính theo **phần trăm** số người, dễ đọc hơn đếm đầu người.
+- `title(...)` và `xtitle(...)` — đặt tên cho cả hình và trục ngang, để sau này nhìn lại con không quên hình này nói gì.
+
+Nhìn hình, con thường thấy lương **dồn về bên trái** (nhiều người lương vừa phải) và có một cái **đuôi dài bên phải** (ít người lương rất cao). Đó là chuyện rất thường gặp với dữ liệu lương đấy con.
+
+**Bố chốt cho con:** `histogram` biến cột số khô khan thành một bức tranh — con thấy ngay lương dồn ở đâu, thưa ở đâu.
+
+## Bước 4 — Vẽ đám mây chấm: lương theo số năm học
+
+Đây là phần bố hứa với con từ [Buổi 1](../lectures/buoi-01.qmd) — **đám mây chấm**. Mỗi người là một chấm: trục ngang là số năm đi học, trục dọc là lương. Rải hết ra, mình xem đám mây có **nghiêng lên** không.
+
+```stata
+* Đám mây chấm: lương (trục dọc) theo số năm học (trục ngang)
+scatter luong hoc, ///
+    title("Học nhiều thì lương có cao hơn không") ///
+    ytitle("Lương (triệu đồng)") ///
+    xtitle("Số năm đi học")
+```
+
+Bố dặn con một điều quan trọng về thứ tự: `scatter luong hoc` đặt biến **đầu tiên** (`luong`) lên **trục dọc**, biến **thứ hai** (`hoc`) lên **trục ngang**. Stata luôn đọc theo kiểu *"y trước, x sau"*. Con nhớ kỹ chỗ này kẻo vẽ ngược.
+
+Nhìn đám mây, nếu các chấm có xu hướng **đi lên từ trái sang phải** — nghĩa là người học nhiều hơn thường có lương cao hơn. Đám mây nghiêng lên chính là **trực giác** đầu tiên về mối liên hệ, trước cả khi mình vẽ đường thẳng hay tính con số nào. Con chưa cần kết luận gì chắc chắn — chỉ cần *thấy* cái nghiêng đó là con đã làm đúng việc của Buổi 1 rồi.
+
+**Bố chốt cho con:** `scatter luong hoc` rải đám mây với lương trên trục dọc, học trên trục ngang — đám mây nghiêng lên là tín hiệu đầu tiên "học nhiều, lương cao hơn".
+
+::: {.callout-tip}
+## 💡 Mẹo nhỏ bố dắt túi cho con
+Đừng gõ lệnh một lần rồi quên. Con mở **Do-file Editor** bằng cách gõ `doedit` vào ô Command (hoặc bấm nút biểu tượng có cây bút). Đó là một **cuốn sổ** để con dán hết các lệnh vào, lưu lại thành file `.do`.
+
+Lợi ích bố thấy rõ nhất: hôm sau mở lại, con bấm chạy một phát là ra y nguyên kết quả cũ — khỏi gõ lại từ đầu, mà cũng không sợ quên mình đã làm gì. Bố luôn làm việc trong do-file, không gõ tay lung tung ở Command. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+- **Vẽ scatter ngược trục.** `scatter A B` là A lên trục dọc, B lên trục ngang — không phải ngược lại. Gõ vội là vẽ lộn câu hỏi đấy con.
+- **Quên `clear` khi mở dữ liệu mới.** Nếu trong bộ nhớ còn dữ liệu cũ, Stata sẽ báo lỗi không cho mở. Cứ thêm `, clear` cho yên.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Làm quen **4 cửa sổ** của Stata và đặt thư mục làm việc bằng `cd`.
+2. Mở dữ liệu, liếc vài dòng đầu (`list in 1/5`), và xem thống kê mô tả bằng `summarize` — trung bình, nhỏ nhất, lớn nhất.
+3. Vẽ **histogram** của lương và **đám mây chấm** lương theo số năm học — đúng cái đám mây bố kể ở Buổi 1, giờ con tự tay rải ra được rồi.
+:::

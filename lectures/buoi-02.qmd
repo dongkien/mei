@@ -1,14 +1,119 @@
 ---
-title: "Buổi 2 — Ôn tập xác suất & thống kê — biến ngẫu nhiên, kỳ vọng, phân phối"
-subtitle: "(Nội dung tóm tắt — bổ sung sau)"
-reading-time: "Chương 1"
+title: "Buổi 2 — Đường thẳng đi xuyên đám mây sao"
+subtitle: "Hồi quy tuyến tính đơn & phương pháp OLS"
+reading-time: "Chương 2"
 ---
 
+Mei ơi, buổi trước bố con mình đứng ngắm cái **đám mây chấm** — mỗi người một chấm, bên ngang là số năm đi học, bên dọc là lương. Bố có hứa với con là mình sẽ **kẻ một đường đi xuyên đám mây ấy**.
+
+Hôm nay bố giữ lời. Mình sẽ học cách kẻ đúng cái đường đó — và bố hứa, vẫn nhẹ nhàng thôi.
+
 ::: {.callout-note appearance="simple"}
-## 🎯 Mục tiêu Buổi 2
-*(Sẽ bổ sung.)*
+## 🎯 Bố mong sau buổi này con sẽ
+- Hiểu một đường thẳng chỉ gồm **hai con số**, và mỗi con số kể điều gì.
+- Biết máy tính **chọn đường "vừa khít nhất"** như thế nào (và vì sao).
+- Đọc được **đường khớp tốt tới đâu** (con số R²) mà không bị nó đánh lừa.
 :::
 
-## Nội dung
+## Một đường thẳng chỉ là hai con số thôi
 
-*(Khung bài giảng Buổi 2 — điền sau.)*
+Con vẽ một đường thẳng trên giấy, con cần biết đúng hai điều:
+
+1. Nó **bắt đầu từ đâu** — chạm trục dọc ở chỗ nào. Bố gọi là **điểm khởi đầu**.
+2. Nó **dốc cỡ nào** — đi sang phải một bước thì lên cao bao nhiêu. Bố gọi là **độ dốc**.
+
+Biết hai con số đó là con vẽ được cả đường. Trong môn của mình, người ta viết gọn lại thế này:
+
+$$\hat{y} = \beta_0 + \beta_1 x$$
+
+::: {.callout-tip}
+## 💡 Bố dịch cái dòng đó sang tiếng nhà mình
+- $\hat{y}$ (đọc là "y mũ") = **lương mà đường của mình *đoán*** cho một người.
+- $\beta_0$ = **điểm khởi đầu** — lương "trên giấy" của người 0 năm đi học.
+- $\beta_1$ = **độ dốc** — học thêm **1 năm** thì lương đoán tăng thêm bấy nhiêu. *Đây là con số con quan tâm nhất.*
+- $x$ = số năm đi học của người đó.
+
+Thấy chưa con, cả dòng chỉ đang nói: *"Lương đoán = điểm khởi đầu + (mỗi năm học) × (số năm học)."* Không có gì đáng sợ cả.
+:::
+
+**Bố chốt cho con:** kẻ một đường = chọn đúng hai con số, điểm khởi đầu và độ dốc.
+
+## Nhưng kẻ *đường nào* mới đúng?
+
+Qua một đám mây chấm, con có thể kẻ vô số đường. Đường nào cũng được à? Không. Mình muốn đường **đi gần các chấm nhất**.
+
+Con tưởng tượng: với mỗi người, lấy **khoảng cách dọc** từ chấm thật của họ xuống đường mình kẻ. Khoảng cách đó là phần đường mình **đoán hụt** — bố gọi là **phần dư** (đoán rồi vẫn còn dư ra một chút).
+
+> Đường tốt nhất là đường làm **tổng các khoảng cách hụt đó bé nhất**.
+
+::: {.callout-tip}
+## 💡 Hình dung bằng sợi dây thun
+Con tưởng tượng mỗi chấm nối xuống đường bằng một **sợi dây thun**. Chấm ở xa đường thì dây căng, kéo mạnh. Cái đường sẽ tự xê dịch tới chỗ mà **tất cả sợi dây cộng lại căng ít nhất** — đó chính là đường "vừa khít nhất". Máy tính làm đúng việc kéo dây đó, trong tích tắc.
+:::
+
+Cách chọn đường này có một cái tên oai phong: **Bình phương nhỏ nhất** (tiếng Anh viết tắt là **OLS**). Nghe thì oai, nhưng con thấy đó — nó chỉ là *"kẻ đường sao cho hụt ít nhất"*.
+
+::: {.callout-important}
+## 🧮 Một ví dụ tí hon cho con dễ thấy
+Giả sử máy tính kẻ xong, cho mình:
+
+$$\hat{lương} = 5{,}0 + 0{,}5 \times \text{(số năm học)} \quad (\text{triệu đồng/tháng})$$
+
+- **Điểm khởi đầu 5,0**: người (giả định) 0 năm đi học, lương đoán khoảng 5 triệu.
+- **Độ dốc 0,5**: cứ học thêm **1 năm**, lương đoán **nhích thêm nửa triệu**.
+- Vậy một bạn học 12 năm: $5{,}0 + 0{,}5 \times 12 = 11$ triệu. Con thử tính cho bạn học 16 năm xem? 😊
+:::
+
+::: {.callout-tip}
+## 💡 Cùng ý tưởng đó, nhưng gần con hơn
+Lương với năm đi học nghe hơi xa phải không con. Vậy mình đổi sang chuyện của con nhé:
+
+Mỗi tối con luyện đọc thêm vài phút. Mình chấm điểm: **bên ngang là số phút con luyện mỗi tối**, **bên dọc là số chữ con đọc trôi trong một phút**. Y hệt như trên, mình kẻ được một đường — và **độ dốc** cho biết: cứ luyện thêm mỗi tối một chút, con đọc nhanh thêm bao nhiêu.
+
+Lớn lên, đúng *cái đường ấy* người ta dùng cho lương và số năm đi học. Cùng một trò chơi, chỉ thay tên hai trục thôi con. 🌱
+:::
+
+## Đường mình kẻ "khớp" tới đâu? — con số R²
+
+Có đường rồi, câu hỏi tự nhiên là: *đường này tả đám mây có sát không, hay các chấm vẫn bay tán loạn quanh nó?*
+
+Người ta đo bằng một con số gọi là **R²**, chạy từ **0 đến 1** (hay 0% đến 100%):
+
+- **Gần 1** → các chấm bám sát đường, đường kể được **gần hết** câu chuyện.
+- **Gần 0** → các chấm vung vãi, đường mới kể được **một mẩu nhỏ**.
+
+Bố nói cho con cách hiểu dễ nhất: **R² là phần trăm sự khác nhau của lương mà "số năm học" giải thích được.** R² = 0,3 nghĩa là số năm học giải thích được khoảng 30% chuyện vì sao người này lương khác người kia; 70% còn lại là do những thứ khác (nghề nghiệp, may mắn, vùng miền...).
+
+::: {.callout-warning}
+## ⚠️ Bố dặn con đừng tôn thờ R²
+1. **R² cao không có nghĩa con đã tìm ra nguyên nhân.** Nhớ bài học lớn nhất buổi trước: *giống nhau chưa chắc là tại nhau.*
+2. **R² thấp chưa chắc là tệ.** Trong các nghiên cứu về con người, R² 0,2–0,3 đã là quý — vì con người vốn khó đoán. Đừng buồn nếu nó không gần 1.
+
+Con cứ coi R² là *"đường kể được bao nhiêu phần câu chuyện"*, đừng coi nó là điểm thi.
+:::
+
+**Bố chốt cho con:** phần dư là chuyện đường mình **chưa kể được**; R² cho biết đường đã kể được **bao nhiêu phần**.
+
+## Thấy bằng số
+
+Giờ tới lượt con tự tay kẻ đường đầu tiên trên máy — chọn ngôn ngữ con thích:
+
+- 💻 [Stata Lab 2](../stata-lab/lab-02.qmd) · [R Lab 2](../r-lab/lab-02.qmd) · [Python Lab 2](../python-lab/lab-02.qmd)
+
+::: {.callout-note}
+## 🔑 Ba điều bố muốn con mang về từ Buổi 2
+1. Một đường = **hai con số**: điểm khởi đầu ($\beta_0$) và **độ dốc** ($\beta_1$ — con số con quan tâm nhất).
+2. Máy chọn đường bằng **OLS** = kéo đường tới chỗ **hụt ít nhất** (tổng khoảng cách dọc bình phương bé nhất).
+3. **R²** = đường kể được bao nhiêu phần câu chuyện — hữu ích, nhưng đừng tôn thờ, và **không** đồng nghĩa với nhân quả.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu — vì sao lại "bình phương"?
+Khi đo độ hụt, mình **bình phương** mỗi khoảng cách rồi mới cộng, vì hai lý do: (1) bình phương biến số âm thành dương, nên hụt-lên và hụt-xuống không triệt tiêu nhau; (2) nó **phạt nặng** những cú hụt lớn, nên đường tránh xa các sai lệch to.
+
+Giải bài toán "tổng bình phương bé nhất" (bằng một chút đạo hàm) ra đúng hai công thức gọn:
+
+$$\hat{\beta}_1 = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}, \qquad \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}$$
+
+Con chưa cần nhớ đâu — máy tính làm hết. Bố để đây cho con, khi nào tò mò thì ngó. Còn vì sao mình *được phép* tin cái đường này (các giả định), bố con mình bàn ở **[Buổi 4](buoi-04.qmd)** nhé.
+:::

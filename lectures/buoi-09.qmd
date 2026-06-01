@@ -1,14 +1,125 @@
 ---
-title: "Buổi 9 — Suy diễn (2) — kiểm định F, ý nghĩa thống kê vs ý nghĩa kinh tế"
-subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+title: "Buổi 9 — Khi chỗ ồn ào, chỗ lặng yên"
+subtitle: "Phương sai sai số thay đổi & sai số chuẩn vững"
 reading-time: "Chương 4"
 ---
 
+Mei à, bố hỏi con một câu nhỏ trước đã. Con đo chiều cao của con bằng cái thước trên cửa: lúc con **đứng yên**, áp lưng vào tường, số đo lần nào cũng đúng chóc — 132, 132, 132. Nhưng lúc con vừa **nhảy nhót** vừa cười khúc khích, bố đo ba lần ra ba số khác hẳn: 129, 134, 131. Cùng một con người, cùng một cái thước — vậy mà chỗ thì số rất chắc, chỗ thì số nhảy loạn.
+
+Dữ liệu của mình cũng y hệt vậy con ạ. Có những quan sát "đứng yên" — mô hình đoán rất sát. Có những quan sát "nhảy nhót" — mô hình đoán trật xa. Hôm nay bố kể con nghe chuyện đó tên là gì, nó có đáng sợ không, và cách xử nó **dễ đến bất ngờ**.
+
 ::: {.callout-note appearance="simple"}
-## 🎯 Mục tiêu Buổi 9
-*(Sẽ bổ sung.)*
+## 🎯 Bố mong sau buổi này con sẽ
+- Hiểu **"độ ồn"** của phần dư có thể **không đều** giữa các quan sát (cái phễu loe ra).
+- Yên tâm: chuyện này **không làm lệch** hệ số — nó chỉ làm **sai số chuẩn** bị tính sai.
+- Biết cách xử cực dễ: **bật sai số chuẩn vững (robust)** và để nó làm mặc định.
 :::
 
-## Nội dung
+## Phần dư không phải lúc nào cũng "ồn" như nhau
 
-*(Khung bài giảng Buổi 9 — điền sau.)*
+Con nhớ phần dư chứ — là khoảng cách từ điểm thật tới đường mô hình, là cái mô hình **đoán trật**. Ở Buổi 2 mình ngầm cho rằng mọi điểm đều "ồn" như nhau: điểm nào cũng lệch khỏi đường cỡ na ná. Đẹp đẽ, gọn gàng.
+
+Nhưng đời ít khi gọn vậy. Lấy chuyện **lương theo thu nhập** đi con. Với người **thu nhập thấp**, lương của họ bám khá sát một mức — quanh quẩn đó thôi, ít ai vọt lên trời. Với người **thu nhập cao**, lương vung vãi rất rộng: người này 50 triệu, người kia 200 triệu, người nọ cả tỉ. Vẽ đám mây điểm ra, con sẽ thấy nó loe dần như **cái phễu**: bên trái khít, bên phải xoè rộng.
+
+Khi "độ ồn" của phần dư **đổi theo từng vùng** như thế, người ta gọi bằng cái tên dài ngoằng: **phương sai sai số thay đổi** (heteroskedasticity). Nghe sợ chưa? Đừng lo con — bố dịch ngay:
+
+> **Phương sai sai số thay đổi chỉ có nghĩa là: mức dao động của phần dư KHÔNG đều — chỗ ồn nhiều, chỗ ồn ít.**
+
+::: {.callout-tip}
+## 💡 Cái cân ngoài chợ
+Hình dung cái cân ngoài chợ. Cân **gói kẹo nhẹ** thì kim đứng yên, số rất chuẩn. Cân **bao gạo nặng** thì kim **rung lắc**, đọc số lúc 49 lúc 51. Cùng một cái cân, nhưng **độ tin của phép cân khác nhau** tuỳ vật nặng hay nhẹ. Dữ liệu của mình có những vùng "nhẹ, đứng yên" và những vùng "nặng, rung lắc" — đó chính là phương sai sai số thay đổi.
+:::
+
+**Bố chốt cho con:** phần dư có thể "ồn" không đều giữa các vùng dữ liệu — chỗ khít, chỗ loe ra như cái phễu.
+
+## Tin vui lớn nhất: nó KHÔNG làm lệch con số
+
+Đây là chỗ bố muốn con thở phào. Con còn nhớ Buổi 8 — kẻ giấu mặt (biến bị bỏ sót) làm **lệch** hệ số: con số trung bình mình đo được **sai bản chất**, 0,9 mà thật ra chỉ 0,4. Đó là chuyện nghiêm trọng.
+
+Phương sai sai số thay đổi **KHÁC HẲN**, và nhẹ nhàng hơn nhiều:
+
+- Con số trung bình — **hệ số** — **vẫn đúng**. "Học thêm 1 năm, lương cao hơn 0,4 triệu" thì vẫn là 0,4, không lệch đi đâu cả.
+- Cái bị tính **sai** chỉ là **sai số chuẩn** — con nhớ Buổi 5 chứ: cái đo "con số này lắc lư cỡ nào". Khi phần dư ồn không đều, công thức cũ tính sai số chuẩn **ra sai**.
+
+Mà sai số chuẩn sai thì kéo theo cả dây: **trị số t sai → trị số p sai → khoảng tin cậy sai**. Và hậu quả thật sự là đây: con có thể kết luận một biến **"có ý nghĩa thống kê"** trong khi thật ra nó không, hoặc ngược lại. Cái câu "thật hay tình cờ" của Buổi 5 — bị trả lời nhầm.
+
+::: {.callout-tip}
+## 💡 Mũi tên trúng tâm, nhưng cái thước đo sai
+Hình dung một cung thủ bắn vào hồng tâm. Trung bình các mũi tên của anh ta vẫn **đúng ngay tâm** — tài bắn không lệch. Nhưng cái thước con dùng để đo **độ chụm** của các mũi lại bị hỏng, nên con báo nhầm "anh này bắn chụm lắm" trong khi thật ra mũi tên văng tứ tung. Hệ số là tài bắn (vẫn đúng); sai số chuẩn là phép đo độ chụm (bị hỏng). Phương sai sai số thay đổi chỉ làm hỏng cái phép đo thôi, không làm lệch tài bắn.
+:::
+
+**Bố chốt cho con:** chuyện này **không làm lệch hệ số** — nó chỉ làm **sai số chuẩn bị tính sai**, kéo theo t, p và khoảng tin cậy sai theo. Vấn đề về **độ tin**, không phải về **con số trung tâm**.
+
+## Cách xử cực dễ: bật "sai số chuẩn vững"
+
+Bây giờ tới phần con sẽ cười, vì nó dễ quá. Người ta đã chế ra một công thức tính sai số chuẩn **chịu được** chuyện phần dư ồn không đều. Nó tên là **sai số chuẩn vững** (robust standard errors). Bố dịch chữ "vững" cho con:
+
+> **"Vững" nghĩa là: dù phần dư có ồn không đều thế nào, sai số chuẩn này vẫn tính ra đúng.**
+
+Và xử nó không phải sửa mô hình, không phải bỏ biến, không phải thêm gì cả. Chỉ là **bật một công tắc** khi chạy lệnh — trong Stata thêm chữ `, robust`, trong R/Python gọi loại sai số chuẩn vững. Hệ số **giữ nguyên** (vì nó có lệch đâu), chỉ cột sai số chuẩn được tính lại cho **đáng tin**.
+
+Lời khuyên thực dụng của bố, con ghi lòng: **cứ bật robust làm mặc định cho yên tâm.** Nếu dữ liệu thật ra ồn đều, bật robust cũng chẳng hại gì — kết quả gần như y cũ. Nếu dữ liệu ồn không đều, bật robust **cứu con** khỏi kết luận nhầm. Bật thì được, không bật thì có khi mất — vậy bố con mình bật, con nhé.
+
+::: {.callout-tip}
+## 💡 Áo mưa trong cặp
+Giống con để sẵn cái áo mưa trong cặp. Hôm nắng, mang nó cũng chẳng nặng thêm bao nhiêu. Hôm mưa, nó cứu con khỏi ướt. Không ai chờ thấy mây đen mới chạy về nhà lấy áo. Sai số chuẩn vững là cái áo mưa đó — cứ thủ sẵn, bật mặc định.
+:::
+
+**Bố chốt cho con:** không cần đập đi xây lại gì hết — chỉ **bật sai số chuẩn vững**, hệ số giữ nguyên còn sai số chuẩn thì đáng tin trở lại. Và con cứ để nó **mặc định**.
+
+## Làm sao biết dữ liệu mình có "ồn không đều"?
+
+Con không cần lo nhiều, vì mình đã chốt là bật robust mặc định rồi. Nhưng nếu tò mò muốn **nhìn tận mắt**, có hai cách nhẹ nhàng:
+
+- **Nhìn đồ thị phần dư.** Vẽ phần dư theo giá trị mô hình đoán. Nếu đám điểm xoè ra hình **cái phễu** (trái khít, phải loe — hoặc ngược lại), đó là dấu hiệu rõ ràng nhất, mắt thường thấy được.
+- **Dùng kiểm định.** Có những kiểm định chuyên trả lời "ồn có đều không" — bố chỉ nhắc tên để con khỏi bỡ ngỡ khi gặp: **Breusch–Pagan** và **White**. Trị số p nhỏ thì nghiêng về "ồn không đều". Con chưa cần thuộc, chỉ cần nghe tên là đủ.
+
+**Bố chốt cho con:** muốn soi thì **nhìn đồ thị phần dư tìm hình phễu**, hoặc chạy kiểm định **Breusch–Pagan / White** — nhưng dù soi ra sao, cách xử vẫn chỉ là bật robust.
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số
+Mình chạy hồi quy lương theo số năm học. Hệ số học = **0,4**. Hai cách tính sai số chuẩn cho ra:
+
+| | Sai số chuẩn | t = 0,4 / SE | Kết luận |
+|---|---|---|---|
+| **Công thức cũ** (giả định ồn đều) | 0,10 | 4,0 | "rất có ý nghĩa" ✅ |
+| **Robust** (chịu được ồn không đều) | 0,22 | 1,8 | "chưa đủ tin" ❓ |
+
+Để ý con: **hệ số 0,4 không đổi một li** ở cả hai dòng — đúng như bố hứa, nó không lệch. Cái đổi là **sai số chuẩn**: công thức cũ báo 0,10 (lạc quan quá mức) cho t = 4 nghe rất chắc; robust báo thật là 0,22, t chỉ còn 1,8 — **dưới ngưỡng 2**. Nếu tin công thức cũ, con đã reo lên "có ý nghĩa!" một cách hấp tấp. Robust kéo con về mặt đất.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng ý tưởng đó, nhưng gần con hơn
+Quay lại chuyện đo chiều cao của con đầu bài. Lúc con **đứng yên** áp lưng vào tường, bố đo ra số rất chắc — phép đo "ít ồn". Lúc con vừa **nhảy nhót** vừa cười, bố đo ra số nhảy loạn — phép đo "ồn dữ".
+
+Nếu bố ngây thơ coi **mọi lần đo đều chắc như nhau**, bố sẽ quá tự tin vào những con số đo lúc con nhảy. Sai số chuẩn vững giống như bố **biết điều**: "số đo lúc con nhảy thì bố tin ít hơn". Bố không sửa chiều cao thật của con (hệ số không lệch) — bố chỉ chỉnh lại **mức tin** vào từng phép đo. Cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Ba cái bẫy bố dặn con tránh
+1. **Đừng nhầm với kẻ giấu mặt (Buổi 8).** Phương sai sai số thay đổi **không làm lệch** hệ số — đừng tưởng nó cũng nguy như biến bị bỏ sót. Hai chuyện khác hẳn nhau: một bên hỏng con số, một bên chỉ hỏng phép đo độ tin.
+2. **Đừng "chữa" bằng cách bỏ quan sát hay đổi mô hình.** Cái phễu không phải lỗi của con — không cần vứt điểm nào đi. Chỉ cần bật robust.
+3. **Đừng quên bật.** Cái bẫy lớn nhất lại đơn giản nhất: chạy mô hình mà quên `, robust`, rồi tin vào sai số chuẩn cũ và reo "có ý nghĩa" nhầm. Bật mặc định cho khỏi quên.
+:::
+
+## Thấy bằng số
+
+Tự tay con vẽ cái phễu phần dư, rồi bật công tắc robust và xem cột sai số chuẩn đổi mà hệ số đứng yên:
+
+- 💻 [Stata Lab 9](../stata-lab/lab-09.qmd) · [R Lab 9](../r-lab/lab-09.qmd) · [Python Lab 9](../python-lab/lab-09.qmd)
+
+::: {.callout-note}
+## 🔑 Ba điều bố muốn con mang về từ Buổi 9
+1. **Phần dư ồn không đều** (cái phễu loe ra) là chuyện thường — gọi là *phương sai sai số thay đổi*.
+2. Nó **KHÔNG làm lệch hệ số** (khác hẳn kẻ giấu mặt Buổi 8) — chỉ làm **sai số chuẩn sai**, kéo theo t, p, khoảng tin cậy sai → kết luận "có ý nghĩa" có thể nhầm.
+3. Cách xử cực dễ: **bật sai số chuẩn vững (robust)** — và con cứ để nó **mặc định** cho yên tâm.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu — vài chỗ cho chính xác
+- Giả định bị vi phạm có tên đầy đủ là **homoskedasticity**: phương sai của sai số $\text{Var}(u_i \mid x_i) = \sigma^2$ — **một hằng số**, không đổi theo $x$. Khi nó đổi theo $x$ thì thành *heteroskedasticity*.
+- Sai số chuẩn vững thông dụng nhất là loại **White / Huber–Eicker** (trong phần mềm hay thấy HC0, HC1, HC2, HC3). Chúng tính lại ma trận hiệp phương sai của hệ số mà **không** giả định phương sai sai số bằng hằng. Mẫu nhỏ thì HC3 thường an toàn hơn HC1.
+- Vì sao hệ số không lệch? Vì tính **không chệch** của OLS (Buổi 2, Buổi 8) chỉ cần điều kiện về kỳ vọng $E(u \mid x)=0$ — **không** cần phương sai bằng hằng. Phương sai chỉ ảnh hưởng tới *độ chính xác* và *công thức sai số chuẩn*, không tới giá trị kỳ vọng của $\hat\beta$.
+- Kiểm định **Breusch–Pagan** hồi quy bình phương phần dư theo các biến giải thích rồi xem chúng có giải thích được gì không; **White** làm tương tự nhưng thêm cả bình phương và tích chéo của biến. p nhỏ → bằng chứng có heteroskedasticity.
+- Một lưu ý tinh tế: khi đã chắc về **dạng** của heteroskedasticity, có thể dùng **GLS / WLS** (bình phương nhỏ nhất có trọng số) để ước lượng *hiệu quả hơn* cả robust OLS — nhưng đoán sai dạng thì lợi bất cập hại, nên thực tế đa số người ta cứ OLS + robust cho chắc.
+:::

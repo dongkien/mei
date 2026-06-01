@@ -1,7 +1,164 @@
 ---
-title: "Lab 8 — Khoảng tin cậy & kiểm định t"
+title: "Lab 8 — Phát hiện & xử lý chệch bỏ sót biến (OVB)"
 subtitle: "Tương ứng [Buổi 8](../lectures/buoi-08.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Stata — điền sau.)*
+Mei à, ở [Buổi 8](../lectures/buoi-08.qmd) bố kể con nghe về **kẻ giấu mặt** — cái biến mình quên cho vào mô hình, nhưng nó vẫn lặng lẽ kéo lệch con số của mình. Bố gọi nó là **chệch do bỏ sót biến** (OVB).
+
+Hôm nay con sẽ tự tay bắt quả tang kẻ giấu mặt đó. Cách bắt rất đơn giản: con chạy một mô hình **thiếu** kẻ giấu mặt, ghi lại con số. Rồi con **mời nó vào** mô hình. Nếu con số nhảy một phát — đúng rồi, kẻ giấu mặt đã lộ diện. Đừng lo, bố đi cùng con từng bước.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy được hồi quy lương theo học, rồi thêm kinh nghiệm vào và **thấy hệ số học đổi**.
+- Đọc được câu chuyện đằng sau cú đổi đó: ai là kẻ giấu mặt, nó kéo lệch về hướng nào.
+- Biết vài lệnh bạn đồng hành: `i.group`, `c.x##i.group`, `vce(robust)`, `rvfplot`, `logit`, và `esttab` để xuất bảng đẹp.
+:::
+
+::: {.callout-tip}
+## 💡 Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – không tự chạy**, vì website chưa gắn dữ liệu thật. Con cứ hình dung mình **đã có sẵn một bộ dữ liệu** với ba biến: `luong` (lương, triệu đồng), `hoc` (số năm đi học), và `kinhnghiem` (số năm đi làm). Khi ngồi trước máy Stata thật, con gõ y hệt vậy là chạy được con nhé.
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Trước khi xuất bảng đẹp, mình cần một gói nhỏ tên là `estout` (nó chứa lệnh `esttab`). Cài một lần thôi, lần sau khỏi cài lại.
+
+```stata
+* Cài gói estout (chỉ cần làm một lần trên máy con)
+ssc install estout, replace
+
+* Mở thử dữ liệu của mình (giả định con đã có file luong.dta)
+use "luong.dta", clear
+
+* Nhìn qua dữ liệu một cái cho quen
+summarize luong hoc kinhnghiem
+```
+
+`summarize` chỉ cho con thấy trung bình, lớn nhất, nhỏ nhất của từng biến — như mở hộp đồ ra ngắm trước khi làm. Con quen mặt dữ liệu rồi mới bắt tay vào.
+
+**Bố chốt cho con:** cài `estout` một lần, rồi luôn `summarize` để làm quen dữ liệu trước khi hồi quy.
+
+## Bước 1 — Mô hình THIẾU kẻ giấu mặt
+
+Mình bắt đầu bằng câu hỏi ngây thơ: *"Học thêm một năm thì lương cao hơn bao nhiêu?"* — và mình **cố tình quên** kinh nghiệm.
+
+```stata
+* Mô hình 1: chỉ có học, THIẾU kinh nghiệm
+regress luong hoc, vce(robust)
+
+* Cất kết quả lại để lát nữa so sánh
+estimates store m1
+```
+
+Hai điều bố giải thích cho con:
+
+- `regress luong hoc` nghĩa là: *"vẽ một đường thẳng giải thích lương theo số năm học."*
+- `vce(robust)` là cái khăn quàng an toàn — nó tính sai số chuẩn theo kiểu **bền** hơn, để con số "độ lắc lư" đáng tin kể cả khi dữ liệu hơi lổn nhổn. Bố quen tay luôn thêm nó.
+
+Giả sử Stata in ra hệ số `hoc` là **0,70**. Con đọc thành tiếng người: *"theo mô hình ngây thơ này, học thêm 1 năm gắn với lương cao hơn 0,70 triệu."* Con ghi con số **0,70** này lên giấy nháp nhé — lát nữa mình sẽ nhìn nó nhảy.
+
+**Bố chốt cho con:** mô hình thiếu biến cho hệ số học là **0,70** — hãy nhớ kỹ con số này.
+
+## Bước 2 — Mời kẻ giấu mặt vào
+
+Giờ mình mời **kinh nghiệm** ngồi vào bàn. Tại sao kinh nghiệm là kẻ giấu mặt? Vì người học nhiều thường cũng ít năm đi làm hơn (còn bận học), mà kinh nghiệm thì lại ảnh hưởng tới lương. Nó dính cả hai đầu — đúng kiểu kẻ giấu mặt bố tả ở Buổi 8.
+
+```stata
+* Mô hình 2: thêm kinh nghiệm vào
+regress luong hoc kinhnghiem, vce(robust)
+
+estimates store m2
+```
+
+Giả sử lần này hệ số `hoc` thành **0,45**. Con thấy chưa Mei — con số nhảy từ **0,70 xuống 0,45**! Phần chênh 0,25 đó không phải công của việc học. Đó là **bóng của kinh nghiệm** đang núp trong hệ số học ở Bước 1. Khi mình lôi kinh nghiệm ra ánh sáng, nó trả lại phần công nó đã âm thầm mượn.
+
+::: {.callout-important}
+## 🧮 Đọc cú nhảy bằng số
+| Mô hình | Hệ số `hoc` | Câu chuyện |
+|---|---|---|
+| (1) Thiếu kinh nghiệm | **0,70** | Học "gánh hộ" cả phần của kinh nghiệm |
+| (2) Có kinh nghiệm | **0,45** | Mỗi biến nhận đúng phần của mình |
+
+Độ chệch ≈ **0,70 − 0,45 = 0,25 triệu**. Đó là số tiền mình đã **gán nhầm** cho việc học, trong khi thật ra là công của kinh nghiệm.
+:::
+
+**Bố chốt cho con:** thêm kẻ giấu mặt vào, hệ số học rơi từ 0,70 còn 0,45 — phần rơi đó chính là chệch do bỏ sót biến.
+
+## Bước 3 — Xuất bảng so sánh hai mô hình cạnh nhau
+
+Nói miệng "0,70 rồi 0,45" thì dễ quên. Mình bày hai mô hình cạnh nhau cho mắt nhìn thấy ngay, bằng `esttab`.
+
+```stata
+* Đặt hai mô hình cạnh nhau thành một bảng
+esttab m1 m2, ///
+    b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
+    mtitles("Thiếu KN" "Có KN") ///
+    label
+```
+
+Bố giải thích các nút bấm:
+
+- `b(3) se(3)` — in hệ số và sai số chuẩn, làm tròn 3 chữ số.
+- `star(...)` — gắn dấu sao cho mức ý nghĩa (nhớ Buổi 5 con nhỉ: sao càng nhiều, càng tin con số khác 0).
+- `mtitles(...)` — đặt tên cho hai cột, để con khỏi lẫn cột nào là cột nào.
+
+Nhìn bảng, con sẽ thấy dòng `hoc` ở hai cột: một bên 0,70, một bên 0,45. Cái bảng nói thay con cả câu chuyện OVB.
+
+**Bố chốt cho con:** `esttab m1 m2` bày hai mô hình cạnh nhau — cú nhảy của hệ số học hiện ra rõ trên một dòng.
+
+## Bước 4 — Vài đồ chơi con sẽ gặp lại
+
+Bố tranh thủ cho con làm quen mấy lệnh hay dùng, để sau này con không bỡ ngỡ.
+
+```stata
+* Biến giả: cho phép nam và nữ có mức lương nền khác nhau
+regress luong hoc kinhnghiem i.gioitinh, vce(robust)
+
+* Tương tác: cho phép "lợi ích mỗi năm học" KHÁC nhau giữa nam và nữ
+regress luong c.hoc##i.gioitinh kinhnghiem, vce(robust)
+
+* Vẽ phần dư để soi dữ liệu có lổn nhổn không
+regress luong hoc kinhnghiem
+rvfplot, yline(0)
+
+* Khi biến phụ thuộc là CÓ/KHÔNG (vd: có việc làm hay không) — dùng logit
+logit colam hoc kinhnghiem
+```
+
+- `i.gioitinh` — biến `gioitinh` là **biến giả** (nam/nữ). Thêm `i.` là bảo Stata: *"tách thành các nhóm, mỗi nhóm một mức nền riêng."*
+- `c.hoc##i.gioitinh` — dấu `c.` báo `hoc` là biến **liên tục** (số năm); `##` tạo **tương tác**, cho phép độ dốc của học khác nhau giữa hai giới. Đây đúng là công cụ "còn tùy" con học ở Buổi 6.
+- `rvfplot` — vẽ phần dư theo giá trị dự đoán. Nếu các chấm xòe ra hình cái phễu, đó là dấu hiệu cần `vce(robust)`.
+- `logit` — khi biến mình muốn giải thích chỉ có hai giá trị (có/không), `regress` không hợp nữa, mình chuyển sang `logit`.
+
+::: {.callout-tip}
+## 💡 Mẹo nhỏ bố dắt túi cho con
+Trước khi quyết định "cần thêm biến nào", con thử nghĩ về **dấu của cú chệch**:
+
+- Kẻ giấu mặt (kinh nghiệm) **tốt cho lương** → ảnh hưởng dương.
+- Nó lại **đi ngược với học** (học nhiều thì ít năm làm) → liên hệ âm.
+- Dương × âm = **âm** → bỏ sót nó làm hệ số học bị **kéo lên cao giả** (0,70 thay vì 0,45).
+
+Đoán được hướng chệch trước khi chạy, rồi xem máy có xác nhận không — đó là lúc con thật sự *hiểu* chứ không chỉ bấm nút. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+- **Thêm biến không có nghĩa là cứ nhét tất cả vào.** Chỉ mời vào những kẻ giấu mặt thật sự — biến vừa ảnh hưởng lương, vừa dính với học. Nhét bừa biến vô can có khi còn làm rối.
+- **Hệ số đổi nhiều chưa chắc cái mới là "đúng" tuyệt đối** — nó chỉ *đỡ chệch hơn* vì đã bớt một kẻ giấu mặt. Có thể còn kẻ khác đang núp (năng lực bẩm sinh, gia cảnh…).
+:::
+
+## Ví dụ gần con hơn
+
+Bố đổi sân chơi cho con dễ thấy. Con muốn biết: *"Tưới cây nhiều thì cây có cao hơn không?"* Con đo lượng nước và chiều cao cây, chạy `regress chieucao luongnuoc`. Ra một con số đẹp.
+
+Nhưng khoan — mấy chậu con tưới nhiều lại tình cờ là mấy chậu **đặt cạnh cửa sổ nhiều nắng**. Nắng vừa giúp cây cao, vừa dính với chuyện con hay tưới chậu đó. **Nắng** chính là kẻ giấu mặt! Con thêm `nang` vào: `regress chieucao luongnuoc nang` — và hệ số của nước tụt xuống, vì phần công vốn là của nắng nay được trả về đúng chỗ.
+
+Thấy không Mei: lương–học–kinh nghiệm hay chiều cao–nước–nắng — **cùng một trò chơi bắt kẻ giấu mặt, chỉ thay tên các biến thôi con** 🌱.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Chạy hồi quy **thiếu** một biến quan trọng, ghi lại hệ số học (**0,70**).
+2. **Mời kẻ giấu mặt** (kinh nghiệm) vào, thấy hệ số học rơi còn **0,45** — chính là chệch do bỏ sót biến hiện hình.
+3. Dùng `esttab` bày hai mô hình cạnh nhau, và làm quen `i.group`, `c.x##i.group`, `vce(robust)`, `rvfplot`, `logit` cho những buổi sau.
+:::

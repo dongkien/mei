@@ -1,7 +1,0 @@
----
-title: "Lab 12 — Phát hiện & xử lý chệch bỏ sót biến"
-subtitle: "Tương ứng [Buổi 12](../lectures/buoi-12.qmd)"
-reading-time: "~20 phút"
----
-
-*(Nội dung lab R — điền sau.)*

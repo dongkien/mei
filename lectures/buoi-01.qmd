@@ -1,14 +1,111 @@
 ---
-title: "Buổi 1 — Nhập môn Kinh tế lượng — dữ liệu, mô hình, câu hỏi nhân quả"
-subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+title: "Buổi 1 — Kinh tế lượng là gì hả Mei?"
+subtitle: "Bố kể con nghe về môn học mà bố yêu thích"
 reading-time: "Chương 1"
 ---
 
+Mei à,
+
+Hôm nay bố muốn kể cho con nghe về một môn mà hồi bằng tuổi con bố từng thấy đáng sợ, nhưng lớn lên bố lại mê: **kinh tế lượng**.
+
+Con thử nghĩ mấy câu này xem:
+
+- Học thêm **một năm** nữa, sau này lương con nhích lên bao nhiêu?
+- Quán cà phê chi thêm tiền quảng cáo thì bán được thêm bao nhiêu ly?
+- Tăng lương tối thiểu thì người ta có bị mất việc không?
+
+Ba câu khác nhau, nhưng con để ý mà xem — chúng đều cùng một dạng: **"x ảnh hưởng tới y bao nhiêu?"** Trả lời được mấy câu đó bằng *số liệu thật*, chứ không phải đoán mò, chính là việc kinh tế lượng làm. Bố sẽ dắt con đi từ từ, đừng lo.
+
 ::: {.callout-note appearance="simple"}
-## 🎯 Mục tiêu Buổi 1
-*(Sẽ bổ sung.)*
+## 🎯 Bố mong sau buổi này con sẽ
+- Hiểu kinh tế lượng **thật ra là gì** (và *không* phải là gì).
+- Thấy được ý tưởng cốt lõi: **kẻ một đường xu hướng đi xuyên đám mây dữ liệu**.
+- Phân biệt được ba loại số liệu nhà mình sẽ gặp.
+- Và quan trọng nhất với bố: con tin rằng **con học được môn này**.
 :::
 
-## Nội dung
+## Nếu con thấy sợ thì bố nói cho con yên tâm
 
-*(Khung bài giảng Buổi 1 — điền sau.)*
+Người ta hay làm môn này đáng sợ bằng cách mở đầu bằng một trang đầy chữ Hy Lạp loằng ngoằng, kiểu $\hat{\beta}_1 = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sum (x_i - \bar{x})^2}$ rồi bảo "đây là OLS".
+
+Con hít một hơi thật sâu. Bố nói nhỏ con nghe ba điều này:
+
+::: {.callout-tip}
+## 💡 Ba điều bố muốn con yên tâm
+1. **Mấy ký hiệu đó chỉ là biệt danh thôi.** Cái $\hat{\beta}_1$ trông ghê gớm kia, dịch ra tiếng của bố con mình chỉ là: *"x tăng 1 thì y đổi bao nhiêu"*. Có thế thôi con à.
+2. **Con không cần giỏi toán siêu phàm.** Máy tính làm phần tính toán cho con rồi. Việc của con — việc hay nhất — là **hỏi đúng câu hỏi và đọc hiểu câu trả lời**.
+3. **Con không phải học thuộc lòng gì cả.** Đây không phải môn trả bài. Đây là môn *suy nghĩ bằng số liệu* — mà con thì suy nghĩ giỏi lắm.
+:::
+
+## Ý tưởng cốt lõi: một đường đi xuyên đám mây
+
+Con tưởng tượng cùng bố nhé. Mỗi người đi làm, mình chấm thành **một chấm** trên giấy: bên ngang là **số năm đi học**, bên dọc là **tiền lương**. Cả nghìn người → một **đám mây chấm** lấm tấm như sao trên trời.
+
+Đám mây đó nhìn lộn xộn, nhưng có một xu hướng: càng sang phải (học nhiều hơn), mấy chấm có **xu hướng** cao lên (lương cao hơn). Kinh tế lượng làm đúng một việc rất tự nhiên, mà con cũng làm được:
+
+> **Kẻ một đường thẳng đi xuyên đám mây sao cho nó "vừa khít" nhất, rồi nhìn xem đường đó dốc bao nhiêu.**
+
+Độ dốc của đường ấy trả lời thẳng câu hỏi của mình: *học thêm một năm thì lương tăng trung bình bao nhiêu.* Cả nửa đầu học kỳ, bố con mình chỉ làm cho cái ý "kẻ đường vừa khít nhất" này **chính xác và đáng tin** thôi — còn ý tưởng thì đơn giản như vậy đó con.
+
+::: {.callout-important}
+## 🧮 Một con số cho con dễ hình dung
+Giả sử mình kẻ đường, đọc được độ dốc khoảng **0,08**. Nghĩa là trung bình **mỗi năm học thêm gắn với lương cao hơn chừng 8%**. Một con số bé tí — nhưng nó gói cả đám mây nghìn chấm thành một câu con có thể nói gọn cho ông bà nghe.
+:::
+
+**Bố chốt cho con:** kinh tế lượng = tìm đường xu hướng vừa khít nhất qua số liệu, rồi đọc hiểu nó.
+
+## Bố dặn con một điều quan trọng: giống nhau chưa chắc là tại nhau
+
+Người học nhiều **thì** lương cao hơn, đúng. Nhưng có phải *tại* đi học mà lương cao không? Hay tại người chăm chỉ, nhà có điều kiện vốn dĩ vừa học nhiều **vừa** kiếm tốt?
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy lớn nhất, bố dặn con tránh
+Thấy x với y đi cùng nhau (**tương quan**) **không** có nghĩa x gây ra y (**nhân quả**). Biết phân biệt hai cái này — và biết khi nào mình *được phép* nói "tại vì" — là **thứ quý giá nhất** con học được từ môn này. Bố con mình sẽ quay lại nó hoài suốt học kỳ.
+:::
+
+Giờ chưa cần giải quyết đâu con. Chỉ cần con nhớ: đích đến không phải "x với y có liên quan không", mà là "x có **thật sự làm thay đổi** y không, và bao nhiêu".
+
+## Số liệu nhà mình trông như thế nào?
+
+Có ba kiểu, bố kể cho con:
+
+| Loại | Là gì | Ví dụ |
+|---|---|---|
+| **Chéo** (cross-section) | nhiều người, **một thời điểm** | lương của 5.000 người *năm 2025* |
+| **Chuỗi thời gian** (time series) | một đối tượng, **nhiều thời điểm** | GDP Việt Nam *2000–2025* |
+| **Bảng** (panel) | nhiều đối tượng, **theo dõi qua nhiều năm** | doanh thu 100 doanh nghiệp *mỗi năm, 2015–2025* |
+
+Phần lớn học kỳ mình chơi với **số liệu chéo** — dễ hình dung nhất. Cuối kỳ mới đụng tới hai loại kia.
+
+**Bố chốt cho con:** trước khi làm gì, luôn hỏi "đây là số liệu loại nào?" — nó quyết định mình dùng công cụ gì.
+
+## Bố con mình sẽ đi đâu trong học kỳ này
+
+Mình đi đúng cách một người làm nghiên cứu thật suy nghĩ, từng bước một:
+
+1. **Buổi 1** — làm quen ý tưởng & vài viên gạch thống kê (nhẹ nhàng thôi).
+2. **Buổi 2–4** — học kẻ "đường vừa khít": từ một biến đến nhiều biến.
+3. **Buổi 5** — *làm sao biết kết quả đáng tin?*
+4. **Buổi 6–7** — làm mô hình linh hoạt, sát thực tế hơn.
+5. **Buổi 8–9** — mấy cái bẫy hay gặp và cách né.
+6. **Buổi 10** — mở rộng & tổng kết.
+
+Mỗi ý lý thuyết đều có một **lab** để con **tự tay gõ trên máy** — vì môn này chỉ thật sự ngấm khi con thấy nó chạy ra số.
+
+## Mình thử bằng số nhé
+
+Đừng chỉ đọc thôi con — mở đám mây chấm đầu tiên của con ngay hôm nay đi:
+
+- 💻 [Stata Lab 1](../stata-lab/lab-01.qmd) · [R Lab 1](../r-lab/lab-01.qmd) · [Python Lab 1](../python-lab/lab-01.qmd)
+
+::: {.callout-note}
+## 🔑 Ba điều bố muốn con mang về từ Buổi 1
+1. Kinh tế lượng = **đo "x ảnh hưởng tới y bao nhiêu"** bằng số liệu — bằng cách kẻ đường xu hướng qua đám mây chấm.
+2. **Giống nhau chưa chắc là tại nhau** (tương quan ≠ nhân quả) — đây là câu chuyện trung tâm cả môn.
+3. Ký hiệu chỉ là biệt danh, máy tính lo tính toán — **việc của con là suy nghĩ**. Con làm được, bố tin con.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu hơn — "vừa khít" nghĩa là gì?
+"Đường vừa khít nhất" nói cho chính xác là đường làm **tổng bình phương khoảng cách dọc** từ các chấm tới đường là **nhỏ nhất** — người ta gọi là *Bình phương nhỏ nhất* (OLS — Ordinary Least Squares). Vì sao lại bình phương, vì sao đo khoảng cách *dọc*, và công thức độ dốc ở đâu ra — bố con mình mổ xẻ ở **[Buổi 2](buoi-02.qmd)**. Giờ con chỉ cần giữ hình ảnh: *đường nằm giữa đám mây sao cho sai lệch tổng cộng bé nhất.*
+:::

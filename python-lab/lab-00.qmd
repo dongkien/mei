@@ -4,4 +4,114 @@ subtitle: "Chuẩn bị môi trường trước khi vào 15 lab"
 reading-time: "~30 phút"
 ---
 
-*(Hướng dẫn cài đặt Python, thiết lập thư mục làm việc, mở dữ liệu mẫu — bổ sung sau.)*
+Mei à, trước khi mình bước vào [Buổi 1](../lectures/buoi-01.qmd) — buổi đầu tiên con làm quen với kinh tế lượng — bố muốn dẫn con đi xem **cái bàn làm việc mới** của hai bố con đã. Hôm nay mình chưa học gì nặng đâu con. Chưa hồi quy, chưa hệ số, chưa con số nào phải lo cả.
+
+Hôm nay con chỉ làm đúng ba việc nhẹ nhàng: **cài Python về máy**, **mở một bộ dữ liệu mẫu lên**, và **nhìn nó một lượt cho quen mặt**. Giống như ngày đầu tới lớp mới, con chưa cần thuộc tên ai — chỉ cần biết bàn ghế để đâu, cửa ra vào ở chỗ nào. Cứ thong thả theo bố nhé.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Cài xong Python và mở được nó lên mà không thấy sợ.
+- Mở một bộ dữ liệu mẫu và **nhìn thấy dữ liệu hiện ra trước mắt**.
+- Biết vài câu lệnh "ngó nghiêng" dữ liệu, rồi yên tâm bước vào Lab 1.
+:::
+
+## Bước 1 — Cài "cái bàn làm việc" về máy
+
+Bố khuyên con cài **Anaconda** — một gói gọn sẵn, tải về một lần là có đủ Python lẫn mấy bộ công cụ mình cần (như `pandas` để xử lý dữ liệu). Con khỏi phải đi nhặt từng món lẻ.
+
+- Vào trang `anaconda.com`, tải bản **Distribution** hợp với máy con (Windows hay Mac).
+- Mở file vừa tải, bấm **Next → Next → Install** như cài một ứng dụng bình thường. Cứ để mặc định, đừng tick lung tung.
+- Cài xong, con mở **Anaconda Navigator**, rồi bấm chạy **JupyterLab**. Một cửa sổ trình duyệt hiện lên — đó chính là cái bàn làm việc của con.
+
+Trong JupyterLab, con bấm tạo một **Notebook** mới (chọn nhân Python 3). Notebook là một tờ giấy nháp thông minh: con gõ lệnh vào một ô, bấm **Shift + Enter**, máy chạy và trả kết quả ngay bên dưới.
+
+Con thử gõ ô đầu tiên cho quen tay:
+
+```python
+print("Chào bố, con là Mei")
+```
+
+Bấm **Shift + Enter**. Nếu dòng chữ hiện ra bên dưới, nghĩa là cái bàn đã sẵn sàng. Vậy là con vừa nói chuyện với Python lần đầu rồi đó.
+
+**Bố chốt cho con:** cài Python nghe to tát, nhưng thực ra chỉ là tải Anaconda về rồi bấm Next vài cái. Xong là con có một tờ giấy nháp biết tính toán.
+
+## Bước 2 — Gọi mấy người giúp việc ra
+
+Python lúc mới mở khá "trơn" — nó biết tính toán cơ bản thôi. Muốn làm việc với dữ liệu, mình gọi thêm **pandas**, một người giúp việc chuyên cầm bảng dữ liệu. Con gõ:
+
+```python
+import pandas as pd
+```
+
+Dòng này đọc nôm na là: *"mời pandas vào, và từ giờ gọi nó ngắn gọn là `pd` cho đỡ mỏi tay."* Bấm Shift + Enter, không thấy báo gì đỏ lè là ổn — im lặng nghĩa là mọi thứ êm xuôi con.
+
+**Bố chốt cho con:** `import pandas as pd` chỉ là câu "mời người giúp việc vào nhà". Lần nào mở notebook mới con cũng gõ nó trước tiên.
+
+## Bước 3 — Mở bộ dữ liệu mẫu lên nhìn
+
+Giờ tới phần vui nhất. Bố đã để sẵn cho con một bộ dữ liệu mẫu — con cứ hình dung nó là một **bảng Excel**: mỗi dòng là một người mình đã đi hỏi, mỗi cột là một thông tin về người đó.
+
+Bộ này có vài cột: `luong` (lương, triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ, 0 nếu là nam). Mình nạp nó vào và cất trong một cái hộp tên `df`:
+
+```python
+df = pd.read_csv("dulieu_mau.csv")
+```
+
+`pd.read_csv` là lệnh *"đọc giúp bố cái file bảng này vào"*. Cất xong vào `df` rồi, con chưa thấy gì cả — vì mình mới *để nó lên bàn*, chưa *mở ra xem*. Bước tiếp theo mới là nhìn.
+
+**Bố chốt cho con:** `df` chỉ là cái tên hộp đựng dữ liệu. Đặt tên gì cũng được, nhưng `df` là thói quen chung của dân làm dữ liệu, con cứ theo cho tiện.
+
+## Bước 4 — Nhìn dữ liệu cho quen mặt
+
+Mình ngó vài dòng đầu tiên xem mặt mũi bảng ra sao:
+
+```python
+df.head()
+```
+
+`df.head()` cho con xem **5 dòng đầu** của bảng. Con sẽ thấy các cột `luong`, `hoc`, `kinhnghiem`, `nu` xếp ngay ngắn, mỗi dòng một người. Chưa cần hiểu con số nói gì — chỉ cần thấy *"à, dữ liệu là như thế này, mỗi người một dòng."*
+
+Rồi mình hỏi bảng to cỡ nào, và có những cột gì:
+
+```python
+df.shape      # (số dòng, số cột) — bảng có bao nhiêu người, bao nhiêu thông tin
+df.columns    # liệt kê tên các cột
+```
+
+`df.shape` trả về kiểu `(200, 4)` chẳng hạn — nghĩa là **200 người, 4 cột thông tin**. `df.columns` đọc tên từng cột ra cho con. Cuối cùng, mình nhờ pandas tóm tắt nhanh từng cột bằng con số:
+
+```python
+df.describe()
+```
+
+`df.describe()` cho con cái nhìn tổng quát: lương trung bình khoảng bao nhiêu, người học ít nhất mấy năm, nhiều nhất mấy năm... Con chưa cần phân tích gì đâu — chỉ cần **liếc qua cho quen**, như lật giở một cuốn sổ mới trước khi bắt đầu viết.
+
+**Bố chốt cho con:** bốn câu `head`, `shape`, `columns`, `describe` là bốn cách "ngó nghiêng" dữ liệu. Lần nào gặp bộ dữ liệu lạ, con cứ chạy chúng trước để làm quen.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe — một mẹo nhỏ đỡ rối
+Mỗi khi mở một notebook mới, con cứ để **ô đầu tiên** chuyên dùng nạp công cụ và dữ liệu:
+
+```python
+import pandas as pd
+df = pd.read_csv("dulieu_mau.csv")
+```
+
+Chạy ô đó một lần là cả notebook dùng được suốt buổi. Như sáng ra con bày sẵn sách vở lên bàn, rồi cả ngày học khỏi phải đi tìm. Bố luôn làm vậy cho gọn đầu.
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+1. **File dữ liệu phải nằm cùng chỗ với notebook.** Nếu `read_csv` báo "không tìm thấy file", thường là con để file lạc thư mục khác thôi — kéo nó về cùng chỗ là xong, đừng hoảng.
+2. **Python phân biệt chữ hoa chữ thường.** `df.Head()` sẽ lỗi, phải là `df.head()`. Gõ sai một chữ là nó "dỗi", nhưng sửa lại là chạy ngay.
+3. **Báo đỏ không phải tai họa.** Dòng báo lỗi màu đỏ chỉ là Python đang *nói cho con biết nó chưa hiểu chỗ nào*. Con đọc dòng cuối cùng, thường nó chỉ thẳng chỗ sai. Ai mới học cũng gặp, kể cả bố ngày xưa.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. **Cài xong Python** qua Anaconda và mở được JupyterLab — cái bàn làm việc mới của con đã dựng xong.
+2. **Mở một bộ dữ liệu mẫu** vào hộp `df` bằng `pd.read_csv`, và gọi được người giúp việc `pandas`.
+3. **Nhìn dữ liệu một lượt** bằng `head`, `shape`, `columns`, `describe` — đủ quen mặt để yên tâm.
+
+Vậy là con đã sẵn sàng. Hẹn con ở **Lab 1**, nơi mình bắt đầu thật sự làm việc với dữ liệu này. Giỏi lắm con. 🌱
+:::

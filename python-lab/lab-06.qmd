@@ -1,7 +1,137 @@
 ---
-title: "Lab 6 — Kiểm tra giả định cổ điển"
+title: "Lab 6 — Dạng hàm log & bậc hai"
 subtitle: "Tương ứng [Buổi 6](../lectures/buoi-06.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Python — điền sau.)*
+Mei à, ở [Buổi 6](../lectures/buoi-06.qmd) bố kể con nghe về chuyện **uốn cong đường**. Trước giờ mình toàn vẽ đường thẳng, nhưng đời thật ít khi thẳng tắp lắm con. Lương không tăng đều mãi theo từng năm học; sức một người đi làm cũng không cứ thế lên hoài mà có lúc chững lại rồi đi xuống. Hôm nay mình học hai cách "uốn" cây thước thẳng của mình cho nó mềm theo đời thật.
+
+Hai cách đó là: lấy **log** (để đọc kết quả theo **phần trăm**), và thêm **bình phương** (để có đường cong hình **quả đồi**, tìm được cả đỉnh đồi). Cuối bài mình thử thêm một **tương tác** nho nhỏ nữa. Đừng lo con, mình đi từng bước một, mỗi bước chỉ một ô lệnh thôi.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Tạo được biến `log(luong)` và chạy hồi quy log, rồi **đọc hệ số theo phần trăm**.
+- Thêm `kinhnghiem` bình phương để có đường cong "quả đồi", và **tự tay tìm đỉnh đồi**.
+- Thêm một **tương tác** để trả lời câu hỏi "còn tùy".
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Trước khi vào việc, con cài **Python** lên máy nhé — bố khuyên con tải bộ **Anaconda**, vì nó gói sẵn gần hết đồ nghề mình cần, khỏi cài lẻ từng món. Cài xong, con mở **Jupyter Notebook** (hoặc **VS Code** nếu con thích) lên.
+
+Trong Jupyter con sẽ thấy những **ô lệnh** (cell) — mỗi ô là một ô vuông để mình gõ lệnh vào. Gõ xong, con bấm **Shift + Enter** là ô đó chạy. Cứ hình dung mỗi ô như một bước nhỏ trong công thức nấu ăn: làm xong bước này rồi sang bước kia. Lỡ chạy sai cũng chẳng sao con, sửa lại rồi bấm Shift + Enter chạy lại là xong, không hư gì cả. Bố ngày xưa cũng lóng ngóng mấy hôm đầu thôi.
+
+Giả sử bố đã để sẵn cho con một bộ dữ liệu mẫu trong file `dulieu.csv`, có các cột: `luong` (lương, triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ, 0 nếu nam). Con đọc nó vào bằng `pandas`:
+
+```python
+import pandas as pd
+import numpy as np
+import statsmodels.formula.api as smf
+
+# Giả định file dulieu.csv nằm cùng thư mục, có các cột: luong, hoc, kinhnghiem, nu
+df = pd.read_csv("dulieu.csv")
+df.head()
+```
+
+`pd.read_csv` đọc file bảng vào thành `df`; `df.head()` cho con xem 5 dòng đầu để chắc dữ liệu đã vào đúng. `statsmodels.formula.api` (gọi tắt `smf`) là người giúp việc viết công thức hồi quy đúng như nói tiếng người.
+
+**Bố chốt cho con:** đồ nghề chỉ có ba dòng `import` và một dòng `read_csv`. Mở Jupyter, gõ vào ô đầu, bấm Shift + Enter. Chưa có gì đáng sợ cả con.
+
+## Bước 1 — Tạo biến log(luong)
+
+Đời thật, lương ít khi tăng theo kiểu "cứ mỗi năm học cộng đúng 0,85 triệu". Nó tăng theo kiểu **phần trăm**: học thêm thì lương nhích lên *vài phần trăm*. Muốn đọc kết quả theo phần trăm, mình lấy **log của lương** rồi đem nó đi hồi quy.
+
+```python
+df["log_luong"] = np.log(df["luong"])
+
+mo_hinh_log = smf.ols("log_luong ~ hoc", data=df).fit()
+print(mo_hinh_log.summary())
+```
+
+Con nhìn dòng `hoc`, cột `coef`. Giả sử nó hiện ra **0,07**. Đây là chỗ thú vị: vì vế trái là **log của lương**, mình đọc con số này thành **phần trăm** — chỉ việc nhân với 100:
+
+> "Học thêm 1 năm thì lương cao hơn khoảng **7%**."
+
+Thấy không con, không còn là "0,07 triệu" khô khan nữa, mà là "7% lương" — nghe đúng kiểu người ta nói chuyện tăng lương ngoài đời.
+
+**Bố chốt cho con:** lấy log vế trái rồi nhân hệ số với 100 thì đọc được ngay theo phần trăm. Con số nhỏ (dưới khoảng 0,1) thì cách nhân-100 này rất sát.
+
+## Bước 2 — Uốn đường thành "quả đồi" với bình phương
+
+Giờ tới `kinhnghiem`. Người mới đi làm thì mỗi năm kinh nghiệm thêm vào quý lắm, lương lên nhanh. Nhưng tới một lúc nào đó nó chững lại, rồi về già còn đi xuống. Vẽ ra giống một **quả đồi**: lên dốc, tới đỉnh, rồi xuống dốc. Đường thẳng không kể được câu chuyện này — mình cần thêm `kinhnghiem` **bình phương**.
+
+```python
+df["kinhnghiem2"] = df["kinhnghiem"] ** 2
+
+mo_hinh_doi = smf.ols("log_luong ~ kinhnghiem + kinhnghiem2", data=df).fit()
+print(mo_hinh_doi.summary())
+```
+
+Con để mắt vào hai dòng. Giả sử `kinhnghiem` có hệ số **+0,04** (số dương — lên dốc), còn `kinhnghiem2` có hệ số **−0,0008** (số âm — kéo cong xuống). Một dương một âm chính là dấu hiệu của quả đồi: đầu thì đi lên, sau bị kéo cúi xuống.
+
+**Tìm đỉnh đồi** ở đâu? Có một mẹo nhỏ: lấy hệ số của `kinhnghiem` chia cho hai lần trị tuyệt đối hệ số của `kinhnghiem2`.
+
+```python
+b1 = mo_hinh_doi.params["kinhnghiem"]
+b2 = mo_hinh_doi.params["kinhnghiem2"]
+dinh = -b1 / (2 * b2)
+print("Đỉnh đồi ở khoảng:", round(dinh, 1), "năm kinh nghiệm")
+```
+
+Giả sử nó in ra **25**. Mình đọc:
+
+> "Lương tăng theo kinh nghiệm cho tới khoảng **25 năm**, sau đó bắt đầu đi xuống."
+
+Đó chính là đỉnh quả đồi — điểm cao nhất trước khi đường cong cúi đầu.
+
+**Bố chốt cho con:** thêm biến bình phương là cách uốn đường thẳng thành đường cong. Hệ số bậc một dương, bậc hai âm = quả đồi; đỉnh nằm ở `−b1 / (2·b2)`.
+
+## Bước 3 — Thêm một tương tác: "còn tùy"
+
+Câu hỏi ở Buổi 6: *học thêm 1 năm thì lương lên bao nhiêu phần trăm — với nam và nữ có giống nhau không?* Trả lời "còn tùy" thì mình cần một **tương tác**: cho `hoc` "bắt tay" với `nu`. Trong `statsmodels`, dấu `*` làm việc đó — nó tự thêm cả `hoc`, cả `nu`, và **tích** của hai biến.
+
+```python
+mo_hinh_tuongtac = smf.ols("log_luong ~ hoc * nu", data=df).fit()
+print(mo_hinh_tuongtac.summary())
+```
+
+Con nhìn dòng `hoc:nu` — đó là số hạng tương tác. Giả sử `hoc` có hệ số **0,08** và `hoc:nu` là **−0,02**. Mình đọc thành tiếng người:
+
+> Với **nam** (nu = 0): học thêm 1 năm thì lương cao hơn khoảng **8%**.
+> Với **nữ** (nu = 1): cộng thêm phần tương tác, còn **8% − 2% = 6%**.
+
+Số hạng tương tác `−0,02` nói rằng "lợi ích của việc học, với nữ, thấp hơn nam khoảng 2 điểm phần trăm". Đó chính là cái "còn tùy" hiện ra thành con số.
+
+**Bố chốt cho con:** dấu `*` mở ra tương tác. Hệ số tương tác cho con biết tác dụng của một biến **thay đổi thế nào** khi sang nhóm khác.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe — một mẹo nhỏ mà chắc tay
+Đừng tự tay tạo cột `kinhnghiem2` cũng được, con! `statsmodels` cho con viết phép tính **ngay trong công thức** bằng `I(...)`:
+
+```python
+smf.ols("log_luong ~ kinhnghiem + I(kinhnghiem**2)", data=df).fit()
+```
+
+`I(kinhnghiem**2)` đọc là *"lấy đúng kinhnghiem bình phương ở đây"*. Gọn hơn, đỡ phải nhớ tạo cột phụ. Bố hay viết kiểu này cho nhanh.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱
+Bỏ chuyện lương đi, mình về với con. Con tập nhảy dây: mấy ngày đầu mỗi ngày tập là tiến bộ vù vù, nhảy được thêm bao nhiêu cái liền. Nhưng tập mãi thì tới một ngày con đã giỏi gần hết cỡ, có tập thêm cũng chỉ nhích lên tí xíu, rồi mỏi chân lại đuối đi.
+
+Vẽ ra cũng là một **quả đồi** y hệt `kinhnghiem` vậy đó: lên nhanh, tới đỉnh, rồi chững. Nếu con đo "số cái nhảy" theo "số ngày tập" mà chỉ kẻ đường thẳng thì sai bét — phải uốn cong bằng bình phương mới đúng. Cùng một trò chơi, chỉ thay tên hai trục thôi con. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+1. **Hệ số log đọc là phần trăm, đừng đọc là "triệu đồng".** Khi vế trái là `log_luong`, con số 0,07 nghĩa là **7%**, không phải 0,07 triệu.
+2. **Đừng quên giữ cả biến bậc một khi thêm bậc hai.** Phải có **cả** `kinhnghiem` lẫn `kinhnghiem2` thì mới thành quả đồi; bỏ một cái là hỏng đường cong.
+3. **Có tương tác thì đừng đọc hệ số gốc một mình.** Khi đã có `hoc:nu`, con số của `hoc` chỉ đúng cho nhóm nam (nu = 0); muốn biết nữ phải cộng thêm phần tương tác.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Tạo `log_luong` bằng `np.log`, chạy hồi quy log, và **đọc hệ số theo phần trăm** (nhân 100).
+2. Thêm `kinhnghiem` bình phương để uốn đường thành **quả đồi**, rồi tìm **đỉnh** ở `−b1 / (2·b2)`.
+3. Dùng `hoc * nu` để mở một **tương tác**, và biết tách hệ số ra cho nam với nữ — đúng tinh thần "uốn cong đường" ở Buổi 6.
+:::

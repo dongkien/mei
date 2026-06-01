@@ -1,7 +1,155 @@
 ---
-title: "Lab 6 — Kiểm tra giả định cổ điển"
+title: "Lab 6 — Dạng hàm log & bậc hai"
 subtitle: "Tương ứng [Buổi 6](../lectures/buoi-06.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Stata — điền sau.)*
+Mei à, ở [Buổi 6](../lectures/buoi-06.qmd) bố kể con nghe rằng đường thẳng không phải lúc nào cũng kể đúng câu chuyện. Có khi quan hệ giữa hai thứ **cong** — như quả đồi: leo lên thì nhanh, gần đỉnh thì chậm lại, qua đỉnh rồi còn đi xuống. Bố gọi mấy mánh hôm nay là cách **uốn cong đường** mà vẫn dùng đúng công cụ hồi quy con đã quen.
+
+Hôm nay con sẽ làm ba việc: lấy **log của lương** để đọc hệ số theo **phần trăm**, thêm **kinh nghiệm bình phương** để vẽ được "quả đồi" và tìm **đỉnh**, rồi cho hai biến **bắt tay nhau** bằng một tương tác. Đừng lo con, bố đi cùng từng bước một.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Tạo được biến `log(luong)` và đọc hệ số học thành câu **"lương cao hơn bao nhiêu phần trăm"**.
+- Thêm `kinhnghiem` bình phương, vẽ ra đường cong quả đồi và **tự tìm được đỉnh**.
+- Cho một tương tác vào mô hình và hiểu nó nói gì.
+:::
+
+::: {.callout-tip}
+## 💡 Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – không tự chạy**, vì website chưa gắn dữ liệu thật. Con cứ hình dung mình **đã có sẵn một bộ dữ liệu** với các biến: `luong` (lương, triệu đồng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm) và `nu` (bằng 1 nếu là nữ, 0 nếu nam). Khi ngồi trước máy Stata thật, con gõ y hệt vậy là chạy được.
+:::
+
+## Bước 0 — Làm quen cái bàn làm việc mới
+
+Stata là phần mềm phải mua (con dùng bản SE hoặc MP). Lần đầu mở lên, đừng để mấy cửa sổ làm con hoảng — nó chỉ là cái bàn làm việc thôi con. Bố chỉ cho con bốn ngăn:
+
+- **Command** — ô nhỏ dưới cùng, nơi con **gõ lệnh** rồi bấm Enter.
+- **Results** — màn hình lớn ở giữa, Stata **in kết quả** ra đây.
+- **Variables** — bên phải, liệt kê **các biến** con đang có.
+- **Review** — bên trái, ghi lại **những lệnh con đã gõ** (bấm lại được).
+
+Giờ mình bày đồ ra bàn:
+
+```stata
+* Đặt thư mục làm việc (đổi đường dẫn cho đúng máy con)
+cd "C:/ktl"
+
+* Mở một bộ dữ liệu mẫu có sẵn trong Stata cho quen tay
+sysuse auto, clear
+
+* Nhìn qua dữ liệu một cái
+summarize
+```
+
+`cd` là bảo Stata *"từ giờ làm việc trong thư mục này"*. `sysuse auto, clear` mở bộ dữ liệu xe hơi mẫu — chỉ để con tập gõ lệnh cho quen, lát nữa mình quay về dữ liệu lương. Còn một mẹo bố dặn kỹ: thay vì gõ từng dòng vào ô Command, con mở **Do-file Editor** bằng lệnh `doedit`, gõ hết lệnh vào đó rồi chạy. Như vậy lệnh được **lưu lại**, hôm sau mở ra chạy lại y hệt, khỏi gõ lại từ đầu.
+
+**Bố chốt cho con:** Stata chỉ là cái bàn bốn ngăn — `cd` để chọn chỗ ngồi, `doedit` để lưu việc mình làm. Quen bàn rồi mới bắt tay vào bài.
+
+## Bước 1 — Tạo biến log(luong)
+
+Giờ mình quay về dữ liệu lương. Việc đầu tiên: tạo một biến mới là **log của lương**. Tại sao? Vì khi biến phụ thuộc ở dạng log, hệ số đọc ra **theo phần trăm** — gần với cách con người hay nói về lương ("tăng 7%") hơn là "tăng 0,7 triệu".
+
+```stata
+* Mở dữ liệu lương của mình (giả định con đã có file luong.dta)
+use "luong.dta", clear
+
+* Tạo biến log tự nhiên của lương
+generate log_luong = ln(luong)
+
+* Nhìn thử cả hai biến cạnh nhau
+summarize luong log_luong
+```
+
+`generate log_luong = ln(luong)` nghĩa là: *"đẻ ra một biến mới tên `log_luong`, bằng log tự nhiên của lương."* Hàm `ln()` là log cơ số e — trong kinh tế lượng mình luôn dùng loại này. Con đừng sợ chữ "log": nó chỉ là một cái kính lúp, biến phép **nhân/phần trăm** thành phép **cộng** cho dễ đọc.
+
+**Bố chốt cho con:** `generate log_luong = ln(luong)` tạo sẵn nguyên liệu cho mô hình log — chỉ một dòng thôi.
+
+## Bước 2 — Chạy hồi quy log và đọc hệ số theo phần trăm
+
+Giờ mình chạy hồi quy với vế trái là `log_luong`:
+
+```stata
+* Hồi quy log-lương theo học và kinh nghiệm
+regress log_luong hoc kinhnghiem, vce(robust)
+```
+
+`vce(robust)` là cái khăn quàng an toàn bố hay nhắc — nó làm sai số chuẩn bền hơn khi dữ liệu hơi lổn nhổn. Bố quen tay luôn thêm nó.
+
+Giả sử Stata in ra hệ số `hoc` là **0,07**. Đây là chỗ thú vị: vì vế trái là log, con **không** đọc "lương cao hơn 0,07 triệu". Con đọc thành: *"học thêm 1 năm gắn với lương cao hơn khoảng **7%**."* Mẹo nhẩm: lấy hệ số nhân 100 ra phần trăm.
+
+::: {.callout-important}
+## 🧮 Đọc hệ số log bằng số
+| Dạng mô hình | Hệ số `hoc` | Đọc thành |
+|---|---|---|
+| `luong` (thường) | 0,70 | thêm 1 năm học → lương cao hơn **0,70 triệu** |
+| `log_luong` (log) | 0,07 | thêm 1 năm học → lương cao hơn **≈ 7%** |
+
+Cùng một dữ liệu, chỉ đổi vế trái sang log là con đổi từ ngôn ngữ "triệu đồng" sang ngôn ngữ "phần trăm".
+:::
+
+**Bố chốt cho con:** vế trái là log thì hệ số nhân 100 ra phần trăm — 0,07 nghĩa là "cao hơn 7% mỗi năm học".
+
+## Bước 3 — Thêm bậc hai để vẽ "quả đồi" và tìm đỉnh
+
+Kinh nghiệm có một nét rất đời: mấy năm đầu đi làm, mỗi năm thêm lương tăng nhanh. Nhưng làm mãi tới gần về hưu, thêm một năm chẳng nhích bao nhiêu, thậm chí còn tụt. Đường đó **cong như quả đồi**. Đường thẳng không tả nổi. Mình thêm **kinh nghiệm bình phương** vào:
+
+```stata
+* Thêm bình phương của kinh nghiệm bằng cú pháp c. và ##
+regress log_luong hoc c.kinhnghiem##c.kinhnghiem, vce(robust)
+```
+
+Bố giải thích cú pháp này cho con: `c.` báo cho Stata biết `kinhnghiem` là biến **liên tục** (số năm), còn `c.kinhnghiem##c.kinhnghiem` là cách gọn để Stata tự thêm cả `kinhnghiem` lẫn `kinhnghiem` bình phương vào mô hình. Con khỏi phải tự `generate` biến bình phương — cách này còn giúp lệnh `margins` sau này hiểu đúng.
+
+Giả sử kết quả ra: hệ số `kinhnghiem` là **+0,04** (dương) và hệ số `kinhnghiem` bình phương là **−0,001** (âm). Dương rồi âm — đó đúng là hình quả đồi: đi lên trước, cong xuống sau. Đỉnh đồi nằm ở đâu? Con tính bằng công thức nhỏ này:
+
+$$\text{đỉnh} = \frac{-\text{hệ số bậc một}}{2 \times \text{hệ số bậc hai}} = \frac{-0{,}04}{2 \times (-0{,}001)} = 20 \text{ năm}$$
+
+Nghĩa là lương leo theo kinh nghiệm cho tới khoảng **năm thứ 20**, rồi mới chững lại. Để khỏi tính tay, con nhờ Stata vẽ luôn:
+
+```stata
+* Vẽ đường cong lương dự đoán theo số năm kinh nghiệm
+margins, at(kinhnghiem=(0(5)40))
+marginsplot
+```
+
+`margins` tính lương dự đoán tại các mốc kinh nghiệm 0, 5, 10... đến 40 năm; `marginsplot` nối chúng thành đường. Con sẽ thấy ngay cái mu quả đồi cong lên rồi vòng xuống.
+
+**Bố chốt cho con:** bậc một dương + bậc hai âm = quả đồi; đỉnh = −(bậc một)/(2 × bậc hai), ở đây là 20 năm.
+
+## Bước 4 — Một tương tác: hai biến bắt tay nhau
+
+Câu hỏi cuối: *"Lợi ích của mỗi năm học có giống nhau giữa nam và nữ không?"* Để cho phép nó **khác nhau**, mình cho `hoc` và `nu` bắt tay — một **tương tác**:
+
+```stata
+* Tương tác giữa số năm học và giới tính
+regress log_luong c.hoc##i.nu c.kinhnghiem##c.kinhnghiem, vce(robust)
+```
+
+`i.nu` báo `nu` là biến **nhóm** (biến giả nam/nữ), còn `c.hoc##i.nu` cho phép **độ dốc của học** khác nhau giữa hai nhóm. Đọc kết quả thế này: hệ số `hoc` là lợi ích mỗi năm học cho **nhóm gốc** (nam, `nu`=0); cái số đi kèm dòng tương tác `hoc#nu` là **phần chênh lệch** của nhóm nữ. Nếu phần chênh đó âm và có ý nghĩa, nghĩa là mỗi năm học mang lại cho nữ ít phần trăm lương hơn nam — một câu chuyện đáng để con suy nghĩ.
+
+**Bố chốt cho con:** `c.hoc##i.nu` cho phép độ dốc của học khác nhau giữa hai nhóm — hệ số gốc là của nam, dòng tương tác là phần nữ lệch đi.
+
+::: {.callout-tip}
+## 💡 Mẹo nhỏ bố dắt túi cho con
+Khi mô hình có bậc hai hay tương tác, **đừng đọc một hệ số đơn lẻ rồi vội kết luận**. Một mình hệ số `kinhnghiem` không nói được gì nếu con quên hệ số bình phương đi kèm. Cách an toàn nhất là luôn nhờ `margins` và `marginsplot` vẽ ra — mắt nhìn thấy đường cong là hiểu ngay, khỏi cãi nhau với công thức. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+- **Log chỉ dùng được cho số dương.** `ln(luong)` sẽ lỗi nếu có ai đó lương bằng 0 hay âm. Con `summarize luong` kiểm tra trước cho chắc.
+- **Đừng quên dấu `c.`** khi làm bậc hai hay tương tác với biến liên tục. Thiếu nó, Stata tưởng `kinhnghiem` là biến nhóm và đẻ ra một mớ biến giả con không ngờ tới.
+:::
+
+## Ví dụ gần con hơn
+
+Bố đổi sân chơi cho con dễ thấy. Con tập nhảy dây: mấy tuần đầu, mỗi tuần luyện thêm là số lần nhảy liên tục tăng vọt. Nhưng tới lúc con đã giỏi rồi, luyện thêm cũng chỉ nhích vài cái. Vẽ ra giấy, đó lại là một **quả đồi** — lên nhanh rồi cong lại. Nếu con muốn biết "luyện tới tuần thứ mấy thì gần kịch trần", con thêm **tuần bình phương** vào, y hệt mình làm với kinh nghiệm.
+
+Thấy không Mei: lương theo kinh nghiệm hay số lần nhảy theo tuần luyện — **cùng một quả đồi, chỉ thay tên hai trục thôi con** 🌱.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Tạo biến `log_luong = ln(luong)` và đọc hệ số học thành **phần trăm** (0,07 → ≈ 7% mỗi năm).
+2. Thêm **kinh nghiệm bình phương** bằng `c.kinhnghiem##c.kinhnghiem`, vẽ quả đồi bằng `margins`/`marginsplot`, và tìm **đỉnh** ở khoảng 20 năm.
+3. Cho một **tương tác** `c.hoc##i.nu` để lợi ích mỗi năm học được phép khác nhau giữa nam và nữ.
+:::

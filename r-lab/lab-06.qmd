@@ -1,7 +1,154 @@
 ---
-title: "Lab 6 — Kiểm tra giả định cổ điển"
+title: "Lab 6 — Dạng hàm log & bậc hai"
 subtitle: "Tương ứng [Buổi 6](../lectures/buoi-06.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab R — điền sau.)*
+Mei à, ở [Buổi 6](../lectures/buoi-06.qmd) bố kể con nghe chuyện **uốn cong đường** — không phải lúc nào quan hệ giữa hai thứ cũng thẳng băng như cây thước. Có khi nó là **phần trăm** (cứ thêm một năm học thì lương tăng *bao nhiêu phần trăm*, chứ không phải thêm cứng mấy triệu). Có khi nó là một **quả đồi**: đi lên một đoạn rồi tới đỉnh rồi đổ dốc xuống.
+
+Hôm nay con tự tay làm ba việc nhỏ. Một, tạo biến `log(luong)` rồi đọc hệ số theo **phần trăm**. Hai, thêm `kinhnghiem` bình phương để vẽ ra cái quả đồi và **tìm đỉnh**. Ba, thêm một **tương tác** để hỏi "lợi ích của học có khác giữa nam và nữ không". Bố tin con làm được, mình bắt đầu nhé.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy được hồi quy **log-lin** và đọc hệ số ra **phần trăm**.
+- Thêm số hạng **bình phương** để uốn cong đường, rồi tự **tìm đỉnh quả đồi**.
+- Viết được một **tương tác** `x * group` và đọc nó bằng lời.
+:::
+
+::: {.callout-warning}
+## ⚠️ Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – hiểu**, chưa nối với dữ liệu thật, nên con cứ đọc theo bố trước. Bố **giả định** con đã có một bảng dữ liệu tên `df` với các cột: `luong` (lương, triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ, 0 nếu là nam). Khi nào có dữ liệu thật, con chỉ việc đổ vào đúng tên cột này là chạy được ngay.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔧 Con chưa cài R? Bố chỉ con vài bước, đừng lo
+Con vào **cran.r-project.org** tải R về cài, rồi cài thêm **RStudio** cho dễ nhìn (hoặc dùng VS Code rồi thêm extension R cũng được). Mở RStudio lên con sẽ thấy mấy ô: **Console** (gõ lệnh chạy ngay), **Script/Source** (nơi con lưu lệnh thành file `.R`), **Environment** (xem dữ liệu đang có), **Plots** (xem hình vẽ). Lần đầu cần gói nào thì gõ một dòng `install.packages("tidyverse")` chờ nó tải xong. Đọc dữ liệu CSV thì dùng `read.csv("file.csv")`. Con quen viết lệnh trong ô Script rồi lưu lại thành file `.R` để lần sau mở ra chạy lại — không phải gõ lại từ đầu. Từ từ thôi con, vài lần là quen tay.
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Mình ngó dữ liệu một cái cho chắc trước khi chạy.
+
+```r
+# Bố giả định con đã có sẵn data.frame tên df với các cột:
+#   df$luong       lương, triệu đồng/tháng
+#   df$hoc         số năm đi học
+#   df$kinhnghiem  số năm kinh nghiệm đi làm
+#   df$nu          1 nếu là nữ, 0 nếu là nam
+head(df)
+```
+
+`head(df)` chỉ in vài dòng đầu cho con liếc mắt xem dữ liệu có đúng hình hài mình mong không. Lúc nào mở dữ liệu mới, con cũng nhìn qua như thế nhé.
+
+**Bố chốt cho con:** ngó dữ liệu một cái rồi mới chạy, như sờ trán xem con có sốt không vậy đó.
+
+## Bước 1 — Tạo biến log(luong) và chạy hồi quy log
+
+Trước hết mình tạo một cột mới: lấy **logarit tự nhiên** của lương. Trong R chỉ một dòng:
+
+```r
+df$log_luong <- log(df$luong)
+```
+
+Rồi mình hồi quy cột mới đó theo số năm học:
+
+```r
+m1 <- lm(log_luong ~ hoc, data = df)
+summary(m1)
+```
+
+Giả sử R in ra hệ số của `hoc` là **0,08**. Con đọc nó **không phải** là "thêm 1 năm học lương tăng 0,08 triệu" đâu nhé. Vì vế trái bây giờ là **log của lương**, nên con nhân hệ số với 100 và đọc ra **phần trăm**: *"thêm 1 năm đi học thì lương cao hơn khoảng **8%**."*
+
+Cái hay của log nằm ở chỗ đó, Mei à. Lương người ta chênh nhau ghê lắm — người vài triệu, người vài chục triệu. Hỏi "thêm bao nhiêu triệu" thì câu trả lời mỗi người một khác. Nhưng hỏi "tăng bao nhiêu phần trăm" thì gọn gàng, áp cho ai cũng hợp lý.
+
+**Bố chốt cho con:** khi vế trái là `log`, hệ số nhân 100 đọc ra **phần trăm**. Đó là mô hình log-lin.
+
+## Bước 2 — Thêm kinhnghiem bình phương để có "quả đồi"
+
+Giờ tới phần vui. Kinh nghiệm thường không tăng lương mãi mãi đâu con — lúc trẻ đi làm thì lương lên nhanh, nhưng tới một lúc nào đó chững lại, thậm chí về già còn tụt. Quan hệ đó cong như một **quả đồi**, chứ không thẳng. Muốn R uốn cong được đường, mình cho thêm **kinh nghiệm bình phương**.
+
+Trong R con bọc số hạng bình phương trong `I(...)` để R hiểu đây là phép mũ thật, không phải ký hiệu gì khác:
+
+```r
+m2 <- lm(log_luong ~ hoc + kinhnghiem + I(kinhnghiem^2), data = df)
+summary(m2)
+```
+
+Giả sử R in ra hệ số `kinhnghiem` là **+0,04** và hệ số `I(kinhnghiem^2)` là **−0,0008**.
+
+Con để ý cái dấu: số hạng thường **dương** (lúc đầu lương lên), số hạng bình phương **âm** (về sau lương đổ dốc). Một cộng một trừ — đó đúng là hình quả đồi: lên dốc, tới đỉnh, rồi xuống dốc.
+
+**Bố chốt cho con:** thêm `I(kinhnghiem^2)` là cách bảo R "cho phép đường này cong lại". Dấu dương rồi dấu âm = quả đồi.
+
+## Bước 3 — Tìm đỉnh quả đồi
+
+Đỉnh đồi là chỗ lương thôi không lên nữa — bao nhiêu năm kinh nghiệm thì tới đỉnh? Có một công thức nhỏ xíu, con không cần thuộc, cứ để máy tính làm:
+
+$$\text{đỉnh} = \frac{-\,b_1}{2\,b_2}$$
+
+với `b1` là hệ số `kinhnghiem`, `b2` là hệ số bình phương. Mình gõ thẳng vào R cho nó tính:
+
+```r
+b1 <- coef(m2)["kinhnghiem"]
+b2 <- coef(m2)["I(kinhnghiem^2)"]
+dinh <- -b1 / (2 * b2)
+dinh
+```
+
+Với hai con số giả định ở trên: `−0,04 / (2 × −0,0008) = 25`. Nghĩa là lương leo dốc tới khoảng **25 năm kinh nghiệm** thì tới đỉnh, sau đó bắt đầu thoai thoải đi xuống.
+
+::: {.callout-important}
+## 🧮 Đọc cái đỉnh bằng số
+| Số năm kinh nghiệm | Lương đang… |
+|---|---|
+| 0 → 25 năm | leo dốc (số hạng dương thắng) |
+| **25 năm** | **đỉnh** — cao nhất |
+| sau 25 năm | đổ dốc nhẹ (số hạng âm thắng) |
+
+Con số 25 này tự nó kể một câu chuyện: người mới đi làm thì mỗi năm kinh nghiệm quý lắm, nhưng tới giữa sự nghiệp thì mỗi năm thêm chẳng còn đẩy lương lên bao nhiêu nữa.
+:::
+
+Muốn nhìn quả đồi tận mắt, con vẽ ra:
+
+```r
+plot(df$kinhnghiem, fitted(m2))   # trục ngang: kinh nghiệm; trục đứng: log_luong dự đoán
+```
+
+Con sẽ thấy đám chấm xếp thành một vòng cung. Nhìn là tin liền.
+
+**Bố chốt cho con:** đỉnh = `−b1 / (2·b2)`. Để R bấm máy, con chỉ việc đọc kết quả thành chuyện đời.
+
+## Bước 4 — Thêm một tương tác
+
+Câu hỏi cuối: *"một năm học có đem lại lợi ích như nhau cho nam và nữ không?"* Đó là một **tương tác** — mình cho phép độ dốc của `hoc` được khác nhau giữa hai nhóm. Trong R con chỉ cần một dấu sao:
+
+```r
+m3 <- lm(log_luong ~ hoc * nu + kinhnghiem + I(kinhnghiem^2), data = df)
+summary(m3)
+```
+
+Viết `hoc * nu`, R tự bỏ vào cả `hoc`, cả `nu`, **và** số hạng tương tác `hoc:nu` — không phải gõ tay từng cái.
+
+Con đọc kết quả thế này: hệ số `hoc` là lợi ích của một năm học **cho nhóm nam** (vì `nu = 0`). Còn hệ số `hoc:nu` cho biết nhóm **nữ** lợi ích đó **thêm hay bớt bao nhiêu** so với nam. Nếu `hoc:nu` là số dương và có ý nghĩa → mỗi năm học giúp nữ tăng lương nhiều hơn nam; nếu âm thì ngược lại; nếu gần 0 → hai nhóm gần như nhau.
+
+**Bố chốt cho con:** `hoc * nu` là cách hỏi "còn tùy giới tính". Hệ số tương tác đọc là **phần chênh lệch** giữa hai nhóm, không phải con số đứng một mình.
+
+::: {.callout-tip}
+## 💡 Mẹo bố dặn con
+Khi dùng log, con để ý: hệ số nhỏ (dưới khoảng 0,1) thì nhân 100 đọc phần trăm là **gần đúng** rồi, đủ xài. Nhưng nếu hệ số to (ví dụ 0,5 trở lên), con đừng đọc thẳng là "50%" — chỗ đó công thức gần đúng bắt đầu lệch. Lúc cần con số chính xác thì tính `100 * (exp(hệ_số) − 1)`. Còn lúc kể chuyện cho nhanh thì cứ nhân 100, không sao đâu con.
+:::
+
+## Cùng một trò chơi, đổi tên hai trục
+
+Ví dụ trên là chuyện "người lớn": lương – học – kinh nghiệm. Giờ bố kể phiên bản gần con hơn.
+
+Con tưới cây. Lúc đầu cứ thêm chút nước là cây cao thêm hẳn — đường đi lên. Nhưng tưới nhiều quá thì cây úng, lại còi đi — đường đổ xuống. Quan hệ giữa **nước** và **chiều cao** cũng là một **quả đồi**, y hệt kinh nghiệm với lương. Con chạy `chieu_cao ~ nuoc + I(nuoc^2)`, lấy `−b1/(2·b2)`, là ra **lượng nước vừa đẹp** để cây cao nhất.
+
+Thấy không Mei — *cùng một trò chơi, chỉ thay tên hai trục thôi con* 🌱. Lương–kinh nghiệm hay chiều cao–nước, quả đồi vẫn chơi đúng một chiêu: lên, tới đỉnh, rồi xuống.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Tạo `log(luong)` rồi chạy hồi quy log-lin, và **đọc hệ số ra phần trăm** (nhân 100).
+2. Thêm `I(kinhnghiem^2)` để uốn đường thành **quả đồi**, rồi **tìm đỉnh** bằng `−b1/(2·b2)`.
+3. Viết một **tương tác** `hoc * nu` và đọc hệ số tương tác là **phần chênh lệch** giữa hai nhóm.
+:::

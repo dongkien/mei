@@ -1,7 +1,215 @@
 ---
-title: "Lab 7 — Đa cộng tuyến & chẩn đoán"
+title: "Lab 7 — Biến giả & biến tương tác"
 subtitle: "Tương ứng [Buổi 7](../lectures/buoi-07.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab R — điền sau.)*
+Mei à, ở [Buổi 7](../lectures/buoi-07.qmd) bố kể con nghe chuyện: làm sao nhét một thứ **không phải con số** — như "nam hay nữ", "thành thị hay nông thôn" — vào một cái máy chỉ biết nhân với cộng? Câu trả lời là **biến giả**: mình gắn cho mỗi nhóm một cái nhãn 0 và 1.
+
+Hôm nay con tự tay làm. Mình sẽ tạo một biến giả, đọc hệ số của nó như **chênh lệch trung bình giữa hai nhóm**, rồi thêm **tương tác** để hai nhóm được phép có **độ dốc khác nhau**. Đừng lo con, mình đi từng bước một thôi.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Tạo được một **biến giả** (0/1) và chạy `lm()` với nó.
+- Đọc hệ số biến giả như **khoảng cách giữa hai đường song song**.
+- Thêm **tương tác** `học * nu` và nói được câu "lợi ích của học ở nữ khác nam".
+:::
+
+## Bước 0 — Giả định về dữ liệu
+
+Bố giả định con đã có sẵn một bảng dữ liệu tên `luong_df`, mỗi dòng là một người, với các cột:
+
+- `luong` — lương (triệu đồng/tháng),
+- `hoc` — số năm đi học,
+- `kinhnghiem` — số năm kinh nghiệm,
+- `gioitinh` — chữ "Nu" hoặc "Nam".
+
+(Site này chưa kèm file dữ liệu thật, nên các khối mã dưới đây bố để **không chạy** — con đọc hiểu rồi gõ lại trên máy con với dữ liệu của con.)
+
+## Bước 1 — Nạp gói và ngó qua dữ liệu
+
+```r
+# Các gói mình cần cho cả lab
+library(lmtest)        # coeftest() — in lại hệ số với sai số chuẩn mình chọn
+library(sandwich)      # vcovHC()  — sai số chuẩn "robust" (vững)
+library(modelsummary)  # modelsummary() — xuất bảng kết quả đẹp
+
+# Ngó nhanh dữ liệu
+head(luong_df)
+table(luong_df$gioitinh)   # đếm xem có bao nhiêu Nam, bao nhiêu Nu
+```
+
+`table()` chỉ là cách bố đếm xem mỗi nhóm có bao nhiêu người. Con luôn nên nhìn cái này trước: nếu một nhóm chỉ có vài người, mọi kết luận về nhóm đó đều bấp bênh.
+
+**Bố chốt cho con:** nhìn dữ liệu một cái đã, rồi mới chạy mô hình.
+
+## Bước 2 — Tạo biến giả
+
+Mình muốn một cột tên `nu` bằng **1 nếu là nữ**, **0 nếu là nam**.
+
+```r
+# Cách 1: tự tay tạo, rõ ràng nhất cho con
+luong_df$nu <- ifelse(luong_df$gioitinh == "Nu", 1, 0)
+
+# Cách 2 (R thích hơn): để R tự coi gioitinh là "biến phân nhóm"
+luong_df$gioitinh <- factor(luong_df$gioitinh)
+```
+
+`ifelse(điều kiện, 1, 0)` đọc thành tiếng người là: *"hễ đúng là nữ thì ghi 1, không thì ghi 0"*. Còn `factor()` là bảo R: *"cột này là nhãn nhóm, không phải con số để tính toán"* — khi đó `lm()` sẽ **tự** dựng biến giả giúp con, và tự chọn một nhóm làm **nhóm gốc** (mặc định nhóm xếp trước theo bảng chữ cái — ở đây là "Nam").
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy nhỏ bố dặn con
+Nhóm nào mang giá trị **0** thì gọi là **nhóm gốc** (nhóm so sánh). Mọi hệ số biến giả sau này đều đọc là *"so với nhóm gốc"*. Con phải biết rõ nhóm gốc là ai, không là đọc ngược nghĩa ngay.
+:::
+
+**Bố chốt cho con:** biến giả chỉ là cái nhãn 0/1; ai mang số 0 là người mình lấy làm mốc.
+
+## Bước 3 — Hồi quy có biến giả: hai đường song song
+
+Giờ con chạy mô hình `luong ~ hoc + nu`:
+
+```r
+m1 <- lm(luong ~ hoc + nu, data = luong_df)
+summary(m1)
+```
+
+Giả sử bảng kết quả ra như thế này (con số bố bịa cho dễ hình dung):
+
+```r
+#               Estimate
+# (Intercept)     4.0
+# hoc             0.5
+# nu             -1.2
+```
+
+Bố dịch sang tiếng người cho con:
+
+- `hoc = 0.5`: mỗi năm học thêm, lương cao hơn khoảng **0,5 triệu** — và con số này áp dụng cho **cả nam lẫn nữ** (vì mô hình này bắt hai nhóm có cùng độ dốc).
+- `nu = -1.2`: ở **cùng số năm học**, nữ có lương trung bình **thấp hơn nam 1,2 triệu**.
+
+Hình dung thế này: con vẽ hai đường lương-theo-học, một cho nam, một cho nữ. Mô hình này bắt hai đường **song song** (cùng dốc 0,5), chỉ khác nhau ở chỗ đường nữ **nằm thấp hơn đúng 1,2 triệu** trên suốt chiều dài. Hệ số `nu` chính là **khoảng cách thẳng đứng** giữa hai đường.
+
+**Bố chốt cho con:** hệ số biến giả = chênh lệch trung bình giữa hai nhóm, khi mọi thứ khác như nhau.
+
+## Bước 4 — Sai số chuẩn "vững" (robust)
+
+Nhớ Buổi 5 không con — mỗi hệ số đi kèm một **sai số chuẩn** đo độ lắc lư. Sai số chuẩn mặc định của `lm()` giả định mọi người "nhiễu" đều như nhau, đời thì không vậy. Mình dùng **robust SE** cho yên tâm:
+
+```r
+coeftest(m1, vcov = vcovHC(m1, type = "HC1"))
+```
+
+`coeftest()` in lại đúng bảng hệ số quen thuộc, nhưng cột sai số chuẩn (và do đó cột t, cột p) được tính theo kiểu **vững** hơn. Hệ số `0.5` và `-1.2` **không đổi** — chỉ mức độ "mình tin con số đó tới đâu" được tính lại cho thật thà hơn.
+
+**Bố chốt cho con:** robust SE không sửa hệ số, nó chỉ sửa lại mức độ tự tin của mình.
+
+## Bước 5 — Thêm tương tác: cho hai đường được dốc khác nhau
+
+Câu hỏi sâu hơn: *liệu mỗi năm học có đem lại lợi ích **bằng nhau** cho nam và nữ không?* Mô hình ở Bước 3 **giả định** là bằng nhau (hai đường song song). Giờ mình tháo cái giả định đó ra bằng **tương tác**:
+
+```r
+m2 <- lm(luong ~ hoc * nu, data = luong_df)
+summary(m2)
+coeftest(m2, vcov = vcovHC(m2, type = "HC1"))
+```
+
+`hoc * nu` trong R là lối viết tắt, R tự bung thành ba thứ: `hoc`, `nu`, và **tích** `hoc:nu`. Giả sử ra:
+
+```r
+#               Estimate
+# (Intercept)     3.8
+# hoc             0.6
+# nu             -0.4
+# hoc:nu         -0.15
+```
+
+Đây là chỗ con phải đọc **cả cụm**, đừng đọc lẻ:
+
+- `hoc = 0.6`: ở **nhóm gốc (nam)**, mỗi năm học thêm 0,6 triệu.
+- `hoc:nu = -0.15`: nữ được lợi từ học **ít hơn nam 0,15 triệu mỗi năm**. Nên độ dốc của nữ là `0.6 + (-0.15) = 0.45` triệu/năm.
+- `nu = -0.4`: khoảng cách giữa hai nhóm **ở mốc học = 0**; đừng diễn giải nó như "chênh lệch chung" nữa, vì giờ chênh lệch **thay đổi theo số năm học**.
+
+Hình dung lại hai đường: bây giờ chúng **không còn song song**. Đường nam dốc hơn, đường nữ thoải hơn — học càng nhiều, khoảng cách lương giữa hai nhóm càng nới rộng. Đó chính là điều `hoc:nu` nói cho con.
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số: lợi ích của 4 năm đại học
+Lấy mô hình `m2` ở trên, so một người học 16 năm với người học 12 năm (thêm 4 năm):
+
+- **Nam:** lợi thêm = $4 \times 0{,}6 = 2{,}4$ triệu.
+- **Nữ:** lợi thêm = $4 \times 0{,}45 = 1{,}8$ triệu.
+
+Cùng 4 năm đèn sách, mô hình ước lượng nam được thêm nhiều hơn nữ 0,6 triệu. Đây mới là con số đáng kể chú ý — chứ không phải hệ số `nu = -0.4` đứng một mình.
+:::
+
+**Bố chốt cho con:** tương tác cho hai nhóm độ dốc riêng; độ dốc của nhóm 1 = hệ số chính **cộng** hệ số tương tác.
+
+## Bước 6 — Ngó phần dư xem mô hình có ổn không
+
+```r
+plot(fitted(m2), resid(m2),
+     xlab = "Giá trị mô hình đoán",
+     ylab = "Phần dư (thực tế - đoán)")
+abline(h = 0, lty = 2)
+```
+
+`resid()` là **phần dư** — phần mô hình đoán trật. Mình vẽ phần dư theo giá trị mô hình đoán, rồi nhìn xem các điểm có **rải đều quanh đường 0** không. Nếu chúng tản đều như mưa bụi, mình yên tâm. Nếu chúng xòe ra hình cái phễu (chỗ hẹp chỗ rộng), đó là dấu hiệu "nhiễu không đều" — và đó đúng là lý do ở Bước 4 mình đã thủ sẵn robust SE.
+
+**Bố chốt cho con:** phần dư rải đều quanh 0 là tốt; xòe hình phễu là lời nhắc dùng robust SE.
+
+## Bước 7 — Khi đầu ra là 0/1: dùng logit
+
+Đôi khi thứ con muốn giải thích bản thân nó **đã là** một biến giả — ví dụ `co_viec = 1` nếu có việc làm, `0` nếu không. Lúc đó dùng `glm()` với họ `binomial` (gọi là **logit**) hợp hơn `lm()`, vì nó luôn cho ra một **xác suất** nằm gọn trong khoảng 0 đến 1:
+
+```r
+m3 <- glm(co_viec ~ hoc + nu, data = luong_df, family = binomial)
+summary(m3)
+```
+
+Bố nói nhỏ: hệ số logit **không** đọc trực tiếp bằng triệu hay phần trăm như OLS được — dấu (+ hay −) thì đọc được ngay ("học nhiều thì khả năng có việc tăng"), còn độ lớn thì để buổi sau mình bàn kỹ. Giờ con chỉ cần biết: *đầu ra 0/1 thì gọi logit, đừng ép `lm()`.*
+
+**Bố chốt cho con:** biến giả nằm bên **phải** thì dùng `lm()` bình thường; biến giả là thứ cần **giải thích** (bên trái) thì gọi `glm(..., family = binomial)`.
+
+## Bước 8 — Xuất bảng so sánh các mô hình
+
+Cuối cùng, mình đặt ba mô hình cạnh nhau cho dễ so:
+
+```r
+modelsummary(
+  list("Có biến giả" = m1, "Có tương tác" = m2, "Logit" = m3),
+  vcov = "HC1",        # dùng robust SE cho m1, m2
+  stars = TRUE,        # gắn dấu sao đánh dấu mức ý nghĩa
+  gof_map = c("nobs", "r.squared")
+)
+```
+
+`modelsummary()` xếp hệ số theo hàng, mỗi mô hình một cột — đúng kiểu bảng con thấy trong các bài báo. `stars = TRUE` thêm dấu sao cho hệ số "có ý nghĩa thống kê" (nhớ Buổi 5 chứ con).
+
+::: {.callout-tip}
+## 💡 Mẹo bố nói nhỏ con nghe
+Khi có tương tác, **đừng bao giờ** đọc hệ số `nu` hay `hoc` một mình rồi vội kết luận. Con cứ tự hỏi: *"ở nhóm này, thay đổi 1 đơn vị thì lương đổi bao nhiêu?"* rồi **cộng đúng các mảnh** lại (hệ số chính + hệ số tương tác cho nhóm 1). Một cách nhanh để kiểm tra mình đọc đúng: dùng `predict()` đoán lương cho một người nam học 16 năm và một người nữ học 16 năm, rồi xem hiệu số có khớp với phép tính tay của con không.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng trò chơi, chỉ thay tên hai trục thôi
+Đổi "lương theo số năm học" thành chuyện của con: **số chữ con đọc đúng** theo **số phút luyện đọc mỗi ngày**, và biến giả là *"đọc to thành tiếng"* (1) hay *"đọc thầm"* (0).
+
+- Hệ số biến giả = đọc to thì trung bình đúng thêm bao nhiêu chữ so với đọc thầm.
+- Tương tác `phut_luyen × doc_to` = liệu **mỗi phút luyện** có hiệu quả hơn khi con đọc to không.
+
+Y hệt bài lương — cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì trong lab này
+1. Tạo **biến giả** bằng `ifelse()`/`factor()`, chạy `lm()`, và đọc hệ số nó như **chênh lệch trung bình hai nhóm** (hai đường song song).
+2. Thêm **tương tác** `hoc * nu` để hai nhóm có **độ dốc khác nhau** — và biết cộng hệ số chính với hệ số tương tác để ra độ dốc từng nhóm.
+3. Dùng **robust SE** (`coeftest` + `vcovHC`), ngó **phần dư** bằng `plot()`, gọi **logit** khi đầu ra là 0/1, và xuất bảng gọn bằng `modelsummary()`.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu
+- Viết `lm(luong ~ hoc * nu)` **giống hệt** viết `lm(luong ~ hoc + nu + hoc:nu)` — dấu `*` chỉ là lối viết tắt để R tự thêm cả số hạng tích lẫn các số hạng lẻ.
+- Tổng quát, với tương tác $y = \beta_0 + \beta_1 \text{hoc} + \beta_2 \text{nu} + \beta_3 (\text{hoc}\cdot\text{nu})$: tác dụng của một năm học là $\beta_1 + \beta_3\,\text{nu}$ — đúng nghĩa *"còn tùy con là nam hay nữ"*. Với nam (nu=0) là $\beta_1$; với nữ (nu=1) là $\beta_1+\beta_3$.
+- `factor()` có nhiều hơn hai nhóm (ví dụ ba vùng miền) sẽ tự sinh ra **nhiều biến giả** cùng lúc, mỗi nhóm so với nhóm gốc; muốn đổi nhóm gốc thì dùng `relevel(bien, ref = "TenNhom")`.
+- Trong logit, độ lớn hệ số đọc qua **tỷ số odds** $e^{\beta}$ chứ không đọc tuyến tính như OLS — bố để dành buổi mô hình biến phụ thuộc rời rạc nói cho kỹ.
+:::

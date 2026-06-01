@@ -1,14 +1,113 @@
 ---
-title: "Buổi 5 — Hồi quy bội (1) — mô hình k biến & ước lượng OLS"
-subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+title: "Buổi 5 — Thật, hay chỉ là tình cờ?"
+subtitle: "Suy diễn thống kê — kiểm định t và F"
 reading-time: "Chương 3"
 ---
 
+Mei à, mô hình cho mình con số 0,4: "học thêm 1 năm, lương cao hơn 0,4 triệu."
+
+Nhưng bố hỏi con: con số đó là từ **một nhóm người** mình lỡ hỏi. Nếu bố đi hỏi **500 người khác**, chắc gì ra đúng 0,4 — có khi 0,38, có khi 0,43. Vậy 0,4 là **thật**, hay chỉ là **tình cờ** của nhóm người hôm nay?
+
+Đây là câu hỏi sống còn của cả môn. Hôm nay bố dạy con cách trả lời: *con số này có đáng tin, hay chỉ là may rủi?*
+
 ::: {.callout-note appearance="simple"}
-## 🎯 Mục tiêu Buổi 5
-*(Sẽ bổ sung.)*
+## 🎯 Bố mong sau buổi này con sẽ
+- Hiểu vì sao con số ước lượng luôn **lắc lư** (và "sai số chuẩn" đo cái lắc đó).
+- Đọc được **kiểm định t** và **trị số p** để biết một con số có "thật" không.
+- Nói được câu *"bố khá chắc hiệu ứng thật nằm trong khoảng…"* (khoảng tin cậy).
 :::
 
-## Nội dung
+## Một thìa canh và cả nồi canh
 
-*(Khung bài giảng Buổi 5 — điền sau.)*
+Con nếm **một thìa** để đoán vị **cả nồi** canh. Thìa này hơi mặn, thìa kia hơi nhạt — mỗi thìa cho một con số hơi khác. Dữ liệu của mình cũng vậy: nhóm người mình hỏi chỉ là *một thìa* múc ra từ *cả xã hội*.
+
+Vì mỗi "thìa" cho một con số hơi khác, nên con số 0,4 của mình **có độ lắc lư**. Người ta đo độ lắc đó bằng một thứ gọi là **sai số chuẩn**.
+
+::: {.callout-tip}
+## 💡 Sai số chuẩn là gì, nói cho dễ
+**Sai số chuẩn = con số này sẽ lắc lư cỡ nào nếu mình đi hỏi một nhóm người khác.**
+
+- Sai số chuẩn **nhỏ** → dù hỏi nhóm nào cũng ra na ná → con số *chắc chắn*.
+- Sai số chuẩn **lớn** → hỏi nhóm khác là ra khác hẳn → con số *bấp bênh*.
+
+Máy tính in nó ngay cạnh mỗi hệ số. Con đừng bao giờ nhìn hệ số mà quên nhìn cái này.
+:::
+
+## Câu hỏi mấu chốt: liệu sự thật có thể là "số 0"?
+
+Giả sử thật ra việc học **chẳng ảnh hưởng gì** tới lương — hiệu ứng thật là **0**. Liệu mình có thể *tình cờ* hỏi trúng một nhóm và ra 0,4 không? Có thể chứ — nếu con số lắc lư mạnh.
+
+Vậy mình so: **con số mình đo được cách xa số 0 bao nhiêu, tính theo "đơn vị lắc lư"?**
+
+$$t = \frac{\text{con số đo được}}{\text{sai số chuẩn}}$$
+
+::: {.callout-tip}
+## 💡 Đọc trị số t cho dễ
+- $t$ chỉ là *"con số của mình cách 0 bao nhiêu lần độ lắc lư"*.
+- $|t|$ **lớn** (quy ước thô: **trên 2**) → xa số 0, **khó mà tình cờ** → mình tin hiệu ứng là thật, gọi là *"có ý nghĩa thống kê"*.
+- $|t|$ **nhỏ** (dưới 2) → con số chìm trong nhiễu, **chưa dám tin** nó khác 0.
+:::
+
+Đi kèm $t$ là **trị số p** (p-value): *nếu sự thật là 0, xác suất tình cờ thấy con số to như mình đo được là bao nhiêu.* p **nhỏ** (quy ước < 0,05) nghĩa là "khó tình cờ lắm" → tin được.
+
+::: {.callout-tip}
+## 💡 Đồng xu nghi gian
+Con nghi một đồng xu bị gian. Con tung 10 lần, ra **9 lần ngửa**. Một đồng xu *thật* (công bằng) cũng *có thể* ra thế — nhưng **hiếm lắm**. Cái "hiếm lắm" đó chính là trị số p nhỏ → con có quyền kết luận: đồng xu này gian thật. Kiểm định t làm đúng kiểu suy luận đó cho hệ số của mình.
+:::
+
+## Đẹp hơn một câu "có / không": khoảng tin cậy
+
+Thay vì chỉ phán "có ý nghĩa hay không", mình nói được điều giàu thông tin hơn: một **khoảng** mà mình khá chắc chứa hiệu ứng thật.
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số
+Hệ số học = **0,4**, sai số chuẩn = **0,1**. Vậy:
+
+- $t = 0{,}4 / 0{,}1 = 4$ → lớn hơn 2 nhiều → **rất đáng tin là khác 0** (p rất nhỏ).
+- **Khoảng tin cậy 95%** ≈ $0{,}4 \pm 2\times0{,}1 = [0{,}2 \,;\, 0{,}6]$.
+
+Mình nói: *"Bố khá chắc (95%) hiệu ứng thật của mỗi năm học nằm đâu đó giữa 0,2 và 0,6 triệu."* Để ý: khoảng này **không chứa số 0** — thêm một cách nói "có ý nghĩa".
+:::
+
+## Hỏi cả nhóm một lúc: kiểm định F
+
+Kiểm định t hỏi về **một** con số. Đôi khi con muốn hỏi về **cả một nhóm** cùng lúc: *"Nhóm biến này (ví dụ: tất cả các biến về vùng miền) — có cái nào quan trọng không, hay bỏ hết cũng được?"*
+
+Đó là việc của **kiểm định F**. Con cứ hình dung: thay vì thẩm vấn từng nghi phạm, F hỏi *"trong cả nhóm này có ai liên quan tới vụ án không?"* — một câu trả lời chung cho cả nhóm.
+
+**Bố chốt cho con:** t soi *một* con số; F soi *cả một nhóm* con số.
+
+::: {.callout-tip}
+## 💡 Cùng ý tưởng đó, nhưng gần con hơn
+Tuần này con nhảy dây được **45 cái**, tuần trước **40**. Con giỏi lên thật, hay hôm nay con khoẻ/may?
+
+Nếu ngày thường con nhảy lúc 38 lúc 42 (lắc lư ±2 cái), thì **45 vượt hẳn mức dao động** → giỏi lên thật. Nhưng nếu ngày thường con nhảy lúc 30 lúc 50 (lắc lư rất mạnh), thì 45 *chìm trong dao động* → chưa chắc đã giỏi lên, có khi chỉ may. Đó **đúng là** điều kiểm định t làm: so mức tăng với mức lắc lư bình thường. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Ba điều bố dặn con tránh
+1. **"Có ý nghĩa thống kê" KHÔNG có nghĩa là "lớn / quan trọng".** Với dữ liệu cực nhiều, một hiệu ứng tí xíu vô vị cũng "có ý nghĩa". Luôn hỏi thêm: *con số này có lớn đủ để quan tâm trên thực tế không?*
+2. **"Có ý nghĩa" vẫn KHÔNG phải "nhân quả".** Nhớ Buổi 1: còn phải lo kẻ giấu mặt (Buổi 8).
+3. **Đừng đi "săn" trị số p** — thử trăm mô hình rồi khoe cái nào p nhỏ. Đó là tự lừa mình.
+:::
+
+## Thấy bằng số
+
+Tự tay con đọc cột sai số chuẩn, trị số t, p và khoảng tin cậy trong bảng kết quả:
+
+- 💻 [Stata Lab 5](../stata-lab/lab-05.qmd) · [R Lab 5](../r-lab/lab-05.qmd) · [Python Lab 5](../python-lab/lab-05.qmd)
+
+::: {.callout-note}
+## 🔑 Ba điều bố muốn con mang về từ Buổi 5
+1. Con số của mình chỉ là **một thìa canh** — nó **lắc lư**, và **sai số chuẩn** đo độ lắc đó.
+2. **Kiểm định t** (và trị số p) trả lời: *con số này khác 0 thật, hay chỉ tình cờ?* — $|t|>2$ hoặc $p<0{,}05$ thì tin được; **F** hỏi cho cả một nhóm biến.
+3. "Có ý nghĩa thống kê" ≠ **lớn/quan trọng**, và ≠ **nhân quả**. Đừng quên hai điều này.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu — vài chỗ cho chính xác
+- Trị số t đầy đủ là $t = (\hat\beta - \beta_0)/\text{SE}(\hat\beta)$, với $\beta_0$ là giá trị mình muốn kiểm (thường là 0).
+- Quy ước "$|t|>2$" và "$p<0{,}05$" và "$\hat\beta \pm 2\,\text{SE}$" thực ra dùng con số **1,96** (từ phân phối chuẩn) khi mẫu lớn; mẫu nhỏ thì dùng phân phối *t-Student* nên ngưỡng hơi khác.
+- Trị số p **không** phải "xác suất giả thuyết đúng" — nó là *"xác suất thấy dữ liệu cực đoan thế này NẾU sự thật là 0"*. Hiểu nhầm chỗ này là lỗi kinh điển, con nhớ giùm bố.
+- Kiểm định F so hai mô hình (có và không có nhóm biến) xem nhóm đó **giảm sai sót đủ nhiều** để đáng giữ lại không.
+:::

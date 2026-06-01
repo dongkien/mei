@@ -1,7 +1,170 @@
 ---
-title: "Lab 4 — Đánh giá độ phù hợp & phần dư"
+title: "Lab 4 — Kiểm tra giả định & đa cộng tuyến"
 subtitle: "Tương ứng [Buổi 4](../lectures/buoi-04.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Stata — điền sau.)*
+Mei à, ở [Buổi 4](../lectures/buoi-04.qmd) bố kể con nghe về **hai anh em sinh đôi** — hai biến lúc nào cũng dắt tay nhau đi cùng, đến mức mô hình không biết phân biệt ai là ai. Bố gọi chuyện đó là **đa cộng tuyến**.
+
+Hôm nay con sẽ tự tay dựng ra cảnh đó: bố con mình **cố tình** nhét cả `kinhnghiem` và `tuoi` vào cùng một mô hình — hai anh em sinh đôi đúng nghĩa, vì người càng lớn tuổi thường càng nhiều năm đi làm. Rồi con ngồi xem hệ số bắt đầu giở chứng kỳ cục, **sai số chuẩn phình to** ra, và con đo mức "dính nhau" đó bằng một con số tên là **VIF**. Đừng lo, bố đi cùng con từng bước.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy được hồi quy "lành mạnh" trước, rồi thêm một anh em sinh đôi vào và **thấy sai số chuẩn phình to**.
+- Tính `vif` để đo mức cộng tuyến, và biết ngưỡng nào thì bố con mình bắt đầu lo.
+- Vẽ phần dư bằng `rvfplot` để soi xem mô hình có "lành" không.
+:::
+
+::: {.callout-tip}
+## 💡 Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – không tự chạy**, vì website chưa gắn dữ liệu thật. Con cứ hình dung mình **đã có sẵn một bộ dữ liệu** với các biến: `luong` (lương, triệu đồng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), `tuoi` (tuổi), và `nu` (bằng 1 nếu là nữ). Khi ngồi trước máy Stata thật, con gõ y hệt vậy là chạy được con nhé.
+:::
+
+## Bước 0 — Làm quen cái bàn làm việc mới
+
+Stata là phần mềm phải mua bản quyền (con sẽ thấy bản **SE** hoặc **MP**), nên ở nhà mình mở bản trường cấp hoặc bản dùng thử. Lần đầu mở ra, con đừng hoảng vì màn hình chia làm nhiều ô. Bố chỉ con bốn cửa sổ chính thôi:
+
+- **Command** (ô dưới cùng): nơi con gõ lệnh vào, gõ xong bấm Enter.
+- **Results** (ô lớn ở giữa): nơi Stata in kết quả ra cho con đọc.
+- **Variables** (ô bên phải): danh sách các biến đang có trong dữ liệu.
+- **Review** (ô bên trái): lịch sử những lệnh con đã gõ — bấm lại là chạy lại, tiện lắm.
+
+Mình làm quen bằng bộ dữ liệu có sẵn của Stata cho dễ:
+
+```stata
+* Đặt thư mục làm việc (đổi đường dẫn cho đúng máy con)
+cd "C:/Users/Mei/ktl"
+
+* Mở một bộ dữ liệu mẫu có sẵn trong Stata
+sysuse auto, clear
+
+* Mở Do-file Editor để lưu lệnh lại cho ngăn nắp
+doedit
+```
+
+Bố giải thích từng câu cho con:
+
+- `cd "..."` là bảo Stata: *"từ giờ làm việc trong thư mục này."* Như chọn ngăn bàn để bày đồ.
+- `sysuse auto, clear` mở bộ dữ liệu xe hơi có sẵn (`clear` là dọn dữ liệu cũ đi trước). Con dùng nó để bấm thử cho quen tay.
+- `doedit` mở **Do-file Editor** — một cuốn sổ con chép lệnh vào. Sau này con chỉ cần chạy lại cuốn sổ là ra y hệt kết quả, khỏi gõ lại từng dòng.
+
+**Bố chốt cho con:** đây chỉ là làm quen cái bàn làm việc mới thôi — gõ lệnh ở **Command**, đọc kết quả ở **Results**, và chép lệnh vào **do-file** cho ngăn nắp.
+
+## Bước 1 — Mô hình "lành mạnh" làm mốc
+
+Trước khi gây rối, mình chạy một mô hình tử tế đã: lương theo `hoc` và `kinhnghiem`. Đây là mô hình bố thấy không có vấn đề gì.
+
+```stata
+* Mở dữ liệu lương của mình (giả định con đã có file luong.dta)
+use "luong.dta", clear
+
+* Nhìn qua dữ liệu cho quen mặt
+summarize luong hoc kinhnghiem tuoi
+
+* Mô hình lành mạnh: chỉ học và kinh nghiệm
+regress luong hoc kinhnghiem
+estimates store lanh
+```
+
+`summarize` cho con thấy trung bình, lớn nhất, nhỏ nhất — như mở hộp đồ ra ngắm trước khi làm.
+
+Giả sử Stata in ra hệ số `kinhnghiem` là **0,30** với sai số chuẩn **0,05**. Con đọc thành tiếng người: *"thêm 1 năm kinh nghiệm gắn với lương cao hơn 0,30 triệu, và con số này đo khá chắc tay."* Con ghi cặp số **0,30 (0,05)** lên giấy nháp nhé — lát nữa mình sẽ nhìn nó loạng choạng.
+
+**Bố chốt cho con:** mô hình lành cho `kinhnghiem` = **0,30**, sai số chuẩn **0,05** — nhớ kỹ con số này để so sánh.
+
+## Bước 2 — Cố tình mời anh em sinh đôi vào
+
+Giờ bố con mình nghịch một chút: nhét thêm `tuoi` vào. Tại sao `tuoi` và `kinhnghiem` là **hai anh em sinh đôi**? Vì người càng lớn tuổi thì thường càng nhiều năm đi làm — hai biến này gần như đi đâu cũng có nhau. Mô hình nhìn vào sẽ bối rối: *"phần lương tăng này là nhờ tuổi hay nhờ kinh nghiệm? Hai đứa giống nhau quá, tôi không tách được!"*
+
+```stata
+* Mô hình BỆNH: thêm tuổi vào cạnh kinh nghiệm
+regress luong hoc kinhnghiem tuoi
+estimates store benh
+```
+
+Giả sử lần này hệ số `kinhnghiem` thành **0,55** với sai số chuẩn **0,40**, còn `tuoi` ra **−0,20** với sai số chuẩn **0,38**. Con nhìn kỹ ba chỗ kỳ cục này nhé:
+
+- Hệ số `kinhnghiem` nhảy từ 0,30 lên **0,55** — loạng choạng hẳn.
+- Sai số chuẩn từ 0,05 **phình lên 0,40** — gấp tám lần! Đây là dấu hiệu kinh điển của cộng tuyến.
+- Hệ số `tuoi` còn ra **âm** — vô lý, chẳng lẽ càng già lương càng thấp? Không phải đâu con, đó là mô hình đang "đoán mò" vì không tách nổi hai anh em.
+
+::: {.callout-important}
+## 🧮 Đọc cú phình bằng số
+| Mô hình | Hệ số `kinhnghiem` | Sai số chuẩn | Tình trạng |
+|---|---|---|---|
+| (1) Lành mạnh | **0,30** | **0,05** | Đo chắc tay |
+| (2) Thêm `tuoi` | **0,55** | **0,40** | Loạng choạng, sai số phình to |
+
+Hệ số không phình to vì sai — nó phình vì mô hình **không chắc chắn** nữa. Hai anh em sinh đôi giành công của nhau, nên con số "độ lắc lư" nở bung ra.
+:::
+
+**Bố chốt cho con:** thêm anh em sinh đôi vào, hệ số `kinhnghiem` giở chứng và sai số chuẩn phình từ 0,05 lên 0,40 — đó chính là đa cộng tuyến lộ mặt.
+
+## Bước 3 — Đo mức dính nhau bằng VIF
+
+Nói "hai đứa giống nhau quá" thì mơ hồ. Mình cần một con số đo cụ thể. Stata có lệnh `vif` (**Variance Inflation Factor** — hệ số phóng đại phương sai). Tên nghe to tát, nhưng ý nghĩa đơn giản: *"sai số chuẩn của biến này bị thổi phồng lên bao nhiêu lần vì nó dính với các biến khác."*
+
+```stata
+* Chạy lại mô hình bệnh rồi gọi vif NGAY SAU đó
+regress luong hoc kinhnghiem tuoi
+vif
+```
+
+Lưu ý con nhé: `vif` phải gọi **ngay sau** một lệnh `regress`, vì nó soi cái mô hình con vừa chạy.
+
+Giả sử Stata in ra VIF của `kinhnghiem` là **12,5**, của `tuoi` là **12,1**, còn `hoc` chỉ **1,3**. Con đọc thế này:
+
+- `hoc` có VIF gần 1 → nó "sống độc lập", không dính ai, ngoan.
+- `kinhnghiem` và `tuoi` cùng VIF trên 12 → hai đứa dính chặt nhau, sai số chuẩn của chúng bị thổi phồng hơn chục lần.
+
+Quy tắc ngón tay cái bố dắt túi cho con: **VIF dưới 5 thì yên tâm; trên 10 thì bố con mình phải bàn cách xử lý.**
+
+**Bố chốt cho con:** `vif` cho con một con số rõ ràng — trên 10 là đèn đỏ, đúng như cặp `kinhnghiem`–`tuoi` ở đây (≈12).
+
+## Bước 4 — Soi phần dư cho yên tâm
+
+Cộng tuyến mới chỉ là một trong các giả định. Bố tranh thủ dạy con cách soi nhanh xem mô hình có "lành" về mặt phần dư không, bằng `rvfplot`.
+
+```stata
+* Vẽ phần dư theo giá trị dự đoán
+regress luong hoc kinhnghiem
+rvfplot, yline(0)
+```
+
+`rvfplot` vẽ **phần dư** (chỗ mô hình đoán hụt) theo **giá trị dự đoán**. Con nhìn đám chấm:
+
+- Nếu chúng rải đều quanh đường ngang số 0 như đám mây phẳng → ngoan, mô hình lành.
+- Nếu chúng xòe ra **hình cái phễu** (chỗ hẹp chỗ rộng) → đó là dấu hiệu phương sai sai số không đều, lúc đó con thêm `vce(robust)` vào lệnh `regress` cho chắc.
+
+**Bố chốt cho con:** `rvfplot` là cái kính lúp soi phần dư — đám chấm đều quanh số 0 thì yên tâm, xòe hình phễu thì nhớ `vce(robust)`.
+
+::: {.callout-tip}
+## 💡 Mẹo nhỏ bố dắt túi cho con
+Khi bắt được hai anh em sinh đôi (VIF cao), con đừng vội hoảng. Hỏi mình một câu trước: *"mình thật sự cần cả hai đứa không?"*
+
+- Nếu con chỉ quan tâm tới **hiệu ứng của học** mà tuổi với kinh nghiệm chỉ là biến đi kèm → cộng tuyến giữa chúng **không làm hỏng** hệ số học (VIF của `hoc` vẫn thấp). Con cứ để yên.
+- Nếu con thật sự cần tách riêng công của tuổi và của kinh nghiệm → thường phải **bỏ bớt một đứa**, hoặc gộp lại thành một biến (ví dụ chỉ giữ `kinhnghiem`).
+
+Cộng tuyến không phải "bệnh nan y" — nó chỉ là lời nhắc rằng dữ liệu chưa đủ để tách hai thứ quá giống nhau. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+- **VIF cao không phải lúc nào cũng là vấn đề.** Nếu biến dính nhau không phải biến con quan tâm, con kệ nó cũng được.
+- **Đừng vứt biến chỉ vì VIF cao mà không suy nghĩ.** Vứt nhầm một biến quan trọng có khi lại tạo ra chệch do bỏ sót biến (chuyện con sẽ gặp ở Lab 8). Cân nhắc, đừng máy móc.
+:::
+
+## Ví dụ gần con hơn
+
+Bố đổi sân chơi cho con dễ thấy. Con muốn biết: *"Tập nhảy dây có giúp con khỏe hơn không?"* Con đo hai thứ rất giống nhau: **số phút nhảy dây** và **số lần nhảy**. Nhưng nhảy càng lâu thì số lần càng nhiều — hai con số này gần như là một, chúng là **anh em sinh đôi**.
+
+Nếu con nhét cả hai vào mô hình giải thích "độ khỏe", máy sẽ bối rối y hệt: hệ số loạng choạng, sai số chuẩn phình to, VIF vọt lên trên 10. Cách con làm là chọn **một** thước đo thôi — giữ "số phút" chẳng hạn — thế là mô hình tỉnh táo trở lại.
+
+Thấy không Mei: kinh nghiệm–tuổi hay số phút–số lần nhảy dây — **cùng một trò chơi hai anh em sinh đôi, chỉ thay tên các biến thôi con** 🌱.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Làm quen cái bàn Stata (Command, Results, Variables, Review), đặt thư mục bằng `cd` và lưu lệnh vào do-file.
+2. **Cố tình** nhét `kinhnghiem` và `tuoi` vào cùng mô hình, thấy hệ số giở chứng và **sai số chuẩn phình từ 0,05 lên 0,40**.
+3. Dùng `vif` đo mức cộng tuyến (≈12, đèn đỏ) và `rvfplot` soi phần dư — hai cái kính lúp kiểm tra giả định cho những buổi sau.
+:::

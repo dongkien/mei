@@ -1,7 +1,149 @@
 ---
-title: "Lab 9 — Kiểm định F & kiểm định gộp"
+title: "Lab 9 — Sai số chuẩn vững (robust SE)"
 subtitle: "Tương ứng [Buổi 9](../lectures/buoi-09.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Python — điền sau.)*
+Mei à, ở [Buổi 9](../lectures/buoi-09.qmd) bố kể con nghe chuyện cái phễu: khi đám mây điểm xòe rộng dần như cái phễu, sai số chuẩn **thường** sẽ nói dối con — nó báo con số "chắc chắn hơn thực tế". Hôm nay mình ngồi xuống, tự tay chạy một hồi quy, rồi đặt hai cột sai số chuẩn cạnh nhau xem có gì khác. Đừng lo, con chỉ cần đổi đúng **một chữ** trong câu lệnh thôi.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Buổi lab này con sẽ làm được
+- Chạy một hồi quy rồi in sai số chuẩn **thường**.
+- Chạy lại, in sai số chuẩn **vững (robust)**, đặt cạnh nhau mà so.
+- Vẽ phần dư theo giá trị dự đoán để **nhìn thấy cái phễu** bằng mắt.
+- Nhớ cách bật robust làm thói quen mặc định.
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Bố giả định nhà mình đã có sẵn một bảng dữ liệu tên `df`, mỗi dòng là một người, với các cột: `luong` (lương, triệu đồng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm). Con không cần tự gõ dữ liệu — cứ tưởng tượng nó đã nằm sẵn trong máy.
+
+```python
+import pandas as pd
+import numpy as np
+import statsmodels.formula.api as smf
+import matplotlib.pyplot as plt
+
+# df đã có sẵn: các cột luong, hoc, kinhnghiem
+df.head()
+```
+
+`smf` là biệt danh bố đặt cho `statsmodels.formula.api` — cái cho phép mình viết mô hình kiểu `"y ~ x"` đọc như tiếng người: *"lương phụ thuộc vào học và kinh nghiệm"*.
+
+**Bố chốt cho con:** import xong là xem như mình đã bày đủ dao thớt, giờ chỉ việc nấu.
+
+## Bước 1 — Chạy hồi quy, in sai số chuẩn THƯỜNG
+
+Mình chạy đúng cái OLS quen thuộc từ những buổi trước.
+
+```python
+mo_hinh = smf.ols("luong ~ hoc + kinhnghiem", data=df).fit()
+print(mo_hinh.summary())
+```
+
+Trong bảng kết quả, con nhìn cột tên `std err` — đó là **sai số chuẩn**, tức "con số này lắc lư cỡ nào nếu mình đi hỏi nhóm người khác" (nhớ Buổi 5 không con). Mặc định, `statsmodels` tính cột này theo kiểu **thường** — kiểu *tin rằng* đám mây điểm xòe đều như nhau ở mọi mức lương.
+
+Nhưng đời thường không đều: người lương thấp thì lương ai cũng na ná, người lương cao thì lương kẻ ít người nhiều, xòe rộng ra. Đó chính là cái phễu. Khi có phễu, cột `std err` thường này **không đáng tin nữa**.
+
+**Bố chốt cho con:** cột `std err` mặc định đẹp đẽ thật, nhưng nó dựa trên một lời hứa ("phễu không tồn tại") mà đời thực hay nuốt lời.
+
+## Bước 2 — Chạy lại, in sai số chuẩn VỮNG (robust)
+
+Đây là phép màu của hôm nay: con chỉ thêm **một mẩu** `cov_type="HC1"` vào lúc `.fit()`. Phần còn lại y hệt.
+
+```python
+mo_hinh_robust = smf.ols("luong ~ hoc + kinhnghiem", data=df).fit(cov_type="HC1")
+print(mo_hinh_robust.summary())
+```
+
+`HC1` chỉ là tên một công thức tính sai số chuẩn **không thèm tin vào lời hứa "phễu không tồn tại"** — nó để dữ liệu tự khai cái phễu rộng cỡ nào rồi tính lại độ tin cậy cho trung thực. "Robust" dịch ra là **vững**: vững vì nó không sụp đổ khi gặp phễu.
+
+Để so cho nhanh, mình đặt hai cột sai số chuẩn cạnh nhau:
+
+```python
+from statsmodels.iolib.summary2 import summary_col
+
+bang = summary_col(
+    [mo_hinh, mo_hinh_robust],
+    model_names=["SE thường", "SE vững (HC1)"],
+    stars=True,
+    info_dict={"Số quan sát": lambda m: f"{int(m.nobs)}"},
+)
+print(bang)
+```
+
+Con để ý: **hệ số gần như không đổi** giữa hai cột — vẫn cùng con số 0,4 cho `hoc`. Cái đổi là **sai số chuẩn trong ngoặc** bên dưới mỗi hệ số. Thường thì SE vững sẽ **to hơn** SE thường một chút (vì nó thành thật thừa nhận đám mây xòe phễu nên độ lắc lư lớn hơn mình tưởng).
+
+::: {.callout-important}
+## 🧮 Đọc bằng con số cho dễ
+Giả sử hệ số của `hoc` là **0,40** ở cả hai cột. Nhưng:
+
+- SE **thường** = 0,08 → trị số t = 0,40 / 0,08 = **5,0** (trông rất chắc chắn).
+- SE **vững** = 0,12 → trị số t = 0,40 / 0,12 = **3,3** (vẫn tin được, nhưng khiêm tốn hơn).
+
+Cùng một hệ số 0,40, nhưng SE thường khoe con "chắc như đinh đóng cột", còn SE vững nói thật là "chắc, nhưng đừng quá tự tin". Khi có phễu, **luôn nghe lời cột vững** con nhé.
+:::
+
+**Bố chốt cho con:** thêm `cov_type="HC1"` không sửa hệ số — nó chỉ sửa lại **độ tự tin** cho trung thực hơn.
+
+## Bước 3 — Nhìn thấy cái phễu bằng mắt
+
+Số liệu nói một đằng, nhưng mắt con tin khi *nhìn thấy*. Mình vẽ **phần dư** (sai lệch giữa lương thật và lương mô hình đoán) theo **giá trị dự đoán** (lương mô hình đoán).
+
+```python
+du_doan = mo_hinh.fittedvalues   # lương mà mô hình đoán
+phan_du = mo_hinh.resid          # thật trừ đoán = phần mô hình chưa giải thích được
+
+plt.figure(figsize=(7, 4))
+plt.scatter(du_doan, phan_du, alpha=0.4)
+plt.axhline(0, color="red", linewidth=1)
+plt.xlabel("Lương mô hình dự đoán")
+plt.ylabel("Phần dư (thật − đoán)")
+plt.title("Phần dư theo giá trị dự đoán — đi tìm cái phễu")
+plt.show()
+```
+
+Con nhìn hình: nếu các chấm **xòe rộng dần** từ trái sang phải — bên trái túm lại, bên phải tản ra — thì đó **đúng là cái phễu**, dấu hiệu rõ ràng phải dùng SE vững. Còn nếu các chấm rải đều thành một dải ngang phẳng lì, đẹp như đường băng, thì đám mây "ngoan", SE thường cũng tạm ổn (nhưng dùng vững cũng chẳng mất gì).
+
+**Bố chốt cho con:** cái phễu là một hình ảnh, con tập nhìn vài lần là quen mắt ngay.
+
+## Bước 4 — Cùng trò chơi đó, nhưng gần con hơn
+
+Bỏ lương sang một bên. Tưởng tượng nhà mình có bảng `tre_em`: cột `chieu_cao` (chiều cao, cm) và `tuoi` (tuổi). Mình hỏi: tuổi tăng thì cao thêm bao nhiêu?
+
+```python
+mo_hinh_be = smf.ols("chieu_cao ~ tuoi", data=tre_em).fit(cov_type="HC1")
+print(mo_hinh_be.summary())
+```
+
+Vì sao vẫn cần robust ở đây? Vì bé 2 tuổi thì đứa nào cũng cao xêm xêm nhau; nhưng bé 14 tuổi thì đứa dậy thì sớm cao vổng, đứa chưa lớn còn thấp — xòe rộng hẳn ra. **Lại là cái phễu**, chỉ khác là hai trục bây giờ là tuổi và chiều cao thay vì học và lương.
+
+Cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱.
+
+::: {.callout-tip}
+## 💡 Mẹo bố nói nhỏ con nghe
+Đừng coi robust là "thuốc đặc trị" lấy ra khi nghi bệnh. Trong thực hành kinh tế lượng ngày nay, người ta **bật robust gần như mặc định** cho mọi hồi quy số liệu chéo (mỗi dòng một người/một hộ). Lý do đơn giản: nếu thật ra không có phễu, SE vững và SE thường gần như bằng nhau — con chẳng mất gì. Còn nếu có phễu mà con quên bật, con sẽ tự lừa mình rằng kết quả chắc hơn thực tế.
+
+Mẹo cho đỡ quên: cứ gõ liền tay `.fit(cov_type="HC1")` thay vì `.fit()`. Coi như đánh răng trước khi ngủ — thành nếp rồi thì khỏi phải nhớ.
+:::
+
+::: {.callout-warning}
+## ⚠️ Hai cái bẫy bố dặn con tránh
+1. **Robust KHÔNG sửa được mô hình sai.** Nó chỉ sửa sai số chuẩn cho trung thực. Nếu con quên một biến quan trọng hay vẽ sai dạng hàm, robust cũng không cứu nổi — đó là chuyện của những buổi khác.
+2. **Phễu không làm hệ số "sai".** Hệ số 0,40 vẫn là ước lượng tốt; chỉ có **độ tin cậy** của nó bị tính lệch thôi. Vì vậy con đừng hoảng khi thấy phễu — chỉ cần đổi sang đọc cột SE vững là xong.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Chạy một hồi quy và in **hai cột sai số chuẩn** — thường và vững (HC1) — đặt cạnh nhau bằng `summary_col` để so.
+2. Vẽ **phần dư theo giá trị dự đoán** và tập nhìn ra **hình cái phễu** bằng mắt.
+3. Nhớ rằng bật robust chỉ là thêm `cov_type="HC1"` — và nên để nó thành **thói quen mặc định**, vì không có phễu thì cũng chẳng mất gì.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu
+- `HC1`, `HC2`, `HC3` là vài biến thể của công thức sai số chuẩn vững (gọi chung là "sai số chuẩn White"). `HC1` là lựa chọn phổ biến, hợp với mẫu vừa và lớn; mẫu nhỏ thì `HC3` thường an toàn hơn.
+- Robust ở đây lo cho **phương sai thay đổi** (heteroskedasticity — cái phễu). Khi dữ liệu có **nhóm/cụm** (ví dụ nhiều học sinh trong cùng một lớp), con cần loại khác: `cov_type="cluster"` kèm `cov_kwds={"groups": df["lop"]}`.
+- Mọi thứ áp dụng được cho cả mô hình có biến giả và tương tác: `smf.ols("luong ~ C(gioitinh) + hoc + hoc:C(gioitinh)", data=df).fit(cov_type="HC1")`. Ở đây `C(gioitinh)` biến giới tính thành biến giả, còn `hoc:C(gioitinh)` là số hạng tương tác — robust vẫn bật y như cũ.
+- Với mô hình logit, robust cũng bật cùng một cách: `smf.logit("co_viec ~ hoc + kinhnghiem", data=df).fit(cov_type="HC1")`.
+:::

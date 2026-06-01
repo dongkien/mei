@@ -1,7 +1,92 @@
 ---
-title: "Lab 3 — Hồi quy đơn"
+title: "Lab 3 — Hồi quy bội"
 subtitle: "Tương ứng [Buổi 3](../lectures/buoi-03.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Python — điền sau.)*
+Mei à, ở [Buổi 3](../lectures/buoi-03.qmd) bố kể con nghe về **hồi quy bội** — chuyện mình mời nhiều biến cùng ngồi vào một mô hình, để mỗi biến đứng ra nhận đúng phần công của nó. Bố hay gọi đó là **"giữ cố định"**: muốn xem riêng tác dụng của *học*, mình giữ *kinh nghiệm* đứng yên một chỗ rồi mới so.
+
+Hôm nay con sẽ tự tay làm cái phép màu nhỏ ấy bằng Python. Mình chạy `lương ~ học` trước, ghi lại hệ số của *học*. Rồi mình thêm *kinh nghiệm* vào, chạy lại, và **nhìn xem hệ số của học đổi ra sao**. Cái đổi đó chính là "giữ cố định" hiện hình bằng con số. Đừng lo con, bố đi từng bước thật chậm.
+
+## Bước 0 — Cài đồ nghề và làm quen "ô lệnh"
+
+Trước khi chạy gì, con cần một chỗ để gõ. Bố khuyên con cài **Anaconda** (gõ "Anaconda download" là ra) — nó gói sẵn Python cùng đủ thứ công cụ, con khỏi phải cài lẻ tẻ. Cài xong, con mở **Jupyter Notebook** hoặc **VS Code**, đều được cả.
+
+Trong Jupyter, con sẽ thấy những **ô lệnh** (cell) — mỗi ô là một khung trống để gõ mã. Gõ xong, con bấm **Shift + Enter** là nó chạy ô đó và nhảy xuống ô dưới. Con cứ hình dung mỗi ô là một câu mình nói với máy; bấm Shift+Enter là "nói xong, tới lượt máy trả lời". Lỡ sai cũng không sao con, sửa lại rồi bấm Shift+Enter lần nữa thôi.
+
+Đầu tiên mình gọi hai người giúp việc và đọc dữ liệu vào:
+
+```python
+import pandas as pd
+import statsmodels.formula.api as smf
+
+# Bố giả định con đã có sẵn file dữ liệu mẫu tên "luong.csv"
+# với các cột: luong, hoc, kinhnghiem, nu
+df = pd.read_csv("luong.csv")
+df.head()
+```
+
+`pandas` (gọi tắt `pd`) lo việc đọc và giữ bảng dữ liệu. `statsmodels.formula.api` (gọi tắt `smf`) lo việc chạy hồi quy. `pd.read_csv` đọc file `.csv` thành một bảng, bố đặt tên là `df`. Dòng `df.head()` cho con xem 5 dòng đầu để biết dữ liệu trông thế nào. Mỗi dòng là một người mình đã đi hỏi: lương bao nhiêu, học mấy năm, đi làm mấy năm.
+
+**Bố chốt cho con:** `pd` đọc bảng, `smf` chạy hồi quy, Shift+Enter để chạy từng ô. Chỉ có bấy nhiêu thôi, chưa có gì đáng sợ cả con.
+
+## Bước 1 — Chạy `lương ~ học` và ghi lại hệ số
+
+Mình hỏi câu đơn giản nhất trước: *"lương phụ thuộc vào số năm học thế nào?"* Cái hay của `smf` là con viết công thức **đúng như nói tiếng người**: `"luong ~ hoc"` đọc là *"lương phụ thuộc vào học"*.
+
+```python
+mo_hinh_1 = smf.ols("luong ~ hoc", data=df).fit()
+print(mo_hinh_1.summary())
+```
+
+Con để mắt vào dòng `hoc` ở bảng kết quả, cột `coef`. Giả sử nó hiện ra **0,85**. Mình đọc nó thành tiếng người:
+
+> "Học thêm 1 năm thì lương cao hơn khoảng **0,85 triệu**."
+
+Con ghi con số **0,85** này ra giấy nhé — lát nữa mình sẽ so. Đây là con số khi mô hình **chỉ biết mỗi chuyện học**, chưa biết gì tới kinh nghiệm.
+
+**Bố chốt cho con:** mô hình một biến cho ra 0,85. Nhớ con số này, vì lát nữa nó sẽ đổi.
+
+## Bước 2 — Thêm `kinh nghiệm` và xem hệ số học đổi thế nào
+
+Giờ mình mời thêm `kinhnghiem` vào bàn — chỉ việc cộng thêm một dấu `+` trong công thức:
+
+```python
+mo_hinh_2 = smf.ols("luong ~ hoc + kinhnghiem", data=df).fit()
+print(mo_hinh_2.summary())
+```
+
+Lại nhìn vào dòng `hoc`, cột `coef`. Giả sử lần này nó tụt xuống còn **0,52**.
+
+> Trước: 0,85. Sau khi thêm kinh nghiệm: **0,52**.
+
+Con thấy chưa! Hệ số của `học` **rơi từ 0,85 xuống 0,52**. Vì sao? Vì người học nhiều thường cũng đi làm lâu hơn. Ở mô hình một biến, `học` đã *gánh hộ* cả công của kinh nghiệm, nên con số bị thổi to lên. Khi mình thêm `kinhnghiem` vào, statsmodels đọc con số 0,52 mới theo nghĩa **"giữ cố định"**:
+
+> "Với **hai người có cùng số năm kinh nghiệm**, ai học thêm 1 năm thì lương cao hơn khoảng **0,52 triệu**."
+
+Đó chính xác là điều bố giảng ở Buổi 3, Mei à: thêm một biến vào mô hình nghĩa là **giữ biến đó đứng yên** rồi mới đo riêng tác dụng của biến mình quan tâm.
+
+**Bố chốt cho con:** hệ số `học` đổi từ 0,85 còn 0,52 vì giờ nó được đo *trong điều kiện kinh nghiệm đã được giữ cố định*. Con số mới gần với sự thật hơn.
+
+## Bước 3 — Lấy thẳng hệ số ra cho gọn
+
+Đọc cả bảng dài đôi khi mỏi mắt. Khi con chỉ muốn liếc nhanh hệ số `hoc` ở hai mô hình, con lấy thẳng nó ra:
+
+```python
+print("Mô hình 1 (chỉ học):       ", round(mo_hinh_1.params["hoc"], 3))
+print("Mô hình 2 (học + kinh nghiệm):", round(mo_hinh_2.params["hoc"], 3))
+```
+
+`.params["hoc"]` rút đúng hệ số của `hoc` ra khỏi mô hình, `round(..., 3)` làm tròn 3 chữ số cho dễ nhìn. Chạy xong con sẽ thấy hai dòng: **0,85** rồi **0,52** nằm ngay cạnh nhau — câu chuyện "giữ cố định" gói gọn trong hai con số.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe — một mẹo nhỏ
+Con đừng vội mừng khi hệ số *tăng* hay buồn khi nó *giảm* sau khi thêm biến. Cái đáng để ý là **nó đổi bao nhiêu**. Đổi nhiều nghĩa là biến mới rất quan trọng — bỏ quên nó thì con số ban đầu sai lệch lớn. Đổi gần như không nhúc nhích nghĩa là biến mới chẳng liên quan mấy, thêm cũng được mà không thêm cũng chẳng sao. Mỗi lần thêm một biến, bố luôn nhìn xem hệ số cũ *nhảy* tới đâu — đó là thói quen tốt con nên tập sớm.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Cài Python (qua Anaconda), mở Jupyter, làm quen ô lệnh và bấm **Shift+Enter** để chạy.
+2. Chạy `smf.ols("luong ~ hoc")` và **ghi lại hệ số `hoc` là 0,85**.
+3. Thêm `kinhnghiem` vào, chạy lại, và **thấy tận mắt** hệ số `hoc` tụt còn 0,52 — đó là "giữ cố định" của hồi quy bội hiện ra bằng con số.
+:::

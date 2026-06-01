@@ -1,7 +1,123 @@
 ---
-title: "Lab 2 — Thống kê mô tả & phân phối"
+title: "Lab 2 — Hồi quy đơn & đọc kết quả"
 subtitle: "Tương ứng [Buổi 2](../lectures/buoi-02.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Python — điền sau.)*
+Mei à, ở [Buổi 2](../lectures/buoi-02.qmd) bố kể con nghe về chuyện **kẻ một đường cho vừa khít** đám mây chấm. Mình có một mớ điểm tản mác — mỗi điểm là một người, trục ngang là số năm đi học, trục dọc là lương — rồi mình kẻ một đường thẳng đi xuyên qua giữa đám chấm sao cho "vừa khít" nhất.
+
+Hôm nay con sẽ tự tay kẻ đường đó bằng Python, và quan trọng hơn: bố chỉ con cách **đọc** ba con số mà máy trả về. Đừng lo con, mình không học thuộc công thức gì cả — máy tính kẻ đường giúp mình, việc của con chỉ là đọc hiểu ba con số ấy thôi.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy được hồi quy đơn `luong ~ hoc` bằng `statsmodels`.
+- Đọc đúng **độ dốc** (hệ số `hoc`), **điểm khởi đầu** (hằng số), và **R²**.
+- Vẽ được **đường khớp nhất** chồng lên đám mây chấm.
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Trước tiên con cần Python trong máy. Bố khuyên con cài **Anaconda** — nó gói sẵn Python cùng mọi thứ mình cần, con khỏi phải lắp từng món lẻ. Cài xong, con mở **Jupyter Notebook** hoặc **VS Code** lên.
+
+Trong Jupyter, màn hình chia thành các **ô lệnh** (cell) — mỗi ô là một khung con gõ mã vào. Gõ xong, con bấm **Shift+Enter** để chạy ô đó, kết quả hiện ngay bên dưới. Cứ hình dung mỗi ô là một bước nhỏ trong công thức nấu ăn; con làm xong bước này rồi sang bước kia. Lỡ sai cũng không sao, con sửa lại rồi Shift+Enter chạy lại thôi — không hỏng gì cả con.
+
+Giả sử bố đã để sẵn cho con một bộ dữ liệu mẫu trong file `duong-luong.csv`, có hai cột mình cần: `luong` (lương, triệu đồng/tháng) và `hoc` (số năm đi học). Con đọc nó vào bằng `pandas`:
+
+```python
+import pandas as pd
+import statsmodels.formula.api as smf
+
+# Đọc dữ liệu từ file csv vào một bảng tên là df
+df = pd.read_csv("duong-luong.csv")
+df.head()
+```
+
+`pd.read_csv` là người giúp việc mở file csv ra thành một **bảng** (bố gọi là `df`), giống như mở một file Excel vậy. `df.head()` cho con liếc 5 dòng đầu để chắc chắn dữ liệu vào đúng. `smf` là bộ công cụ hồi quy — cái hay là con viết công thức **đúng như nói tiếng người**: `"luong ~ hoc"` đọc là *"lương phụ thuộc vào học"*.
+
+**Bố chốt cho con:** `~` chỉ là dấu "phụ thuộc vào", `smf` là người kẻ đường giúp mình. Chưa có gì đáng sợ cả con.
+
+## Bước 1 — Kẻ đường vừa khít
+
+Giờ mình bảo máy kẻ đường thẳng đi xuyên đám mây chấm sao cho vừa khít nhất:
+
+```python
+mo_hinh = smf.ols("luong ~ hoc", data=df).fit()
+print(mo_hinh.summary())
+```
+
+Câu lệnh này đọc là: *"kẻ cho bố đường thẳng dự đoán lương từ số năm học."* `ols` là tên kiểu kẻ đường mình học ở Buổi 2 (bình phương nhỏ nhất — kẻ sao cho tổng khoảng cách từ các chấm tới đường là nhỏ nhất). `.fit()` là lệnh "làm đi". Máy in ra một bảng dài, nhưng con đừng hoảng — mình chỉ cần đọc **ba con số** trong đó thôi.
+
+**Bố chốt cho con:** một dòng lệnh là đường đã được kẻ xong. Phần khó còn lại chỉ là đọc kết quả — và bố ở đây chỉ con từng con số.
+
+## Bước 2 — Đọc ĐỘ DỐC (hệ số của `hoc`)
+
+Con nhìn vào bảng kết quả, tìm dòng `hoc`, cột `coef`. Giả sử nó hiện ra **0,85**. Đây là **độ dốc** — con số quan trọng nhất. Mình đọc nó thành tiếng người:
+
+> "Học thêm **1 năm** thì lương cao hơn khoảng **0,85 triệu**."
+
+Độ dốc chính là độ nghiêng của đường mình vừa kẻ: đi sang phải 1 bước (thêm 1 năm học), đường leo lên 0,85. Con cũng liếc cột `P>|t|` ở dòng `hoc` nhé — nếu nó nhỏ (dưới 0,05) thì mình tin được rằng độ dốc này không phải do may rủi.
+
+**Bố chốt cho con:** độ dốc trả lời câu hỏi *"thêm một năm học đổi lấy bao nhiêu lương?"* — đây là con số con sẽ đọc nhiều nhất trong đời làm kinh tế lượng.
+
+## Bước 3 — Đọc ĐIỂM KHỞI ĐẦU (hằng số `Intercept`)
+
+Vẫn bảng đó, con tìm dòng `Intercept`, cột `coef`. Giả sử nó là **5,0**. Đây là **điểm khởi đầu** — chỗ đường thẳng cắt trục dọc, tức là lương dự đoán khi `hoc` bằng 0.
+
+> "Một người **không đi học năm nào** thì lương dự đoán khoảng **5 triệu**."
+
+Bố dặn con: đôi khi điểm khởi đầu không có nghĩa đời thực (chẳng ai 0 năm học cả), nó chỉ là chỗ neo để đường thẳng đặt xuống đúng độ cao. Con đừng cố ép nó phải "có nghĩa" nếu hoàn cảnh không cho phép.
+
+**Bố chốt cho con:** điểm khởi đầu là độ cao của đường khi trục ngang bằng 0 — quan trọng để vẽ đúng đường, nhưng đừng lúc nào cũng bắt nó kể chuyện đời thực.
+
+## Bước 4 — Đọc R² (đường khớp tới đâu)
+
+Cuối cùng, con nhìn lên đầu bảng tìm dòng `R-squared`. Giả sử nó là **0,42**. Đây là **R²** — nó nói đường mình kẻ giải thích được bao nhiêu phần sự lên xuống của lương.
+
+> "Số năm học giải thích được khoảng **42%** chênh lệch lương giữa mọi người."
+
+R² chạy từ 0 tới 1. Gần 1 nghĩa là các chấm bám sát đường, đường khớp đẹp. Gần 0 nghĩa là chấm tản mác, đường kẻ chưa nói được nhiều. Bố nhắc con: R² thấp **không phải là sai** — đời thực nhiều thứ ảnh hưởng tới lương lắm (kinh nghiệm, ngành nghề, may mắn…), một mình "học" giải thích được 42% đã là một câu chuyện đáng kể rồi.
+
+**Bố chốt cho con:** R² là điểm "vừa khít" của đường — đọc nó để biết câu chuyện của mình mạnh hay yếu, chứ không phải để chấm điểm đúng/sai.
+
+## Bước 5 — Vẽ đường khớp nhất lên đám mây chấm
+
+Đọc con số rồi, giờ mình **nhìn tận mắt**. Con vẽ đám mây chấm, rồi chồng đường vừa khít lên:
+
+```python
+import matplotlib.pyplot as plt
+
+# Đám mây chấm: mỗi chấm là một người
+plt.scatter(df["hoc"], df["luong"], alpha=0.5, label="Dữ liệu thật")
+
+# Đường khớp nhất: lương dự đoán cho từng người
+plt.plot(df["hoc"], mo_hinh.fittedvalues, color="red", label="Đường khớp nhất")
+
+plt.xlabel("Số năm học")
+plt.ylabel("Lương (triệu/tháng)")
+plt.legend()
+plt.show()
+```
+
+`plt.scatter` rải các chấm — đám mây dữ liệu thật. `mo_hinh.fittedvalues` là **lương dự đoán** mà đường của mình đưa ra cho từng người, nên `plt.plot` nối chúng lại thành chính đường thẳng con vừa kẻ. Con sẽ thấy một đường đỏ đi xuyên giữa đám chấm — đúng cái "đường vừa khít" mình nói ở Buổi 2. Độ nghiêng của đường đỏ ấy chính là con số 0,85 con đọc ở Bước 2.
+
+**Bố chốt cho con:** ba con số ở trên giờ hiện thành một bức tranh — đường đỏ là độ dốc, chỗ nó cắt trục dọc là điểm khởi đầu, các chấm bám sát hay tản mác là R².
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe — một mẹo nhỏ
+Con không cần đọc cả bảng `summary()` dài thòng đâu. Khi đã quen, con lấy thẳng từng con số ra cho gọn:
+
+```python
+print("Độ dốc (hoc):", mo_hinh.params["hoc"])
+print("Điểm khởi đầu:", mo_hinh.params["Intercept"])
+print("R²:", mo_hinh.rsquared)
+```
+
+`mo_hinh.params` cất hai hệ số, `mo_hinh.rsquared` cất R². Bố hay dùng cách này khi chỉ cần liếc nhanh một con số mà không muốn nhìn cả bảng.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Đọc dữ liệu bằng `pd.read_csv` rồi chạy `smf.ols("luong ~ hoc", data=df).fit()` — kẻ xong đường vừa khít.
+2. Đọc được **ba con số**: độ dốc (`hoc` ≈ 0,85), điểm khởi đầu (`Intercept` ≈ 5,0), và R² (≈ 0,42).
+3. Vẽ **đường khớp nhất** màu đỏ chồng lên đám mây chấm — thấy tận mắt cái đường mình kẻ ở Buổi 2.
+:::

@@ -1,7 +1,140 @@
 ---
-title: "Lab 8 — Khoảng tin cậy & kiểm định t"
+title: "Lab 8 — Phát hiện & xử lý chệch bỏ sót biến (OVB)"
 subtitle: "Tương ứng [Buổi 8](../lectures/buoi-08.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Python — điền sau.)*
+Mei à, ở [Buổi 8](../lectures/buoi-08.qmd) bố kể con nghe về **kẻ giấu mặt** — một biến mình quên cho vào mô hình, nhưng nó vẫn âm thầm kéo lệch con số của mình. Bố gọi đó là **chệch do bỏ sót biến** (tiếng Anh viết tắt là OVB — *omitted variable bias*).
+
+Hôm nay con sẽ tự tay bắt quả tang kẻ giấu mặt ấy bằng Python. Cách bắt rất đơn giản: chạy mô hình **thiếu** một biến, ghi lại hệ số. Rồi **thêm** biến đó vào, xem hệ số **nhảy** đi bao nhiêu. Cái nhảy đó chính là dấu vân tay của kẻ giấu mặt. Đừng lo con, mình đi từng bước nhỏ.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy được hồi quy `lương ~ học` rồi `lương ~ học + kinh nghiệm` bằng `statsmodels`.
+- **Nhìn thấy tận mắt** hệ số của `học` thay đổi thế nào khi mình thêm `kinh nghiệm` vào.
+- Đặt hai mô hình cạnh nhau trong một bảng để so cho dễ.
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Giả sử bố đã để sẵn cho con một bộ dữ liệu mẫu tên `df`, có ba cột: `luong` (lương, triệu đồng/tháng), `hoc` (số năm đi học), và `kinhnghiem` (số năm đi làm). Con cứ hình dung mỗi dòng là một người mình đã đi hỏi.
+
+Mình dùng `statsmodels` — bộ công cụ hồi quy gọn gàng của Python. Cái hay của nó là con viết công thức **đúng như nói tiếng người**: `"luong ~ hoc"` đọc là *"lương phụ thuộc vào học"*.
+
+```python
+import pandas as pd
+import statsmodels.formula.api as smf
+from statsmodels.iolib.summary2 import summary_col
+
+# Giả định df đã có sẵn, với các cột: luong, hoc, kinhnghiem
+df.head()
+```
+
+**Bố chốt cho con:** `smf` là người giúp việc viết công thức; `~` chỉ là dấu "phụ thuộc vào". Chưa có gì đáng sợ cả con.
+
+## Bước 1 — Mô hình THIẾU người (chỉ có `học`)
+
+Trước tiên mình cố tình bỏ quên `kinh nghiệm`, chỉ hỏi: *"lương phụ thuộc vào số năm học thế nào?"*
+
+```python
+mo_hinh_thieu = smf.ols("luong ~ hoc", data=df).fit()
+print(mo_hinh_thieu.summary())
+```
+
+Con để mắt vào dòng `hoc` ở bảng kết quả, cột `coef`. Giả sử nó hiện ra **0,85**. Mình đọc nó thành tiếng người:
+
+> "Học thêm 1 năm thì lương cao hơn khoảng **0,85 triệu**."
+
+Con ghi con số 0,85 này ra giấy nhé — lát nữa mình sẽ so. Đây là con số **khi kẻ giấu mặt vẫn đang trốn trong bóng tối**.
+
+::: {.callout-important}
+## 🧮 Vì sao con số này có thể bị thổi phồng
+Người học nhiều thường cũng là người **đi làm lâu năm** hơn. Mô hình thiếu này không biết tới kinh nghiệm, nên nó **gán nhầm** cả công lao của kinh nghiệm vào cho `học`. Con số 0,85 vì thế *to hơn sự thật* — nó gánh cả phần của kẻ giấu mặt.
+:::
+
+**Bố chốt cho con:** mô hình thiếu cho ra 0,85, nhưng mình chưa biết bao nhiêu trong đó là thật, bao nhiêu là "vay mượn" của kinh nghiệm.
+
+## Bước 2 — Mời kẻ giấu mặt ra ánh sáng (thêm `kinh nghiệm`)
+
+Giờ mình thêm `kinhnghiem` vào công thức — chỉ việc cộng thêm một dấu `+`:
+
+```python
+mo_hinh_du = smf.ols("luong ~ hoc + kinhnghiem", data=df).fit()
+print(mo_hinh_du.summary())
+```
+
+Lại nhìn vào dòng `hoc`, cột `coef`. Giả sử lần này nó tụt xuống còn **0,52**.
+
+> Trước: 0,85. Sau khi thêm kinh nghiệm: **0,52**.
+
+Con thấy chưa! Hệ số của `học` **rơi từ 0,85 xuống 0,52**. Phần chênh **0,33** triệu chính là cái mà trước đây `học` đã *vay mượn* của `kinh nghiệm`. Khi mình mời kinh nghiệm ra ngồi cùng bàn, nó đòi lại phần công của nó — và con số của `học` trở về gần với sự thật hơn.
+
+**Bố chốt cho con:** thấy hệ số nhảy mạnh khi thêm một biến = mình vừa tóm được một kẻ giấu mặt. Cái nhảy càng lớn, kẻ đó càng quan trọng.
+
+## Bước 3 — Đặt hai mô hình cạnh nhau cho dễ so
+
+So bằng mắt qua hai bảng dài thì mỏi mắt lắm con. Mình dùng `summary_col` để xếp hai mô hình thành **hai cột sát nhau** trong một bảng gọn:
+
+```python
+bang = summary_col(
+    [mo_hinh_thieu, mo_hinh_du],
+    model_names=["(1) Thiếu", "(2) Đầy đủ"],
+    stars=True,
+    info_dict={"N": lambda m: f"{int(m.nobs)}"},
+)
+print(bang)
+```
+
+Giờ con liếc một cái là thấy ngay dòng `hoc`: cột (1) là **0,85**, cột (2) là **0,52**. Hai con số nằm cạnh nhau, kể trọn câu chuyện chệch do bỏ sót biến chỉ trong một cái nhìn.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe — một mẹo nhỏ mà chắc tay
+Khi báo cáo kết quả, con nên thêm **sai số chuẩn vững** (robust) để con số đáng tin hơn khi dữ liệu hơi "lệch lạc". Chỉ cần đổi một chỗ trong `.fit()`:
+
+```python
+mo_hinh_du_robust = smf.ols("luong ~ hoc + kinhnghiem", data=df).fit(cov_type="HC1")
+```
+
+`cov_type="HC1"` đọc nôm na là *"tính sai số chuẩn theo kiểu chịu được dữ liệu lổn nhổn"*. Hệ số không đổi, chỉ phần đo độ tin cậy chắc chắn hơn. Bố hay bật nó theo thói quen cho yên tâm.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱
+Bỏ chuyện lương đi, mình về với con. Con đo: *"đọc sách nhiều có giúp con kể chuyện hay hơn không?"* — và con thấy **có**, đọc nhiều thì kể hay.
+
+Nhưng khoan — có một **kẻ giấu mặt**: con càng lớn (tuổi) thì vừa đọc nhiều hơn, vừa kể hay hơn. Nếu con bỏ quên **tuổi**, con sẽ tưởng "đọc sách" lợi hại lắm, trong khi một phần công là của việc con **lớn lên**. Thêm `tuoi` vào mô hình, hệ số của `đọc sách` sẽ tụt xuống — y hệt `học` tụt từ 0,85 còn 0,52 vậy. Cùng một trò chơi, chỉ thay tên hai trục thôi con. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+1. **Không phải cứ nhét thêm biến nào cũng đúng.** Chỉ thêm những "kẻ giấu mặt" *vừa liên quan tới học, vừa ảnh hưởng tới lương* (như kinh nghiệm). Nhét bừa biến vô can có khi còn làm rối.
+2. **Hệ số nhảy mạnh là tín hiệu, không phải kết tội.** Nó cảnh báo "có người giấu mặt", nhưng vẫn có thể còn kẻ khác con chưa mời ra (năng lực bẩm sinh, gia cảnh…).
+3. **Đừng đọc con số mô hình thiếu như sự thật.** Luôn tự hỏi: *mình còn quên ai không?*
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu — vài món nâng cao trong statsmodels
+Khi con vững hơn, đây là vài thứ cùng họ `smf` mà con sẽ gặp:
+
+```python
+# Biến giả theo nhóm (ví dụ: vùng miền) — C(...) tự tách thành các cột 0/1
+smf.ols("luong ~ hoc + C(vung)", data=df).fit()
+
+# Biến tương tác "còn tùy": tác dụng của học có khác giữa nam và nữ không?
+smf.ols("luong ~ hoc * gioitinh", data=df).fit()   # dấu * gồm cả hoc, gioitinh và tích của chúng
+
+# Khi y là biến CÓ/KHÔNG (0/1), dùng logit thay cho ols
+smf.logit("co_viec ~ hoc + kinhnghiem", data=df).fit()
+```
+
+- `C(vung)` bảo statsmodels: *"đây là nhóm, hãy tự tạo biến giả 0/1 cho từng vùng."*
+- `hoc * gioitinh` mở ra số hạng tương tác — đúng ý "còn tùy" con học ở Buổi 6.
+- `smf.logit` dành cho khi mình hỏi *có/không* (có việc làm hay không), thay vì hỏi *bao nhiêu*.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Chạy `smf.ols("luong ~ hoc")` rồi `smf.ols("luong ~ hoc + kinhnghiem")`, và **ghi lại hệ số `hoc` ở cả hai**.
+2. **Thấy tận mắt** hệ số `hoc` tụt từ 0,85 xuống 0,52 — đó là chệch do bỏ sót biến hiện nguyên hình.
+3. Dùng `summary_col` xếp hai mô hình cạnh nhau, và biết bật `cov_type="HC1"` cho sai số chuẩn vững.
+:::

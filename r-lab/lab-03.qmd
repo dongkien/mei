@@ -1,7 +1,127 @@
 ---
-title: "Lab 3 — Hồi quy đơn"
+title: "Lab 3 — Hồi quy bội"
 subtitle: "Tương ứng [Buổi 3](../lectures/buoi-03.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab R — điền sau.)*
+Mei à, ở [Buổi 3](../lectures/buoi-03.qmd) bố kể con nghe chuyện **"giữ cố định"** — khi mình có nhiều thứ cùng ảnh hưởng tới lương, làm sao đo riêng phần của *học* mà không lẫn phần của *kinh nghiệm*. Hôm nay con sẽ tự tay làm điều đó trong R.
+
+Trò chơi đơn giản lắm: con chạy lương theo **học** thôi, ghi lại con số. Rồi con thêm **kinh nghiệm** vào, chạy lại, và **nhìn hệ số học đổi**. Cái đổi đó chính là lúc R "giữ kinh nghiệm cố định" giúp con. Bố tin con làm được, mình bắt đầu nhé.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Cài được R và RStudio, làm quen các ô làm việc, và **không thấy sợ** khi mở phần mềm lần đầu.
+- Chạy được `lm(luong ~ hoc)` rồi `lm(luong ~ hoc + kinhnghiem)` và **đọc ra hệ số học đã đổi bao nhiêu**.
+- Hiểu bằng tay nghề câu "giữ cố định" nghĩa là gì trong hồi quy bội.
+:::
+
+::: {.callout-warning}
+## ⚠️ Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – hiểu**, chưa nối với dữ liệu thật, nên con cứ đọc theo bố trước. Bố **giả định** con có một bộ dữ liệu mẫu với mấy cột: `luong` (lương, triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ). Khi nào có dữ liệu thật, con chỉ việc đổ vào đúng tên cột này là chạy được ngay.
+:::
+
+## Bước 0 — Cài đồ nghề & làm quen RStudio
+
+Trước khi chạy gì, mình cần cái bếp đã con. Bố dắt con đi từng bước, đừng vội.
+
+1. Vào **cran.r-project.org** tải R về cài — đây là cái "động cơ" tính toán.
+2. Tải **RStudio** về cài thêm (hoặc nếu con quen VS Code thì cài extension R cũng được) — đây là cái "bàn làm việc" cho dễ nhìn.
+3. Mở RStudio lên, con sẽ thấy mấy ô. Bố chỉ con nhớ bốn ô thôi:
+   - **Console** (góc dưới bên trái): nơi con gõ lệnh, R trả lời ngay.
+   - **Script / Source** (góc trên bên trái): nơi con *lưu* lệnh thành file để chạy lại sau.
+   - **Environment** (góc trên bên phải): nơi liệt kê các bảng dữ liệu, biến con đang có.
+   - **Plots** (góc dưới bên phải): nơi hiện hình vẽ.
+
+Đừng để mấy ô đó làm con choáng, con à. Cứ coi như bốn ngăn trong hộp bút: ngăn để viết, ngăn cất đồ, ngăn nhìn lại, ngăn ngắm tranh. Mình dùng dần là quen tay.
+
+Giờ cài một bộ gói tiện dụng rồi đọc dữ liệu vào:
+
+```r
+install.packages("tidyverse")   # chỉ cần chạy MỘT LẦN trên máy con
+df <- read.csv("luong.csv")     # đọc file dữ liệu mẫu vào, đặt tên là df
+head(df)                        # liếc vài dòng đầu xem có đúng hình hài không
+```
+
+`install.packages("tidyverse")` con chỉ chạy một lần duy nhất khi máy chưa có gói — lần sau khỏi cài lại. `read.csv` đọc file `.csv` vào thành một bảng, bố đặt tên là `df`. Còn `head(df)` in vài dòng đầu cho con ngó — như sờ trán xem con có sốt không vậy đó.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe
+Con đừng gõ lệnh thẳng vào Console rồi quên. Hãy mở một file **`.R`** trong ô Source (File → New File → R Script), gõ lệnh vào đó, rồi bấm chạy. Như thế mai mốt mở lại con vẫn còn nguyên công thức nấu — không phải nhớ lại từ đầu.
+:::
+
+**Bố chốt cho con:** cài R + RStudio, nhớ bốn ô, lưu lệnh vào file `.R`. Bếp xong rồi, mình nấu.
+
+## Bước 1 — Chạy lương theo HỌC thôi, ghi con số
+
+Mình bắt đầu giản dị nhất: chỉ giải thích lương bằng **học**, chưa thêm gì khác.
+
+```r
+m1 <- lm(luong ~ hoc, data = df)
+summary(m1)
+```
+
+`lm` là "linear model" — mô hình tuyến tính. Dấu `~` con đọc là *"theo"*: `luong ~ hoc` nghĩa là "lương **theo** học". Bố cất kết quả vào `m1` để lát nữa gọi lại.
+
+Giả sử R in ra hệ số của `hoc` là **0,9**. Con đọc nó thế này: *"thêm 1 năm đi học thì lương cao hơn 0,9 triệu."*
+
+Con ghi con số **0,9** này ra giấy nhé. Lát nữa mình sẽ quay lại nhìn nó đổi.
+
+**Bố chốt cho con:** mô hình một biến cho con một con số gọn, nhưng nó chưa biết tới kinh nghiệm. Cứ ghi lại đã.
+
+## Bước 2 — Thêm KINH NGHIỆM vào & nhìn hệ số học đổi
+
+Giờ mình cho **kinh nghiệm** vào cùng. Trong R, thêm một biến chỉ là thêm dấu `+`:
+
+```r
+m2 <- lm(luong ~ hoc + kinhnghiem, data = df)
+summary(m2)
+```
+
+`luong ~ hoc + kinhnghiem` con đọc là "lương theo học **và** kinh nghiệm". Giả sử lần này hệ số của `hoc` tụt xuống còn **0,55**, còn `kinhnghiem` là **0,2**.
+
+Con thấy chưa? Con số của "học" vừa **nhảy từ 0,9 xuống 0,55**.
+
+::: {.callout-important}
+## 🧮 Nhìn cái đổi bằng số
+
+| Mô hình | Hệ số `hoc` | Có kinh nghiệm trong mô hình? |
+|---|---|---|
+| `m1` chỉ có học | **0,90** | Không |
+| `m2` có thêm kinh nghiệm | **0,55** | Có |
+
+Ở `m1`, người học nhiều thường cũng đi làm lâu hơn, nên con số 0,9 đang **gánh oan** cả phần của kinh nghiệm. Khi thêm kinh nghiệm vào `m2`, kinh nghiệm đòi lại phần công của mình (0,2/năm), nên "học" trả bớt và về 0,55 — gần với phần thật của riêng học hơn.
+:::
+
+**Đây chính là "giữ cố định" đó con.** Hệ số 0,55 trong `m2` trả lời câu: *"giữa hai người **cùng số năm kinh nghiệm**, ai học thêm 1 năm thì lương cao hơn 0,55 triệu."* R đã ngầm "giữ kinh nghiệm đứng yên" giúp con, để con đo riêng phần của học mà không lẫn phần của kinh nghiệm.
+
+**Bố chốt cho con:** thêm kinh nghiệm vào, hệ số học nhảy từ 0,9 xuống 0,55 — đó là lúc con thấy tận mắt câu "giữ cố định" của Buổi 3.
+
+## Bước 3 — Bày hai mô hình cạnh nhau cho dễ nhìn
+
+Nói miệng "nhảy từ 0,9 xuống 0,55" thì dễ quên. Mình rút riêng hai hệ số học ra so cho rõ:
+
+```r
+coef(m1)["hoc"]   # hệ số học khi CHỈ có học
+coef(m2)["hoc"]   # hệ số học khi đã thêm kinh nghiệm
+```
+
+`coef()` móc đúng cái hệ số con cần ra khỏi mô hình. Con chạy hai dòng này, đặt hai con số cạnh nhau, là thấy ngay nó tụt xuống. Một bức ảnh đáng giá hơn nghìn lời, con nhỉ.
+
+Nếu con muốn một bảng đẹp hơn nữa, sau này con sẽ dùng `modelsummary()` (bố để dành cho [Lab 8](lab-08.qmd)). Giờ hai dòng `coef()` là đủ để con tin vào con số.
+
+**Bố chốt cho con:** đặt hai hệ số học cạnh nhau là cách chắc nhất để con (và người khác) thấy việc thêm biến đã làm con số đổi thế nào.
+
+## Cùng một trò chơi, đổi tên hai trục
+
+Ví dụ trên là chuyện "người lớn": lương – học – kinh nghiệm. Giờ bố kể phiên bản gần con hơn.
+
+Con đo: **bạn nào tưới cây nhiều hơn thì cây cao hơn**. Con chạy `chieu_cao ~ luong_nuoc` và thấy hệ số to đùng. Nhưng mấy chậu con tưới nhiều lại tình cờ là mấy chậu **đặt gần cửa sổ, nhiều nắng hơn**. Khi con thêm `nang` vào mô hình, hệ số của nước **tụt xuống** — vì giờ R giữ nắng cố định, chỉ so các chậu *cùng lượng nắng* với nhau.
+
+Thấy không Mei — *cùng một trò chơi, chỉ thay tên hai trục thôi con* 🌱. Lương–học–kinh nghiệm hay chiều cao–nước–nắng, "giữ cố định" vẫn chơi đúng một chiêu.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Cài R + RStudio, làm quen bốn ô (Console, Source, Environment, Plots), và biết lưu lệnh vào file `.R`.
+2. Chạy `lm(luong ~ hoc)` rồi `lm(luong ~ hoc + kinhnghiem)` và **thấy tận mắt hệ số học nhảy từ 0,9 xuống 0,55**.
+3. Hiểu rằng cái nhảy đó chính là R đang **"giữ kinh nghiệm cố định"** giúp con — đúng ý câu chuyện hồi quy bội ở Buổi 3.
+:::

@@ -1,7 +1,222 @@
 ---
-title: "Lab 7 — Đa cộng tuyến & chẩn đoán"
+title: "Lab 7 — Biến giả & biến tương tác"
 subtitle: "Tương ứng [Buổi 7](../lectures/buoi-07.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Stata — điền sau.)*
+Mei à, ở [Buổi 7](../lectures/buoi-07.qmd) bố kể với con chuyện này: hai người **học bằng nhau**, nhưng một người là nam, một người là nữ — lương có khác nhau không? Và nếu khác, thì khác *một cục cố định* (ai cũng lệch chừng đó), hay khác *theo độ dốc* (học thêm 1 năm, nhóm này được lợi nhiều hơn nhóm kia)?
+
+Hôm nay con tự tay trả lời câu đó bằng Stata. Đừng lo, vẫn là `regress` quen thuộc thôi — mình chỉ thêm vài chữ cái nhỏ.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Buổi lab này con sẽ làm được
+- Tạo một **biến giả** (nam = 0, nữ = 1) và đút vào hồi quy.
+- Đọc hệ số biến giả như **chênh lệch trung bình giữa hai nhóm**.
+- Thêm **biến tương tác** để cho hai nhóm có **độ dốc khác nhau**, rồi diễn giải.
+- Xuất một bảng đẹp bằng `esttab`.
+:::
+
+Bố giả định con đã có sẵn một bộ dữ liệu mẫu mở lên rồi, trong đó có các biến: `luong` (triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (giới tính: chưa có cũng được, lát mình tự tạo). Cả lab này con cứ hình dung dữ liệu đang nằm trong bộ nhớ Stata.
+
+## Bước 1 — Nhìn mặt dữ liệu trước đã
+
+Trước khi chạy gì, bố luôn dặn con: *nhìn mặt dữ liệu cái đã.*
+
+```stata
+* Xem nhanh vài biến
+summarize luong hoc kinhnghiem
+
+* Đếm xem nhóm nam/nữ mỗi bên bao nhiêu người
+tabulate nu
+```
+
+`summarize` cho con trung bình, nhỏ nhất, lớn nhất — để biết "triệu đồng" của mình cỡ nào, "năm học" chạy từ đâu tới đâu. `tabulate nu` đếm mỗi nhóm có bao nhiêu người. Nếu một nhóm chỉ có dăm ba người thì mọi kết luận về nhóm đó đều mong manh — con nhớ giùm bố.
+
+**Bố chốt cho con:** chưa nhìn mặt dữ liệu thì chưa chạy hồi quy.
+
+## Bước 2 — Tạo biến giả: nam = 0, nữ = 1
+
+Biến giả chỉ là một cái **công tắc**: bật (1) hoặc tắt (0). Ở đây bố cho nó nghĩa "có phải nữ không".
+
+```stata
+* Nếu dữ liệu có biến gioitinh dạng chữ "Nam"/"Nu":
+generate nu = (gioitinh == "Nu")
+
+* Gán nhãn cho dễ đọc bảng
+label define gioi 0 "Nam" 1 "Nu"
+label values nu gioi
+
+* Kiểm tra lại
+tabulate nu
+```
+
+Dòng `generate nu = (gioitinh == "Nu")` đọc thành tiếng người là: *"với mỗi người, nếu họ là Nữ thì ghi 1, không thì ghi 0."* Vậy thôi. Cái dấu `==` là Stata hỏi "có đúng bằng không?", trả lời đúng là 1, sai là 0.
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy nho nhỏ
+Một biến giả **luôn cần một nhóm làm mốc** (nhóm = 0). Ở đây mốc là **nam**. Mọi con số con đọc sau này đều là *"so với nam"*. Đổi mốc thì câu chữ đổi theo — con đừng quên mình đang so với ai.
+:::
+
+**Bố chốt cho con:** biến giả là cái công tắc 0/1, và số 0 là *nhóm mốc* để mọi thứ so vào.
+
+## Bước 3 — Hồi quy lương theo học + giới tính
+
+Giờ mình chạy hồi quy đầu tiên: lương phụ thuộc số năm học **và** giới tính.
+
+```stata
+* i.nu = bảo Stata coi nu là biến phân nhóm (nam là mốc)
+regress luong hoc i.nu, vce(robust)
+```
+
+Hai điều bố muốn con chú ý ở dòng lệnh này:
+
+- `i.nu` — chữ `i.` đứng trước biến nghĩa là *"đây là biến phân nhóm, hãy tự tạo biến giả giúp con, lấy nhóm nhỏ nhất (nam = 0) làm mốc."* Con khỏi phải tự nhân tay.
+- `vce(robust)` — bố dặn con luôn bật cái này. Nó tính sai số chuẩn theo kiểu *"vững"*, không sợ chuyện đám mây điểm chỗ thì túm tụm chỗ thì xòe rộng (nhớ Buổi 5: sai số chuẩn là độ lắc lư của con số).
+
+Kết quả in ra sẽ có một dòng tên đại loại `1.nu`. Giả sử con đọc được:
+
+::: {.callout-important}
+## 🧮 Giả sử bảng cho con thế này
+```
+luong        Coef.   Robust SE
+hoc           0.40       0.05
+1.nu         -1.20       0.30
+_cons         3.50       0.40
+```
+:::
+
+Bố dịch từng dòng sang tiếng người:
+
+- `hoc = 0,40`: học thêm **1 năm**, lương cao hơn trung bình **0,4 triệu** — *cho cả nam lẫn nữ như nhau* (vì mô hình này chưa cho hai nhóm có độ dốc khác).
+- `1.nu = -1,20`: **giữ nguyên số năm học**, một người nữ có lương trung bình **thấp hơn nam 1,2 triệu**. Dấu âm là "thấp hơn". Đây chính là **chênh lệch trung bình giữa hai nhóm**.
+- `_cons = 3,50`: lương của nhóm mốc (nam) khi `hoc = 0` — thường chỉ là điểm gốc để vẽ đường, đừng bắt nó phải có nghĩa đời thực.
+
+Hình dung cho dễ: mô hình này vẽ **hai đường thẳng song song**. Cùng độ dốc 0,4 (học có lợi như nhau), nhưng đường của nữ bị **kéo tụt xuống 1,2 triệu** so với đường của nam. Song song, nghĩa là: dù học bao nhiêu, khoảng cách hai nhóm vẫn cứ là 1,2 triệu.
+
+**Bố chốt cho con:** hệ số của biến giả = *hai nhóm lệch nhau bao nhiêu khi mọi thứ khác bằng nhau*.
+
+## Bước 4 — Thêm tương tác: cho hai nhóm độ dốc khác nhau
+
+Đường song song có một giả định ngầm: *"học thêm 1 năm thì nam và nữ được lợi y như nhau."* Nhưng biết đâu không phải vậy? Biết đâu mỗi năm học, một nhóm được lợi nhiều hơn nhóm kia? Để kiểm tra, mình cho hai đường được phép **dốc khác nhau** — đó là việc của **biến tương tác**.
+
+```stata
+* c.hoc##i.nu = cho hoc và nu "bắt tay" nhau:
+*   ## tự sinh ra: hoc, i.nu, VÀ tích hoc*nu
+regress luong c.hoc##i.nu, vce(robust)
+```
+
+Bố giải thích cú pháp cho con khỏi sợ:
+
+- `c.hoc` — chữ `c.` báo cho Stata biết `hoc` là biến **liên tục** (số năm, không phải nhóm).
+- `i.nu` — `nu` là biến **phân nhóm** như bước trước.
+- `##` (hai dấu thăng) — bảo Stata: *"cho hai biến này bắt tay nhau, và tự thêm luôn cả hai biến đứng riêng lẫn tích của chúng."* Con khỏi gõ tay từng cái.
+
+::: {.callout-important}
+## 🧮 Giả sử bảng tương tác cho con thế này
+```
+luong          Coef.   Robust SE
+hoc             0.35       0.06
+1.nu           -2.50       0.80
+1.nu#c.hoc      0.15       0.07
+_cons           3.80       0.45
+```
+:::
+
+Đây là chỗ bố dặn con kỹ nhất: **đừng đọc từng hệ số một mình** — phải đọc *cùng nhau*.
+
+- `hoc = 0,35`: đây là độ dốc của **nhóm mốc (nam)**. Mỗi năm học, nam được thêm **0,35 triệu**.
+- `1.nu#c.hoc = 0,15`: đây là phần độ dốc **cộng thêm cho nữ**. Nghĩa là mỗi năm học, nữ được lợi **nhiều hơn nam 0,15 triệu**.
+- Vậy độ dốc của **nữ** = `0,35 + 0,15 = 0,50` triệu mỗi năm học.
+- `1.nu = -2,50`: chênh lệch hai nhóm **tại điểm `hoc = 0`**. Vì giờ hai đường không còn song song, con số này chỉ đúng ở chỗ gốc thôi, đừng đem nó nói cho mọi mức học.
+
+Hình dung: giờ là **hai đường có độ dốc khác nhau**. Đường nữ xuất phát thấp hơn (ở `hoc=0`), nhưng **dốc đứng hơn** — nên càng học nhiều, khoảng cách càng thu hẹp, thậm chí có thể vượt lên. Đó chính là câu *"còn tùy"* của Buổi 6: lợi ích của học **tùy** con là nam hay nữ.
+
+Muốn Stata nói thẳng độ dốc từng nhóm cho con khỏi cộng tay:
+
+```stata
+* Tác dụng biên của 1 năm học, riêng cho từng nhóm
+margins nu, dydx(hoc)
+```
+
+**Bố chốt cho con:** không tương tác = hai đường *song song* (lệch nhau một cục); có tương tác = hai đường *dốc khác nhau* (lệch nhau "còn tùy" mức học).
+
+## Bước 5 — Soi phần dư cho yên tâm
+
+Trước khi tin bảng số, bố muốn con liếc qua phần dư — xem mô hình có "lệch hệ thống" chỗ nào không.
+
+```stata
+* Vẽ phần dư so với giá trị dự đoán
+rvfplot, yline(0)
+```
+
+Con nhìn đám chấm: nếu chúng **rải đều quanh đường 0**, không loe ra hình cái phễu, không cong vòng — thì mô hình của con ổn. Nếu thấy hình phễu (chỗ túm chỗ xòe), đó là dấu hiệu phương sai thay đổi — và đó đúng là lý do bố bắt con bật `vce(robust)` từ đầu.
+
+**Bố chốt cho con:** vẽ phần dư là cách rẻ nhất để mô hình "thú nhận" chỗ nó làm chưa tốt.
+
+## Bước 6 — Khi biến phụ thuộc chỉ là 0/1: nếm thử logit
+
+Đôi khi thứ con muốn giải thích không phải *bao nhiêu triệu*, mà là *có hay không* — ví dụ "người này có việc làm không (1/0)". Lúc đó `regress` không hợp nữa; mình dùng `logit`.
+
+```stata
+* covieclam = 1 nếu có việc, 0 nếu không
+logit covieclam hoc i.nu, vce(robust)
+
+* Đọc kết quả dễ hơn bằng tác dụng biên trung bình
+margins, dydx(*)
+```
+
+Bố nói nhỏ con nghe: hệ số thô của `logit` khó đọc trực tiếp (nó ở thang "log-odds", nghe đã thấy nhức đầu). Nên mình chạy thêm `margins, dydx(*)` để Stata dịch ra câu dễ hiểu: *"học thêm 1 năm làm xác suất có việc tăng thêm chừng… phần trăm."* Buổi sau bố sẽ kể kỹ hơn; hôm nay con chỉ cần biết: **biến phụ thuộc 0/1 thì gọi `logit`, rồi đọc bằng `margins`.**
+
+**Bố chốt cho con:** giải thích *con số* thì `regress`; giải thích *có/không* thì `logit`.
+
+## Bước 7 — Xuất bảng đẹp bằng esttab
+
+Cuối cùng, mình gom hai mô hình (song song & tương tác) vào một bảng cho gọn gàng, dễ đem khoe.
+
+```stata
+* Cài gói một lần duy nhất (nếu máy chưa có)
+ssc install estout
+
+* Chạy lại và lưu kết quả mỗi mô hình dưới một cái tên
+regress luong hoc i.nu, vce(robust)
+estimates store m_songsong
+
+regress luong c.hoc##i.nu, vce(robust)
+estimates store m_tuongtac
+
+* Xuất ra bảng cạnh nhau
+esttab m_songsong m_tuongtac, ///
+    b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
+    label nogaps ///
+    title("Lương theo học vấn và giới tính")
+
+* Muốn xuất ra file Word để dán vào báo cáo:
+* esttab m_songsong m_tuongtac using bang_lab7.rtf, replace b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) label
+```
+
+`estimates store` cất một mô hình vào ngăn kéo có tên. `esttab` lấy các ngăn kéo đó ra, dựng thành bảng hai cột cạnh nhau — cột song song, cột tương tác — để con so một phát thấy ngay sự khác biệt. `b(3) se(3)` là làm tròn 3 chữ số; `star(...)` gắn dấu sao cho hệ số có ý nghĩa thống kê (nhớ Buổi 5 không?).
+
+::: {.callout-tip}
+## 💡 Mẹo nhỏ bố dắt túi con
+Trong `esttab`, cứ thêm `label` thì bảng sẽ in **nhãn tiếng Việt** con đã gán ở Bước 2 ("Nu", "Nam") thay vì tên biến trơ trụi. Bảng đọc dễ hơn hẳn, người chấm cũng quý con hơn. Và `///` ở cuối dòng chỉ là cách Stata nối một câu lệnh dài xuống nhiều dòng cho dễ nhìn — không có phép màu gì đâu con.
+:::
+
+## Cùng một trò chơi, đổi tên hai trục
+
+Nãy giờ là ví dụ "người lớn": lương theo học vấn, tách nam–nữ. Giờ bố kể ví dụ gần con hơn.
+
+Con tập **nhảy dây**. Mỗi tuần tập thêm, con nhảy được nhiều cái hơn — đó là *độ dốc*. Bây giờ chia làm hai nhóm: hôm **ngủ đủ giấc** (nhóm = 1) và hôm **thiếu ngủ** (nhóm = 0).
+
+- **Không tương tác:** hôm ngủ đủ con luôn nhảy hơn hôm thiếu ngủ một số cố định — *hai đường song song.*
+- **Có tương tác:** hôm ngủ đủ, mỗi tuần tập con tiến **nhanh hơn hẳn** — *độ dốc khác nhau.* Tập luyện phát huy **tùy** con có ngủ đủ không.
+
+Thấy chưa con — y hệt bài lương. `luong` đổi thành "số cái nhảy", `hoc` đổi thành "số tuần tập", `nu` đổi thành "có ngủ đủ không". Cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Tạo một **biến giả** 0/1 và đút vào `regress` bằng `i.nu` — hệ số của nó là **chênh lệch trung bình giữa hai nhóm** (so với nhóm mốc).
+2. Thêm **tương tác** bằng `c.hoc##i.nu` để hai nhóm có **độ dốc khác nhau** — và con đọc *cả cụm hệ số cùng nhau*, không đọc lẻ; `margins` giúp đọc cho khỏe.
+3. Bật `vce(robust)`, liếc `rvfplot`, biết `logit` cho biến 0/1, và gói gọn mọi thứ vào một bảng bằng `esttab`.
+:::
+
+Con làm được rồi đó. Bố tự hào về con. Buổi sau mình bàn tới kẻ giấu mặt — biến bị bỏ sót.

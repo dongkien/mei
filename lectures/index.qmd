@@ -1,6 +1,6 @@
 ---
 title: "Bài giảng"
-subtitle: "15 buổi học liệu môn Kinh tế lượng"
+subtitle: "10 buổi — Kinh tế lượng dành cho bé Mei"
 listing:
   contents: "buoi-*.qmd"
   type: table
@@ -16,4 +16,4 @@ listing:
 toc: false
 ---
 
-Toàn bộ 15 buổi tổ chức theo **7 chương + Seminar tổng hợp**.
+Toàn bộ 10 buổi tổ chức theo **5 chương**, bố kể con nghe từ trực giác đến thực hành.

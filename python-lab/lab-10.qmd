@@ -1,7 +1,186 @@
 ---
-title: "Lab 10 — Dạng hàm log & bậc hai"
+title: "Lab 10 — Logit/Probit, panel & báo cáo kết quả"
 subtitle: "Tương ứng [Buổi 10](../lectures/buoi-10.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Python — điền sau.)*
+Mei à, ở [Buổi 10](../lectures/buoi-10.qmd) bố mở hé cho con cánh cửa đầu tiên: khi câu trả lời chỉ là **CÓ hay KHÔNG** — đậu hay rớt, mua hay không mua — thì đường thẳng OLS chịu thua, và mình thay nó bằng cái **máng trượt hình chữ S** gọi là **logit**. Hôm nay mình ngồi xuống tự tay chạy một cái logit thật, đọc kết quả sơ bộ, rồi bố dạy con một mẹo rất đời: cách **xuất bảng nhiều mô hình cạnh nhau** thật đẹp để dán vào báo cáo. Đừng lo con, vẫn là `smf` quen thuộc, chỉ đổi đúng một chữ thôi.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Buổi lab này con sẽ làm được
+- Chạy một hồi quy **logit** cho biến có/không (đậu/rớt) và đọc kết quả sơ bộ.
+- Hiểu vì sao hệ số logit **không đọc thẳng được** như OLS, và mẹo nhìn dấu (+/−).
+- Dùng `summary_col` để **xếp nhiều mô hình cạnh nhau** thành một bảng gọn gàng cho báo cáo.
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Bố giả định nhà mình đã có sẵn một bảng dữ liệu tên `df`, mỗi dòng là một thí sinh, với các cột: `dau` (đậu = 1, rớt = 0), `hoc` (số giờ ôn tập mỗi tuần), `kinhnghiem` (số lần thi thử đã làm), và `gioitinh` (nam/nữ). Con không cần tự gõ dữ liệu — cứ tưởng tượng nó đã nằm sẵn trong máy.
+
+```python
+import pandas as pd
+import numpy as np
+import statsmodels.formula.api as smf
+
+# df đã có sẵn: các cột dau (0/1), hoc, kinhnghiem, gioitinh
+df.head()
+```
+
+`smf` là biệt danh bố đặt cho `statsmodels.formula.api` — cái cho phép mình viết mô hình kiểu `"y ~ x"` đọc như tiếng người: *"đậu phụ thuộc vào số giờ ôn và số lần thi thử"*.
+
+**Bố chốt cho con:** đồ nghề y hệt mọi buổi trước, chỉ có biến `dau` lần này là **có/không** chứ không phải con số trải dài.
+
+## Bước 1 — Vì sao không kéo đường thẳng OLS qua đây
+
+Để con thấy tận mắt vì sao đường thẳng chịu thua, mình thử ép `dau` vào OLS xem sao.
+
+```python
+mo_hinh_ols = smf.ols("dau ~ hoc + kinhnghiem", data=df).fit()
+print(mo_hinh_ols.summary())
+
+# xem mô hình OLS đoán xác suất đậu là bao nhiêu
+df["xac_suat_ols"] = mo_hinh_ols.fittedvalues
+df["xac_suat_ols"].describe()
+```
+
+Con nhìn dòng `max` và `min` của `xac_suat_ols`: rất có thể con sẽ thấy một con số **trên 1** (tức trên 100%) hoặc **âm**. Mà xác suất đậu thì làm gì có chuyện 120% hay −30%, con nhỉ. Đường thẳng không biết tự dừng ở mép 0 và 1 — nó cứ kéo dài mãi.
+
+**Bố chốt cho con:** OLS không sai về mặt tính toán, nhưng nó **trả lời ngớ ngẩn** khi y là có/không — vì thế mình cần cái máng trượt chữ S.
+
+## Bước 2 — Chạy logit: đổi đúng một chữ
+
+Đây là phép màu hôm nay: con chỉ đổi `smf.ols` thành **`smf.logit`**. Câu lệnh còn lại y hệt.
+
+```python
+mo_hinh_logit = smf.logit("dau ~ hoc + kinhnghiem", data=df).fit()
+print(mo_hinh_logit.summary())
+```
+
+`logit` chính là cái **máng trượt hình chữ S** của Buổi 10 — nó ép mọi dự đoán nằm gọn trong khoảng 0% đến 100%, không bao giờ trật ra ngoài.
+
+Giờ tới chỗ bố phải dặn con kỹ. Trong bảng kết quả, cột hệ số (`coef`) của logit **không đọc thẳng** như OLS được đâu. Với OLS mình nói "học thêm 1 giờ → xác suất đậu +0,05". Với logit thì con số trong cột `coef` là đơn vị "log-odds" — nghe rối, và bố **không bắt con đọc con số đó**.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe: chỉ cần nhìn DẤU trước
+Với logit, lúc mới đọc con đừng vội diễn giải con số. Chỉ cần nhìn **dấu** của hệ số:
+
+- Hệ số `hoc` **dương (+)** → ôn càng nhiều, xác suất đậu **càng cao**. Hợp lý.
+- Nếu nó **âm (−)** → ôn nhiều mà xác suất đậu giảm? Chắc có gì đó sai, con phải dừng lại nghĩ.
+
+Còn ý nghĩa thống kê (đáng tin hay tình cờ) thì đọc y như Buổi 5: nhìn cột `P>|z|` (trị số p) — nhỏ hơn 0,05 thì tin được.
+:::
+
+**Bố chốt cho con:** logit chỉ là `smf.ols` đổi thành `smf.logit`; lúc đầu con chỉ cần đọc **dấu** và **trị số p**, chưa cần đụng tới con số log-odds.
+
+## Bước 3 — Đọc xác suất cho dễ hiểu
+
+Vì con số `coef` khó đọc, mình hỏi mô hình một câu dễ hơn nhiều: *"vậy rốt cuộc mỗi thí sinh có xác suất đậu bao nhiêu phần trăm?"* Mô hình logit trả lời được ngay, và lần này luôn là con số tử tế trong khoảng 0–100%.
+
+```python
+df["xac_suat_dau"] = mo_hinh_logit.predict(df)
+df["xac_suat_dau"].describe()   # min và max giờ luôn nằm gọn trong [0, 1]
+```
+
+Con để ý: khác với OLS ở Bước 1, giờ `min` và `max` **không bao giờ vượt khỏi 0 và 1**. Đó đúng là cái máng trượt chữ S đang làm việc — nó nhốt mọi dự đoán vào trong khoảng xác suất hợp lệ.
+
+::: {.callout-important}
+## 🧮 Đọc bằng con số cho dễ
+Giả sử mô hình đoán cho hai bạn:
+
+- Bạn An ôn ít, thi thử ít → `xac_suat_dau` = **0,30** → mô hình nói An có **30%** cơ hội đậu.
+- Bạn Bình ôn nhiều, thi thử nhiều → `xac_suat_dau` = **0,85** → Bình có **85%** cơ hội đậu.
+
+Thấy không con — thay vì con số log-odds khô khan, mình nói chuyện bằng **phần trăm cơ hội đậu**, ai nghe cũng hiểu. Đó là cách diễn giải logit mà bố muốn con dùng khi viết báo cáo.
+:::
+
+**Bố chốt cho con:** đừng vật lộn với log-odds — cứ bảo mô hình `predict` ra **xác suất**, rồi nói chuyện bằng phần trăm.
+
+## Bước 4 — Cùng trò chơi đó, nhưng gần con hơn
+
+Bỏ chuyện thi cử sang một bên. Tưởng tượng nhà mình có bảng `vuon`, mỗi dòng là một cái cây, với cột `ra_hoa` (cây có ra hoa không: 1/0) và `tuoi_nuoc` (số ngày trong tuần con tưới nước).
+
+```python
+mo_hinh_cay = smf.logit("ra_hoa ~ tuoi_nuoc", data=vuon).fit()
+print(mo_hinh_cay.summary())
+
+vuon["xac_suat_ra_hoa"] = mo_hinh_cay.predict(vuon)
+vuon["xac_suat_ra_hoa"].head()
+```
+
+Vì sao vẫn là logit chứ không phải OLS? Vì câu trả lời ở đây cũng chỉ có **hai cửa**: cây ra hoa hay không. Mình nhìn dấu hệ số `tuoi_nuoc`: dương thì "tưới đều hơn → khả năng ra hoa cao hơn". Rồi `predict` ra con số kiểu *"cây này tưới 4 ngày/tuần thì 70% khả năng ra hoa"*.
+
+Cùng một trò chơi, chỉ thay tên hai trục thôi con — bên kia là đậu/rớt theo số giờ ôn, bên này là ra hoa/không theo số ngày tưới 🌱.
+
+## Bước 5 — Xuất bảng nhiều mô hình cạnh nhau cho báo cáo
+
+Tới phần thực dụng nhất của hôm nay. Khi viết báo cáo, người ta hiếm khi dán nguyên cái `summary()` dài lê thê. Thay vào đó họ xếp **nhiều mô hình thành các cột cạnh nhau** trong một bảng gọn — để người đọc thấy ngay con số thay đổi thế nào khi mình thêm bớt biến. `statsmodels` có sẵn `summary_col` làm đúng việc đó.
+
+Mình xây ba mô hình logit, từ đơn giản tới đầy đủ:
+
+```python
+from statsmodels.iolib.summary2 import summary_col
+
+# mô hình 1: chỉ số giờ ôn
+m1 = smf.logit("dau ~ hoc", data=df).fit()
+
+# mô hình 2: thêm số lần thi thử
+m2 = smf.logit("dau ~ hoc + kinhnghiem", data=df).fit()
+
+# mô hình 3: thêm biến giả giới tính bằng C(...)
+m3 = smf.logit("dau ~ hoc + kinhnghiem + C(gioitinh)", data=df).fit()
+
+bang = summary_col(
+    [m1, m2, m3],
+    model_names=["(1)", "(2)", "(3)"],
+    stars=True,
+    info_dict={"Số quan sát": lambda m: f"{int(m.nobs)}"},
+)
+print(bang)
+```
+
+Bố giải thích từng mẩu cho con:
+
+- `[m1, m2, m3]` — danh sách các mô hình, mỗi cái thành **một cột**.
+- `model_names` — tên đầu mỗi cột; người ta hay đánh số `(1) (2) (3)` cho gọn.
+- `stars=True` — gắn dấu sao `*` cho hệ số có ý nghĩa thống kê (càng nhiều sao càng đáng tin), đỡ phải dò trị số p từng cái.
+- `info_dict` — thêm dòng phụ ở chân bảng; ở đây bố thêm **số quan sát** mỗi mô hình.
+
+Con đọc bảng theo **hàng ngang**: cùng biến `hoc`, hệ số của nó có **đứng vững** khi mình thêm biến khác vào (cột 1 sang cột 2, cột 3) không? Nếu nó nhảy lung tung thì đó là tín hiệu phải suy nghĩ thêm. Đây chính là kiểu bảng con thấy trong mọi bài báo kinh tế lượng nghiêm túc.
+
+::: {.callout-tip}
+## 💡 Mẹo bố nói nhỏ con nghe
+Mẹo này **không chỉ dùng cho logit** — nó dùng được cho cả OLS, và cho mọi thứ con học mấy buổi trước. Con cứ trộn các mô hình vào chung một bảng:
+
+```python
+ols1 = smf.ols("luong ~ hoc", data=df2).fit(cov_type="HC1")
+ols2 = smf.ols("luong ~ hoc + kinhnghiem", data=df2).fit(cov_type="HC1")
+# tương tác: học có lợi khác nhau giữa nam/nữ
+ols3 = smf.ols("luong ~ hoc * C(gioitinh) + kinhnghiem", data=df2).fit(cov_type="HC1")
+
+print(summary_col([ols1, ols2, ols3], model_names=["(1)", "(2)", "(3)"], stars=True))
+```
+
+Để ý ba thứ con đã học gộp lại đây: `C(gioitinh)` biến giới tính thành **biến giả**, `hoc * C(gioitinh)` tự tạo cả số hạng **tương tác** ("học có lợi *còn tùy* nam hay nữ" — Buổi 6), và `cov_type="HC1"` bật **sai số chuẩn vững** (Buổi 9). Một bảng gọn kể được cả câu chuyện.
+:::
+
+::: {.callout-warning}
+## ⚠️ Hai cái bẫy bố dặn con tránh
+1. **Đừng đọc con số `coef` của logit như OLS.** Nó là log-odds, không phải "tăng bao nhiêu phần trăm điểm". Muốn nói cho người thường hiểu, hãy `predict` ra **xác suất** rồi nói bằng %.
+2. **Dấu sao chỉ nói "đáng tin", không nói "quan trọng".** Nhớ Buổi 5: một hệ số ba sao vẫn có thể bé tí xíu, vô vị trên thực tế. Con luôn hỏi thêm: *con số này có lớn đủ để quan tâm không?*
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Chạy một hồi quy **logit** cho biến có/không bằng cách đổi `smf.ols` thành `smf.logit`, rồi đọc kết quả qua **dấu** và **trị số p**.
+2. Dùng `.predict()` để biến con số log-odds khó nhằn thành **xác suất** dễ hiểu, luôn nằm gọn trong 0–100%.
+3. Dùng `summary_col` xếp **nhiều mô hình cạnh nhau** thành một bảng đẹp cho báo cáo — mẹo dùng được cho cả OLS lẫn logit.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu
+- **Probit** là anh em sinh đôi của logit (máng trượt chữ S hơi khác độ cong); trong `statsmodels` chỉ cần đổi sang `smf.probit("dau ~ hoc + kinhnghiem", data=df).fit()`. Kết luận thường gần như nhau.
+- Muốn biết "ôn thêm 1 giờ làm xác suất đậu tăng *mấy điểm phần trăm*", con tính **tác động biên** (marginal effects): `mo_hinh_logit.get_margeff().summary()`. Đây là cách dịch log-odds sang ngôn ngữ phần trăm chuẩn mực hơn.
+- Logit cũng bật được sai số chuẩn vững như Buổi 9: `smf.logit("dau ~ hoc", data=df).fit(cov_type="HC1")`.
+- `summary_col` còn nhận `float_format="%.3f"` để chỉnh số chữ số thập phân, và `regressor_order=[...]` để cố định thứ tự các hàng biến — tiện khi con muốn bảng trông đúng chuẩn bài báo.
+- Muốn xuất ra LaTeX để dán vào bài viết: `bang.as_latex()`. Muốn HTML cho trang web: `bang.as_html()`.
+:::

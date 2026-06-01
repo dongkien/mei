@@ -1,7 +1,121 @@
 ---
-title: "Lab 3 — Hồi quy đơn"
+title: "Lab 3 — Hồi quy bội"
 subtitle: "Tương ứng [Buổi 3](../lectures/buoi-03.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Stata — điền sau.)*
+Mei à, ở [Buổi 3](../lectures/buoi-03.qmd) bố kể con nghe ý lớn nhất của hồi quy bội: khi cho thêm một biến vào, mình đang **giữ cố định** nó để nhìn cho rõ phần riêng của từng biến. Nghe hơi trừu tượng đúng không con? Đừng lo — hôm nay con sẽ tự tay thấy nó.
+
+Cách thấy rất đơn giản. Con chạy lương theo **mỗi mình** số năm học, ghi lại hệ số. Rồi con thêm **kinh nghiệm** vào. Con nhìn hệ số của học **đổi** thế nào. Cú đổi đó chính là "giữ cố định" hiện hình ngay trước mắt con. Bố đi cùng con từng bước.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Làm quen được cái bàn làm việc mới: bốn cửa sổ của Stata.
+- Chạy được hồi quy lương theo học, rồi thêm kinh nghiệm vào và **thấy hệ số học đổi**.
+- Hiểu được cú đổi đó nghĩa là gì: đó là lúc mình "giữ kinh nghiệm cố định".
+:::
+
+::: {.callout-tip}
+## 💡 Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – không tự chạy**, vì website chưa gắn dữ liệu thật. Con cứ hình dung mình **đã có sẵn một bộ dữ liệu** với ba biến: `luong` (lương, triệu đồng), `hoc` (số năm đi học), và `kinhnghiem` (số năm đi làm). Khi ngồi trước máy Stata thật, con gõ y hệt vậy là chạy được con nhé.
+:::
+
+## Bước 0 — Làm quen cái bàn làm việc mới
+
+Stata là phần mềm mình phải mua (bản SE hoặc MP), nên con không cài bằng dòng lệnh như mấy thứ miễn phí được. Con mở Stata lên là thấy ngay **bốn cửa sổ** — đừng hốt nhé, đây chỉ là cái bàn làm việc mới thôi:
+
+- **Command** (ô nhỏ phía dưới): chỗ con gõ lệnh vào. Gõ xong bấm Enter.
+- **Results** (vùng lớn ở giữa): chỗ Stata in kết quả trả lời con.
+- **Variables** (bên phải): danh sách các biến đang có trong dữ liệu.
+- **Review** (bên trái): lịch sử những lệnh con đã gõ — bấm lại là lệnh nhảy xuống ô Command, khỏi gõ lại.
+
+Giờ mình ngồi vào bàn. Đầu tiên đặt thư mục làm việc, rồi mở thử một bộ dữ liệu mẫu có sẵn trong Stata cho quen tay:
+
+```stata
+* Đặt thư mục làm việc (con đổi đường dẫn cho đúng máy mình)
+cd "C:/ktl"
+
+* Mở bộ dữ liệu mẫu có sẵn trong Stata cho quen tay
+sysuse auto, clear
+```
+
+`cd` là bảo Stata: *"từ giờ mình làm việc trong thư mục này."* `sysuse auto, clear` mở một bộ dữ liệu mẫu Stata tặng sẵn (số liệu về xe hơi) — `clear` nghĩa là dọn sạch bàn trước khi bày dữ liệu mới ra. Con cứ bấm thử, nhìn cửa sổ Variables sáng lên một loạt biến là con đã "mở dữ liệu" thành công rồi đó.
+
+Một mẹo bố muốn con tập ngay từ hôm nay: thay vì gõ từng lệnh vào ô Command rồi quên, con mở **Do-file Editor** ra để chép lệnh lại thành một tờ giấy nhớ chạy được:
+
+```stata
+* Mở cửa sổ soạn do-file để lưu lệnh lại
+doedit
+```
+
+**Bố chốt cho con:** bốn cửa sổ chỉ là cái bàn làm việc mới — `cd` để chọn chỗ ngồi, `sysuse auto, clear` để bày dữ liệu, `doedit` để lưu lệnh. Quen bàn rồi mình bắt tay vào việc thật.
+
+## Bước 1 — Mở dữ liệu của mình và nhìn qua một cái
+
+Mình tạm gác bộ xe hơi lại, mở bộ dữ liệu lương của mình ra. Trước khi hồi quy, bố luôn nhìn qua dữ liệu một lượt cho quen mặt.
+
+```stata
+* Mở bộ dữ liệu lương của mình (giả định con đã có file luong.dta)
+use "luong.dta", clear
+
+* Nhìn qua ba biến mình sẽ dùng
+summarize luong hoc kinhnghiem
+```
+
+`summarize` cho con thấy trung bình, nhỏ nhất, lớn nhất của từng biến — như mở hộp đồ ra ngắm trước khi làm. Con xem lương trung bình bao nhiêu triệu, người ta học trung bình mấy năm, đi làm trung bình mấy năm. Quen mặt dữ liệu rồi mình mới chạy.
+
+**Bố chốt cho con:** luôn `summarize` để làm quen dữ liệu trước khi hồi quy — đừng chạy mù.
+
+## Bước 2 — Hồi quy chỉ với một biến học
+
+Mình bắt đầu bằng câu hỏi đơn giản nhất: *"Học thêm một năm thì lương cao hơn bao nhiêu?"* — và mình tạm thời **chỉ nhìn mỗi học**.
+
+```stata
+* Mô hình 1: lương theo MỖI MÌNH học
+regress luong hoc
+```
+
+`regress luong hoc` nghĩa là: *"vẽ một đường thẳng giải thích lương theo số năm học."* Stata sẽ in một bảng, con tìm dòng `hoc`, cột đầu tiên (`Coef.`) — đó là hệ số của học.
+
+Giả sử Stata in hệ số `hoc` là **0,70**. Con đọc thành tiếng người: *"theo mô hình này, học thêm 1 năm gắn với lương cao hơn 0,70 triệu."* Con ghi con số **0,70** này lên giấy nháp nhé — lát nữa mình sẽ nhìn nó nhảy.
+
+**Bố chốt cho con:** mô hình chỉ có học cho hệ số **0,70** — nhớ kỹ con số này.
+
+## Bước 3 — Thêm kinh nghiệm vào và nhìn hệ số học đổi
+
+Giờ là phần hay nhất, Mei. Mình mời **kinh nghiệm** ngồi vào bàn cùng. Chỉ thêm một chữ `kinhnghiem` vào sau `hoc` thôi:
+
+```stata
+* Mô hình 2: thêm kinh nghiệm vào
+regress luong hoc kinhnghiem
+```
+
+Giả sử lần này hệ số `hoc` thành **0,45**. Con thấy chưa — con số nhảy từ **0,70 xuống 0,45**! Cùng một biến học, cùng một bộ dữ liệu, mà con số khác hẳn. Tại sao?
+
+Vì bây giờ Stata trả lời một câu hỏi **khác**. Ở Bước 2, câu hỏi là *"học thêm 1 năm thì lương khác bao nhiêu?"* — trộn lẫn cả phần của kinh nghiệm. Ở Bước 3, câu hỏi thành: *"giữa hai người **có cùng số năm kinh nghiệm**, ai học hơn 1 năm thì lương cao hơn bao nhiêu?"* Đây chính là **giữ kinh nghiệm cố định** mà bố giảng ở Buổi 3 — mình so sánh táo với táo, không trộn lẫn nữa.
+
+::: {.callout-important}
+## 🧮 Đọc cú đổi bằng số
+| Mô hình | Hệ số `hoc` | Câu hỏi nó trả lời |
+|---|---|---|
+| (1) Chỉ có học | **0,70** | Học thêm 1 năm, lương khác bao nhiêu (trộn cả phần kinh nghiệm) |
+| (2) Có cả kinh nghiệm | **0,45** | **Cùng kinh nghiệm**, học thêm 1 năm, lương khác bao nhiêu |
+
+Phần chênh **0,70 − 0,45 = 0,25 triệu** là phần mà ở mô hình 1, việc học đã "gánh hộ" cho kinh nghiệm. Thêm kinh nghiệm vào, mỗi biến nhận đúng phần của mình.
+:::
+
+**Bố chốt cho con:** thêm kinh nghiệm vào, hệ số học rơi từ 0,70 còn 0,45 — đó là lúc mình giữ kinh nghiệm cố định, để con số nói đúng phần riêng của việc học.
+
+::: {.callout-tip}
+## 💡 Mẹo nhỏ bố dắt túi cho con
+Khi con thấy một hệ số **đổi nhiều** lúc thêm biến mới, đừng vội hỏi "con số nào đúng". Hãy hỏi: *"hai con số này đang trả lời hai câu hỏi gì khác nhau?"*
+
+Con số đổi nhiều là **tín hiệu tốt** — nó cho con biết biến mới có liên hệ với cả hai bên (vừa với lương, vừa với học). Nếu thêm một biến vào mà hệ số học **gần như không nhúc nhích**, thì biến đó hầu như chẳng "chen" vào câu chuyện học–lương, con có thể yên tâm hơn. Nhìn cú đổi, con đọc được mối quan hệ ẩn giữa các biến mà chưa cần công thức nào cả. 🌱
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Ngồi vào cái bàn Stata: bốn cửa sổ, `cd`, `sysuse auto, clear`, và lưu lệnh bằng `doedit`.
+2. Chạy hồi quy lương theo **mỗi mình** học, ghi lại hệ số (**0,70**).
+3. Thêm **kinh nghiệm** vào, thấy hệ số học rơi còn **0,45** — và hiểu rằng đó chính là "giữ kinh nghiệm cố định" ở Buổi 3.
+:::

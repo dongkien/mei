@@ -4,4 +4,133 @@ subtitle: "Chuẩn bị môi trường trước khi vào 15 lab"
 reading-time: "~30 phút"
 ---
 
-*(Hướng dẫn cài đặt Stata, thiết lập thư mục làm việc, mở dữ liệu mẫu — bổ sung sau.)*
+Mei à, trước khi mình bước vào [Buổi 1](../lectures/buoi-01.qmd) bố muốn dắt con tới chỗ ngồi mới đã. Cũng giống lần đầu con vào lớp vẽ — con chưa cần biết vẽ gì, chỉ cần biết bàn để đâu, bút nằm chỗ nào, giấy lấy ở đâu. Hôm nay y hệt vậy: mình **chưa chạy hồi quy gì cả**, mình chỉ ngồi xuống, mở Stata ra, và làm quen với cái bàn làm việc mới.
+
+Đừng lo lắng một chút nào con nhé. Bố từng sợ mấy phần mềm này lắm — mở ra thấy bốn cái cửa sổ chia ô, con trỏ nhấp nháy, chẳng biết gõ gì. Nhưng rồi bố nhận ra: nó chỉ là một cái bàn có vài ngăn kéo thôi. Hôm nay bố mở từng ngăn cho con xem.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Cài được Stata lên máy và mở nó ra mà không thấy sợ.
+- Biết bốn cái cửa sổ trong Stata mỗi cái dùng để làm gì.
+- Mở được một bộ dữ liệu mẫu và **nhìn ngắm nó**, chưa cần phân tích gì.
+- Tự tin nói: *"Con sẵn sàng cho Lab 1 rồi bố."*
+:::
+
+::: {.callout-tip}
+## 💡 Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – không tự chạy**, vì website chưa gắn dữ liệu thật. Con cứ hình dung mình **đã có sẵn một bộ dữ liệu** tên `luong.dta` với vài biến: `luong` (lương, triệu đồng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ, 0 nếu là nam). Khi ngồi trước máy Stata thật, con gõ y hệt vậy là chạy được con nhé.
+:::
+
+## Bước 0 — Cài Stata lên máy
+
+Stata là phần mềm trả phí, thường con sẽ có bản quyền qua trường học hoặc nơi làm. Bố dẫn con từng bước cho khỏi rối:
+
+1. Vào trang **stata.com**, mục *Download / My Stata* (nếu trường con cấp tài khoản, đăng nhập rồi tải bản cài đặt ở đó).
+2. Tải file cài về: trên **Windows** là file `.exe`, trên **Mac** là file `.dmg`, trên **Linux** là gói cài theo hướng dẫn kèm theo.
+3. Chạy file vừa tải, bấm *Next* vài lần như cài phần mềm bình thường.
+4. Lần đầu mở Stata, nó hỏi **mã bản quyền** (serial number, code, authorization) — con dán ba dòng mã trường cấp vào đây là xong.
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+- Nhớ chọn đúng bản **Stata** chứ không phải bản dùng thử lẫn lộn — và nếu được, ưu tiên bản **Stata/MP** hoặc **Stata/SE** cho thoải mái về số biến. Bản **BE** (Basic Edition) cũng học được hết Lab này, con đừng lo nếu máy chỉ có BE.
+- Khi gõ mã bản quyền, gõ chậm thôi con — sai một ký tự là nó báo lỗi, mà nhìn rất giống lỗi "phần mềm hỏng" làm con hoảng. Thực ra chỉ là gõ nhầm thôi.
+:::
+
+**Bố chốt cho con:** cài Stata giống cài bất kỳ phần mềm nào — tải về, bấm Next, dán mã bản quyền. Không có gì đáng sợ đâu con.
+
+## Bước 1 — Mở Stata ra và nhìn cái bàn làm việc
+
+Mở Stata lên, con sẽ thấy màn hình chia thành mấy ô. Bố gọi tên từng ô cho con, như chỉ cho con từng ngăn kéo:
+
+- **Command** (ô dưới cùng, có con trỏ nhấp nháy): đây là chỗ con **gõ lệnh**. Gõ xong bấm Enter, Stata làm liền.
+- **Results** (ô lớn ở giữa): đây là **bảng đen** — mọi thứ Stata trả lời con đều hiện ở đây.
+- **Variables** (ô bên phải): danh sách **các biến** trong dữ liệu đang mở. Như mục lục của một cuốn sổ.
+- **Review** (ô bên trái): **lịch sử** những lệnh con đã gõ. Bấm lại vào một dòng cũ là nó gõ lại giúp con.
+
+Con chưa cần làm gì với chúng cả. Bố chỉ muốn con **nhìn cho quen mặt** bốn ô này thôi.
+
+::: {.callout-tip}
+## 💡 Trực giác bố muốn con giữ
+Hình dung Stata như cái bàn bếp của mẹ: **Command** là chỗ con đặt nguyên liệu vào, **Results** là cái đĩa món ăn bày ra, **Variables** là danh sách nguyên liệu trong tủ, **Review** là cuốn sổ ghi lại con đã nấu gì. Cùng một gian bếp, mỗi góc một việc. 🌱
+:::
+
+**Bố chốt cho con:** Stata chỉ có bốn ô — gõ lệnh ở dưới, đọc kết quả ở giữa, xem biến bên phải, xem lịch sử bên trái.
+
+## Bước 2 — Dọn một chỗ làm việc gọn gàng
+
+Trước khi mở dữ liệu, bố dạy con dọn bàn đã. Con gõ thử vài lệnh nhẹ nhàng này vào ô Command:
+
+```stata
+* Mở rộng cửa sổ kết quả để Stata không dừng lại hỏi "xem tiếp không"
+set more off
+
+* Cho bố biết con đang đứng ở thư mục nào trên máy
+pwd
+
+* Chuyển vào thư mục con để dữ liệu (con sửa đường dẫn cho đúng máy con)
+cd "C:/Users/Mei/ktl-lab"
+```
+
+Bố giải thích nhẹ nhàng cho con:
+
+- Dòng bắt đầu bằng dấu `*` là **lời ghi chú** — Stata bỏ qua, nó chỉ để con (và bố) đọc cho hiểu. Con cứ ghi chú thoải mái nhé, không ai chê đâu.
+- `set more off` bảo Stata: *"đừng dừng giữa chừng hỏi con bấm phím nữa, cứ chạy một mạch."* Nhỏ vậy thôi mà đỡ bực lắm con.
+- `pwd` là *"con đang ở thư mục nào?"* — viết tắt của *print working directory*.
+- `cd "..."` là *"chuyển vào thư mục này."* Con thay đường dẫn trong ngoặc kép bằng chỗ con thật sự để file trên máy con.
+
+**Bố chốt cho con:** dọn bàn trước khi làm — `cd` vào đúng thư mục để Stata biết tìm dữ liệu của con ở đâu.
+
+## Bước 3 — Mở bộ dữ liệu mẫu và nhìn nó
+
+Giờ tới phần vui nhất hôm nay: con mở thử một bộ dữ liệu ra và **ngắm** nó. Chỉ ngắm thôi nhé, chưa phân tích gì cả.
+
+```stata
+* Mở bộ dữ liệu mẫu (giả định con đã có file luong.dta trong thư mục)
+use "luong.dta", clear
+
+* Đếm xem dữ liệu có bao nhiêu dòng, bao nhiêu biến
+describe
+
+* Xem tận mắt vài dòng đầu cho dễ hình dung
+list luong hoc kinhnghiem nu in 1/5
+```
+
+Bố dắt con đọc kết quả:
+
+- `use "luong.dta", clear` — *"mở file luong.dta ra"*. Chữ `clear` là *"dọn sạch dữ liệu cũ đang mở trước đã"*, để hai bộ không lẫn vào nhau.
+- `describe` — Stata kể cho con: dữ liệu có bao nhiêu **dòng** (mỗi dòng là một người), bao nhiêu **biến** (mỗi biến là một cột), và tên từng biến. Như nhìn cái bìa cuốn sổ để biết bên trong có gì.
+- `list ... in 1/5` — *"cho con xem 5 dòng đầu của bốn biến này"*. Con sẽ thấy lương, số năm học, số năm làm, và nam/nữ của 5 người đầu tiên — bằng xương bằng thịt, không còn trừu tượng nữa.
+
+Con cứ ngồi nhìn mấy con số đó một lúc. Đây chính là **đám dữ liệu** mà suốt 15 lab tới mình sẽ cùng nhau lắng nghe. Hôm nay mình mới chỉ chào hỏi nó thôi.
+
+::: {.callout-tip}
+## 💡 Mẹo nhỏ bố dắt túi cho con
+Mỗi lần mở một dữ liệu lạ, con tập thói quen gõ luôn ba lệnh này theo thứ tự: `describe` (có những biến gì), `summarize` (mỗi biến cỡ bao nhiêu), rồi `list ... in 1/5` (vài dòng cho dễ tưởng tượng). Ba lệnh này là **cái bắt tay làm quen** với mọi bộ dữ liệu — bố luôn làm vậy trước khi đụng tới bất cứ phép tính nào. 🌱
+:::
+
+## Bước 4 — Lưu lại nhật ký làm việc
+
+Một mẹo cuối bố dặn con, để sau này con khỏi tiếc. Trước khi làm việc, con bật **log** — nó ghi lại mọi thứ hiện trên màn hình vào một file, như cuốn nhật ký buổi học.
+
+```stata
+* Bắt đầu ghi nhật ký vào file (replace = ghi đè nếu file đã có)
+log using "lab0-nhatky.log", replace
+
+* ... con làm việc ở đây ...
+
+* Đóng nhật ký lại khi xong
+log close
+```
+
+Sau này lỡ con quên mình đã làm gì, mở file `lab0-nhatky.log` ra là thấy lại hết. Bố ước hồi xưa có người dặn bố điều này sớm hơn.
+
+**Bố chốt cho con:** bật `log` đầu buổi, `log close` cuối buổi — con sẽ luôn có cuốn nhật ký để xem lại mình đã đi qua những đâu.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. **Cài được Stata** lên máy và mở nó ra mà không thấy sợ — nó chỉ là cái bàn có bốn ngăn kéo.
+2. Biết bốn ô **Command / Results / Variables / Review** mỗi ô làm gì, và biết dọn bàn bằng `cd`.
+3. **Mở một bộ dữ liệu mẫu** và ngắm nó bằng `describe`, `summarize`, `list` — chào hỏi đám dữ liệu mình sẽ đi cùng suốt khoá.
+
+Vậy là xong buổi làm quen rồi Mei. Con chưa cần hiểu gì về hồi quy cả — hôm nay con chỉ ngồi xuống chỗ làm việc mới và thấy nó thân thiện hơn mình tưởng. Giờ thì bố con mình sẵn sàng cho [Buổi 1](../lectures/buoi-01.qmd) và Lab 1 rồi đấy. Bố đi cùng con.
+:::

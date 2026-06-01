@@ -4,4 +4,131 @@ subtitle: "Chuẩn bị môi trường trước khi vào 15 lab"
 reading-time: "~30 phút"
 ---
 
-*(Hướng dẫn cài đặt R, thiết lập thư mục làm việc, mở dữ liệu mẫu — bổ sung sau.)*
+Mei à, ở [Buổi 1](../lectures/buoi-01.qmd) bố đã rủ con bước chân vào kinh tế lượng bằng một câu hỏi đời thường thôi. Hôm nay mình chưa học gì nặng đâu — buổi này chỉ là **dọn bàn làm việc**. Bố với con cùng cài cái máy, mở nó lên, rồi nhìn một bộ dữ liệu mẫu cho quen mặt.
+
+Con đừng lo phải hiểu gì cả nhé. Cứ tưởng tượng bố vừa mua cho con một cái bàn học mới: hôm nay mình chỉ kê bàn, bày bút, mở ngăn kéo xem có gì. Chưa viết bài đâu. Hồi quy, hệ số, mấy con số biết kể chuyện — để dành sang Lab 1. Mình bắt đầu nhẹ nhàng thôi.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Cài xong **R** và **RStudio** trên máy của con, mở lên không thấy sợ.
+- Gõ được vài dòng đầu tiên, hiểu cửa sổ nào để làm gì.
+- Mở một bộ dữ liệu mẫu và **nhìn nó** — biết nó có mấy cột, mấy dòng, hình hài ra sao.
+:::
+
+::: {.callout-warning}
+## ⚠️ Bố nói trước cho con yên tâm
+Buổi này con **chưa cần hiểu** từng dòng lệnh làm gì. Con chỉ cần gõ theo bố, thấy máy chạy ra kết quả, và quen tay. Giống lần đầu con tập xe đạp — chưa cần biết nguyên lý cân bằng, cứ đạp đã. Bố giả định con đang dùng máy tính cá nhân (Windows hoặc Mac đều được), và mình sẽ dùng một bộ dữ liệu mẫu có các cột `luong`, `hoc`, `kinhnghiem`, `nu`. Khi nào con có dữ liệu thật, con đổ vào đúng tên cột này là chạy được ngay.
+:::
+
+## Bước 0 — Cài R và RStudio
+
+Mình cần hai phần mềm, và bố giải thích để con khỏi rối: **R** là cái động cơ (nó làm toán), còn **RStudio** là cái buồng lái đẹp đẽ để con ngồi điều khiển cái động cơ đó. Phải cài R trước, rồi mới cài RStudio.
+
+1. **Cài R:** con vào trang [https://cran.r-project.org](https://cran.r-project.org), chọn hệ điều hành của con (Windows hay macOS), tải bản mới nhất về và bấm cài như cài một phần mềm bình thường — cứ Next, Next, Finish.
+2. **Cài RStudio:** xong R rồi, con vào [https://posit.co/download/rstudio-desktop](https://posit.co/download/rstudio-desktop), tải **RStudio Desktop** (bản miễn phí), cài tiếp.
+3. Cài xong, con **chỉ mở RStudio thôi** — không cần mở R riêng. RStudio sẽ tự tìm thấy động cơ R giùm con.
+
+Khi mở RStudio lần đầu, con sẽ thấy màn hình chia làm mấy ô. Đừng hoảng. Ô bố cần con để ý nhất bây giờ là **Console** — thường nằm bên trái, có một dấu nhắc `>`. Đó là chỗ con gõ lệnh, bấm Enter, và máy trả lời ngay.
+
+**Bố chốt cho con:** cài R (động cơ) trước, RStudio (buồng lái) sau, rồi từ giờ chỉ mở RStudio. Đơn giản vậy thôi.
+
+## Bước 1 — Chào máy một câu
+
+Trước khi làm gì to tát, mình thử xem cái máy có nghe lời không đã. Con gõ dòng này vào ô **Console** rồi bấm Enter:
+
+```r
+1 + 1
+```
+
+Máy in ra `[1] 2`. Vậy là nó còn sống và biết làm toán. Cái `[1]` ở đầu chỉ là R đánh số dòng kết quả thôi, con kệ nó. Giờ thử nhờ máy nhớ một con số giùm mình:
+
+```r
+tuoi_cua_mei <- 8
+tuoi_cua_mei
+```
+
+Dấu `<-` đọc là *"gán vào"* — bố vừa bảo máy: *"cất số 8 vào một cái hộp tên là `tuoi_cua_mei`."* Gõ lại tên hộp, máy mở ra cho con xem. Trong R mình hay cất mọi thứ vào hộp như thế, để lát nữa lôi ra dùng.
+
+**Bố chốt cho con:** `<-` là cách con bảo R nhớ một thứ. Gõ tên hộp là R đưa lại cho con xem.
+
+## Bước 2 — Gọi đồ nghề ra (gói lệnh)
+
+R bán kèm sẵn rất nhiều thứ, nhưng vài đồ nghề xịn nằm trong các **gói** (package) mình phải lấy về một lần. Con gõ dòng này để tải về một bộ gói rất thông dụng:
+
+```r
+install.packages("tidyverse")
+```
+
+Lệnh `install.packages` giống như **ra tiệm mua một bộ dụng cụ** — con chỉ làm một lần duy nhất cho mỗi máy. Tải hơi lâu một chút, con cứ chờ. Tải xong, mỗi lần muốn dùng thì con **gọi nó ra** bằng `library`:
+
+```r
+library(tidyverse)
+```
+
+`install.packages` là *mua về cất tủ*; `library` là *lấy từ tủ ra bày lên bàn*. Mua một lần, nhưng mỗi buổi làm việc mới con phải `library` để bày ra lại nhé.
+
+**Bố chốt cho con:** `install.packages("...")` làm một lần; `library(...)` làm mỗi lần mở máy. Đừng lẫn hai cái này.
+
+## Bước 3 — Mở bộ dữ liệu mẫu
+
+Giờ tới phần vui: nhìn dữ liệu thật. Bố giả định con đã có sẵn một file dữ liệu mẫu (ví dụ `luong.csv`) trong thư mục làm việc. Con đọc nó vào một cái hộp tên `df`:
+
+```r
+df <- read.csv("luong.csv")
+```
+
+Con vừa bảo R: *"đọc file đó vào, cất vào hộp `df`."* Từ giờ hễ nhắc `df` là nhắc tới cả bảng dữ liệu. (Nếu R kêu không tìm thấy file, đừng sợ — chỉ là nó đang đứng ở thư mục khác thôi, bố sẽ chỉ con cách chỉ đường ở mẹo cuối bài.)
+
+**Bố chốt cho con:** một dòng `read.csv` là con đã rước cả bộ dữ liệu vào nhà.
+
+## Bước 4 — Nhìn dữ liệu cho quen mặt
+
+Có dữ liệu rồi thì mình **ngắm** nó một chút. Bố dạy con bốn câu hỏi quen thuộc, lần nào mở dữ liệu mới con cũng hỏi như vậy.
+
+Đầu tiên, liếc vài dòng đầu xem mặt mũi ra sao:
+
+```r
+head(df)
+```
+
+`head` in ra mấy dòng đầu tiên. Con sẽ thấy một bảng có các cột `luong`, `hoc`, `kinhnghiem`, `nu` — mỗi dòng là một người, mỗi cột là một điều mình biết về họ (lương bao nhiêu, học mấy năm, đi làm mấy năm, là nữ hay không). Giống như liếc trang đầu một cuốn sổ tên lớp vậy.
+
+Tiếp theo, hỏi bảng này **to cỡ nào**:
+
+```r
+dim(df)
+```
+
+`dim` trả về hai số: số dòng và số cột. Ví dụ `[1] 500   4` nghĩa là 500 người, 4 cột thông tin mỗi người.
+
+Rồi hỏi **mỗi cột tên gì, kiểu gì**:
+
+```r
+str(df)
+```
+
+`str` (viết tắt của *structure* — cấu trúc) liệt kê từng cột: tên cột, kiểu dữ liệu (số hay chữ), và vài giá trị đầu. Con nhìn để chắc rằng `luong` đang là **số** chứ không bị lẫn thành chữ.
+
+Cuối cùng, xin một bản **tóm tắt nhanh** từng cột:
+
+```r
+summary(df)
+```
+
+`summary` cho con biết mỗi cột nhỏ nhất, lớn nhất, và trung bình khoảng bao nhiêu. Liếc qua đây là con cảm được dữ liệu: lương trung bình tầm mấy triệu, người học cao nhất mấy năm... Chưa phân tích gì đâu, chỉ là làm quen thôi.
+
+**Bố chốt cho con:** bốn câu cửa miệng khi gặp dữ liệu mới — `head` (mặt mũi), `dim` (to cỡ nào), `str` (cột gì kiểu gì), `summary` (tóm tắt nhanh). Quen tay bốn câu này là con đã biết "chào hỏi" mọi bộ dữ liệu.
+
+::: {.callout-tip}
+## 💡 Mẹo bố dặn con
+Nếu R kêu *"cannot open file"* khi đọc dữ liệu, đừng nghĩ mình làm sai — chỉ là R đang đứng ở **thư mục khác** với chỗ để file thôi. Trong RStudio, con bấm menu **Session → Set Working Directory → Choose Directory…** rồi trỏ tới đúng thư mục chứa file. Muốn biết R đang đứng ở đâu, gõ `getwd()`. Bố mách thêm: con nên tạo hẳn một **Project** trong RStudio (menu **File → New Project**) cho mỗi bài học — như cho mỗi môn một cái cặp riêng — để file dữ liệu và file code luôn nằm chung một chỗ, khỏi lạc nhau.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Cài xong **R** và **RStudio**, mở lên gõ được dòng lệnh đầu tiên mà không thấy sợ.
+2. Biết dùng `install.packages` (mua một lần) và `library` (bày ra mỗi buổi), và đọc dữ liệu vào bằng `read.csv`.
+3. Thuộc bốn câu chào hỏi dữ liệu — `head`, `dim`, `str`, `summary` — để nhìn quen mặt một bộ dữ liệu mới.
+
+Cái bàn làm việc của con đã sẵn sàng rồi đó Mei. Sang [Lab 1](lab-01.qmd) mình bắt đầu cho mấy con số kể chuyện. Bố tin con làm được.
+:::

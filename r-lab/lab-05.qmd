@@ -1,7 +1,149 @@
 ---
-title: "Lab 5 — Hồi quy bội"
+title: "Lab 5 — Kiểm định t, F & khoảng tin cậy"
 subtitle: "Tương ứng [Buổi 5](../lectures/buoi-05.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab R — điền sau.)*
+Mei à, ở [Buổi 5](../lectures/buoi-05.qmd) bố kể con nghe câu hỏi quan trọng nhất sau khi chạy hồi quy: **"con số này là thật, hay chỉ là tình cờ?"**. Hôm nay con sẽ tự tay trả lời nó.
+
+Trò chơi rất đơn giản: con chạy một mô hình, rồi bố cầm tay con đi dọc **bảng kết quả** — chỉ cho con đọc từng cột: sai số chuẩn, trị số t, trị số p, và khoảng tin cậy 95%. Sau đó mình làm một việc oách hơn: kiểm định **cả một nhóm biến cùng lúc** bằng trị số F. Đừng lo con, mình đi từ từ thôi.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Nhìn vào bảng `summary()` và **đọc trôi** bốn cột: Std. Error, t value, Pr(>|t|), rồi tự lấy được khoảng tin cậy 95%.
+- Hiểu trị số p nói gì về chuyện "thật hay tình cờ".
+- Chạy được một **kiểm định F** để hỏi cả một nhóm biến một lúc: *"cả đám này gộp lại có đáng kể không?"*
+:::
+
+::: {.callout-warning}
+## ⚠️ Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – hiểu**, chưa nối với dữ liệu thật, nên con cứ đọc theo bố trước. Bố **giả định** con đã có một bảng dữ liệu tên `df` với các cột: `luong` (lương, triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ, 0 nếu nam). Khi nào có dữ liệu thật, con chỉ việc đổ vào đúng tên cột này là chạy được ngay.
+:::
+
+## Bước 0 — Cài đồ nghề & mở dữ liệu
+
+Lần đầu làm quen, bố dặn con vài câu thôi. Con vào [cran.r-project.org](https://cran.r-project.org) tải **R** về cài, rồi cài thêm **RStudio** (hoặc VS Code kèm extension R nếu con quen) cho dễ gõ. Mở RStudio lên con sẽ thấy bốn ô: **Console** (nơi gõ lệnh chạy ngay), **Script/Source** (nơi viết file lệnh để lưu lại), **Environment** (xem dữ liệu đang có gì), và **Plots** (xem biểu đồ). Đừng sợ bốn ô đó con — cứ nghĩ như bốn ngăn bàn học, mỗi ngăn một việc.
+
+Gói duy nhất mình cần hôm nay nằm trong bộ `tidyverse`, và một gói nhỏ `car` để làm kiểm định F gọn gàng:
+
+```r
+install.packages("tidyverse")   # chỉ chạy MỘT lần cho mỗi máy
+install.packages("car")         # để dùng linearHypothesis() ở bước cuối
+
+library(car)                    # gọi gói ra dùng (chạy mỗi phiên làm việc)
+
+# Mở dữ liệu từ file CSV — bố giả định con có file luong.csv
+df <- read.csv("luong.csv")
+
+head(df)   # liếc mắt xem vài dòng đầu cho chắc
+```
+
+`install.packages()` con chỉ gõ một lần để **tải gói về máy**; còn `library()` thì gõ mỗi lần mở R để **lấy gói ra dùng**. `read.csv()` đổ file vào một bảng tên `df`, và `head(df)` in vài dòng đầu cho con ngó — như sờ trán xem dữ liệu có "sốt" không. Bố mách con thêm: gõ lệnh vào ô **Script** rồi lưu thành file `.R`, hôm sau mở lại chạy tiếp, khỏi gõ lại từ đầu.
+
+**Bố chốt cho con:** cài gói một lần, gọi gói mỗi phiên, mở dữ liệu rồi ngó một cái — xong khâu chuẩn bị.
+
+## Bước 1 — Chạy hồi quy & gọi bảng kết quả ra
+
+Mình chạy một mô hình quen thuộc: lương phụ thuộc vào học, kinh nghiệm, và giới tính.
+
+```r
+m1 <- lm(luong ~ hoc + kinhnghiem + nu, data = df)
+summary(m1)
+```
+
+`lm()` là lệnh chạy hồi quy, mình cất kết quả vào hộp tên `m1`. `summary(m1)` mở hộp đó ra và in **bảng hệ số** — đây chính là cái bảng bố sắp cầm tay con đọc từng cột.
+
+**Bố chốt cho con:** chạy `lm()` rồi `summary()`, mọi câu trả lời "thật hay tình cờ" đều nằm trong cái bảng vừa hiện ra.
+
+## Bước 2 — Đọc bốn cột của bảng hệ số
+
+Giả sử R in cho con một bảng đại loại thế này (bố ghi lại cho dễ nhìn):
+
+| | Estimate | Std. Error | t value | Pr(>\|t\|) |
+|---|---|---|---|---|
+| (Intercept) | 3,00 | 0,50 | 6,00 | 0,000 |
+| hoc | 0,55 | 0,11 | 5,00 | 0,000 |
+| kinhnghiem | 0,20 | 0,15 | 1,33 | 0,185 |
+| nu | −0,80 | 0,40 | −2,00 | 0,047 |
+
+Giờ bố dắt con đi từng cột nhé:
+
+- **Estimate** (hệ số): con số trả lời "thêm 1 đơn vị thì lương đổi bao nhiêu". Hàng `hoc` là 0,55 → thêm 1 năm học, lương cao hơn 0,55 triệu.
+- **Std. Error** (sai số chuẩn): đây là **độ run tay** của con số đó. Nếu bố lấy mẫu khác, hệ số sẽ nhảy quanh quanh, và sai số chuẩn đo cái nhảy đó to hay nhỏ. Càng nhỏ → con số càng đáng tin.
+- **t value** (trị số t): chính là `Estimate ÷ Std. Error`. Con thử lại hàng `hoc`: 0,55 ÷ 0,11 = 5. Nó hỏi: *"hệ số này lớn gấp mấy lần cái run tay của nó?"*. Gấp càng nhiều lần (thường ≥ 2) thì càng khó tin là tình cờ.
+- **Pr(>|t|)** (trị số p): xác suất thấy một hệ số to như vầy **nếu thật ra biến đó chẳng ảnh hưởng gì**. p nhỏ (thường < 0,05) → khó mà tình cờ → mình tin là **thật**.
+
+Đọc thành lời cho con dễ nhớ: `hoc` có p = 0,000 → rất khó tình cờ, **đáng kể**. `kinhnghiem` có p = 0,185 → lớn hơn 0,05, nên với mẫu này mình **chưa dám khẳng định** nó khác 0. `nu` có p = 0,047 → vừa lọt qua vạch 0,05, nên đáng kể (nhẹ thôi).
+
+**Bố chốt cho con:** trị số t là "hệ số chia cho run tay", trị số p là "khả năng đây chỉ là tình cờ". p nhỏ thì con yên tâm gọi nó là thật.
+
+## Bước 3 — Khoảng tin cậy 95%
+
+Một con số lẻ loi như 0,55 nghe chắc nịch, nhưng đời thực luôn có sai lệch. Nên bố thích hỏi: *"con số thật nằm trong khoảng nào thì hợp lý?"*. Đó là **khoảng tin cậy**.
+
+```r
+confint(m1)            # khoảng tin cậy 95% cho mọi hệ số
+confint(m1, level = 0.90)   # muốn 90% thì đổi level
+```
+
+Giả sử R in cho hàng `hoc` là `[0,33 ; 0,77]`. Con đọc thế này: *"bố khá chắc — mức 95% — rằng lợi ích thật của mỗi năm học nằm đâu đó giữa 0,33 và 0,77 triệu."*
+
+Có một mẹo bố rất thích, nối thẳng với bước 2: **nhìn khoảng tin cậy có chứa số 0 hay không**.
+
+- Khoảng của `hoc` là `[0,33 ; 0,77]` — **không chứa 0** → đáng kể (khớp với p < 0,05).
+- Còn nếu một biến có khoảng kiểu `[−0,07 ; 0,47]` — **chứa số 0** → mình chưa loại được khả năng nó thật ra bằng 0 → chưa đáng kể.
+
+Khoảng tin cậy và trị số p luôn kể **cùng một câu chuyện**, chỉ là hai cách nói. Bố thích khoảng tin cậy hơn vì nó cho con thấy luôn *độ rộng* của sự không chắc chắn, chứ không chỉ "có/không".
+
+**Bố chốt cho con:** `confint()` cho con khoảng hợp lý của con số thật. Khoảng **không chứa 0** nghĩa là "thật", chứa 0 nghĩa là "chưa chắc" — đúng y câu chuyện của trị số p.
+
+## Bước 4 — Kiểm định F: hỏi cả một nhóm biến cùng lúc
+
+Trị số t hỏi từng biến **một mình**. Nhưng nhiều khi con muốn hỏi cả nhóm: *"kinh nghiệm VÀ giới tính, gộp lại, có đóng góp gì cho mô hình không?"*. Đó là việc của **kiểm định F**.
+
+Cách nghĩ của bố: mình so hai mô hình — một cái **đủ** (có cả nhóm biến), một cái **rút gọn** (bỏ cả nhóm đó đi) — rồi hỏi: *bỏ cả nhóm đi thì mô hình có tệ đi đáng kể không?*
+
+```r
+m_full     <- lm(luong ~ hoc + kinhnghiem + nu, data = df)   # mô hình đủ
+m_rutgon   <- lm(luong ~ hoc, data = df)                     # bỏ kinhnghiem & nu
+
+anova(m_rutgon, m_full)   # so hai mô hình -> ra trị số F và p của nó
+```
+
+`anova()` so hai mô hình và in ra một **trị số F** kèm một **trị số p**. Con đọc p này y hệt bước 2: p < 0,05 → cả nhóm `kinhnghiem` + `nu` gộp lại **có đáng kể**, đáng giữ trong mô hình. p lớn → bỏ cả đám đi cũng chẳng mất gì.
+
+Cách thứ hai gọn hơn, dùng gói `car`, không cần viết ra mô hình rút gọn:
+
+```r
+linearHypothesis(m1, c("kinhnghiem = 0", "nu = 0"))
+```
+
+Dòng này nói thẳng với R: *"giả sử cả `kinhnghiem` lẫn `nu` đều bằng 0 cùng một lúc — số liệu có chịu nổi giả thuyết đó không?"*. Nếu p nhỏ → số liệu **bác bỏ** chuyện cả hai cùng bằng 0 → ít nhất một trong hai (hoặc cả hai) là thật.
+
+::: {.callout-important}
+## 🧮 Vì sao không t từng cái cho xong?
+
+Con có thể thắc mắc: sao không nhìn trị số t của `kinhnghiem` và `nu` riêng lẻ? Vì đôi khi **từng cái một** đều trông không đáng kể (p hơi lớn), nhưng **gộp lại** thì cả nhóm vẫn đáng kể — thường gặp khi hai biến na ná nhau, chia nhau công nên mỗi cái nhìn yếu. Kiểm định F nhìn cả đội một lượt, nên không bỏ sót trường hợp đó.
+:::
+
+**Bố chốt cho con:** trị số t cho từng cầu thủ, trị số F cho cả đội. Muốn hỏi một nhóm biến cùng lúc thì dùng `anova()` hoặc `linearHypothesis()`.
+
+::: {.callout-tip}
+## 💡 Mẹo bố dặn con
+Trước khi tin một con số, con tập một phản xạ: **đọc xong Estimate thì liếc ngay sang Std. Error**. Hệ số to mà sai số chuẩn cũng to thì chưa mừng vội — chia ra trị số t mới nhỏ. Còn khi muốn báo cáo cho người khác, con đừng đọc trị số p trơ trọi; hãy kèm **khoảng tin cậy 95%** — nó vừa nói "thật hay không", vừa cho thấy con số dao động trong khoảng nào. Một câu mà trả lời được hai điều, lợi quá còn gì.
+:::
+
+## Cùng một trò chơi, đổi tên hai trục
+
+Ví dụ trên là chuyện "người lớn": lương, học, kinh nghiệm. Giờ bố kể phiên bản gần con hơn.
+
+Con tập đàn, rồi con tự hỏi: *"luyện thêm 1 giờ mỗi tuần có thật sự đàn hay hơn, hay chỉ là bố thấy thế?"*. Con chạy `diem_dan ~ gio_luyen` và được hệ số 0,4 với sai số chuẩn 0,1 → trị số t là 4, p rất nhỏ → **thật**, luyện đàn có ích thật. Còn khoảng tin cậy `[0,2 ; 0,6]` không chứa 0, kể đúng câu chuyện đó. Rồi con muốn hỏi cả nhóm: *"luyện đàn VÀ ngủ đủ giấc, gộp lại, có giúp con đàn hay hơn không?"* — đó chính là lúc con dùng kiểm định F, hỏi cả hai một lượt.
+
+Thấy không Mei — *cùng một trò chơi, chỉ thay tên hai trục thôi con* 🎹. Lương–học hay điểm đàn–giờ luyện, câu hỏi "thật hay tình cờ" vẫn chơi đúng một chiêu.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Đọc trôi bốn cột của bảng `summary()`: **Estimate, Std. Error, t value, Pr(>|t|)** — và hiểu trị số p trả lời câu "thật hay tình cờ".
+2. Dùng `confint()` lấy **khoảng tin cậy 95%**, và nhớ mẹo "khoảng không chứa 0 = đáng kể".
+3. Làm **kiểm định F** bằng `anova()` hoặc `linearHypothesis()` để hỏi **cả một nhóm biến cùng lúc** — trị số t cho từng cầu thủ, trị số F cho cả đội.
+:::

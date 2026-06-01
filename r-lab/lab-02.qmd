@@ -1,7 +1,151 @@
 ---
-title: "Lab 2 — Thống kê mô tả & phân phối"
+title: "Lab 2 — Hồi quy đơn & đọc kết quả"
 subtitle: "Tương ứng [Buổi 2](../lectures/buoi-02.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab R — điền sau.)*
+Mei à, ở [Buổi 2](../lectures/buoi-02.qmd) bố kể con nghe chuyện **kẻ một đường thật khít** xuyên qua đám mây chấm — sao cho đường đó vừa lòng tất cả các điểm nhất có thể. Hôm nay con sẽ tự tay bảo máy tính kẻ đường đó, rồi mình ngồi đọc xem nó nói gì với mình.
+
+Trò chơi chỉ có ba con số thôi con: **độ dốc** (đi học thêm một năm thì lương đổi bao nhiêu), **điểm khởi đầu** (lương lúc chưa đi học ngày nào), và **R²** (đường của mình giải thích được bao nhiêu phần của câu chuyện). Đọc được ba con số này là con đã đứng vững một nửa môn kinh tế lượng rồi đó. Bố đi cùng con từng bước, đừng lo.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy được một hồi quy đơn `luong ~ hoc` bằng `lm()` trong R.
+- Đọc ra **độ dốc**, **điểm khởi đầu** và **R²** từ bảng `summary()`.
+- Vẽ được **đường khớp nhất** chồng lên đám mây chấm để thấy đường đó "khít" cỡ nào.
+:::
+
+::: {.callout-warning}
+## ⚠️ Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – hiểu**, chưa nối với dữ liệu thật, nên con cứ đọc theo bố trước. Bố **giả định** con đã có một bảng dữ liệu tên `df` với các cột: `luong` (lương, triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm) và `nu` (1 nếu là nữ). Lab này mình chỉ dùng `luong` và `hoc` thôi. Khi nào có dữ liệu thật, con chỉ việc đổ vào đúng tên cột này là chạy được ngay.
+:::
+
+## Bước 0 — Dựng góc làm việc
+
+Trước khi chạy gì, mình lo chỗ ngồi đã con. Bố hướng dẫn nhanh, làm một lần rồi dùng mãi.
+
+1. Vào **cran.r-project.org** tải **R** về cài. Rồi tải thêm **RStudio** (hoặc dùng **VS Code** với extension **R** nếu con quen VS Code).
+2. Mở RStudio, con sẽ thấy mấy ô: **Console** (gõ lệnh chạy ngay), **Script/Source** (nơi con lưu lệnh lại thành file), **Environment** (xem mình đang giữ những dữ liệu nào), và **Plots** (nơi hình vẽ hiện ra). Đừng sợ vì nhiều ô — con chỉ cần làm quen dần, như làm quen mấy ngăn trong cặp sách thôi.
+3. Mình hay viết lệnh vào file **`.R`** rồi chạy, để sau mở lại còn nhớ mình đã làm gì.
+
+Việc đầu tiên là gọi đồ nghề ra và đọc dữ liệu vào.
+
+```r
+# Chạy 1 lần duy nhất để cài (gõ ở Console):
+# install.packages("tidyverse")
+
+library(tidyverse)              # bộ đồ nghề vẽ & xử lý dữ liệu
+
+df <- read.csv("luong.csv")     # đọc file CSV vào thành bảng tên df
+head(df)                        # ngó vài dòng đầu xem đúng hình hài chưa
+```
+
+`head(df)` in vài dòng đầu cho con liếc mắt xem dữ liệu có đúng dạng mình mong không — như sờ trán xem con có sốt không vậy. Thấy có cột `luong` và `hoc` là yên tâm chạy tiếp.
+
+**Bố chốt cho con:** cài R + RStudio một lần, gọi gói, đọc dữ liệu, ngó một cái — rồi mới chạy.
+
+## Bước 1 — Nhìn đám mây chấm trước đã
+
+Trước khi kẻ đường, mình nhìn đám điểm cái đã. Mắt người giỏi lắm con — nhìn là biết câu chuyện đi lên hay đi xuống.
+
+```r
+plot(df$hoc, df$luong,
+     xlab = "Số năm đi học",
+     ylab = "Lương (triệu đồng)",
+     main = "Lương theo số năm đi học")
+```
+
+Con nhìn đám chấm: nếu chúng nghiêng lên từ trái sang phải, nghĩa là **học nhiều thường đi với lương cao hơn**. Mình chưa kết luận gì vội, chỉ là chào hỏi dữ liệu thôi. Nhiệm vụ của hồi quy là kẻ một đường thẳng đi xuyên giữa đám mây này sao cho khít nhất.
+
+**Bố chốt cho con:** luôn nhìn đám mây chấm trước khi kẻ đường — để biết mình sắp kẻ đường lên dốc hay xuống dốc.
+
+## Bước 2 — Bảo máy tính kẻ đường khớp nhất
+
+Giờ tới phần chính. Một dòng thôi con:
+
+```r
+m1 <- lm(luong ~ hoc, data = df)
+summary(m1)
+```
+
+Bố đọc cho con cái dòng `luong ~ hoc` này: dấu `~` đọc là *"giải thích theo"* — mình đang nói với R *"hãy giải thích **lương** theo **số năm học**."* `lm` là viết tắt của *linear model*, tức là *kẻ một đường thẳng*. Con cất kết quả vào cái hộp tên `m1`, rồi `summary(m1)` mở hộp ra cho mình đọc.
+
+**Bố chốt cho con:** `lm(y ~ x)` chính là câu lệnh "kẻ giùm con đường thật khít qua đám mây" mà bố kể ở Buổi 2.
+
+## Bước 3 — Đọc ĐỘ DỐC và ĐIỂM KHỞI ĐẦU
+
+Bảng `summary()` nhìn rậm rạp, nhưng con chỉ cần dòm đúng khối `Coefficients`. Bố giả sử R in ra cho con như thế này:
+
+```r
+# Coefficients:
+#             Estimate Std. Error t value Pr(>|t|)
+# (Intercept)   3.0        ...      ...      ...
+# hoc           0.9        ...      ...      ...
+```
+
+Hai con số ở cột `Estimate` là tất cả những gì con cần đọc lúc này:
+
+- **`hoc` = 0,9 → đây là ĐỘ DỐC.** Con đọc: *"thêm 1 năm đi học thì lương cao hơn trung bình 0,9 triệu."* Độ dốc chính là **độ nghiêng của đường** con vừa kẻ — đường nghiêng lên thì số này dương.
+- **`(Intercept)` = 3,0 → đây là ĐIỂM KHỞI ĐẦU (hằng số).** Con đọc: *"người chưa đi học năm nào thì lương khoảng 3 triệu."* Đó là chỗ đường cắt trục đứng, lúc `hoc = 0`.
+
+Vậy đường khớp nhất của con là: **lương = 3,0 + 0,9 × số năm học.** Muốn đoán lương của người học 12 năm? Con thay vào: 3,0 + 0,9 × 12 = 13,8 triệu. Đường thẳng vừa kẻ chính là cái máy đoán nho nhỏ đó.
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+Điểm khởi đầu (3,0) chỉ có ý nghĩa thật khi `hoc = 0` **nằm trong vùng dữ liệu** của con. Nếu trong bảng chẳng ai học dưới 5 năm, thì con số "lương lúc chưa đi học" chỉ là chỗ đường thẳng kéo dài ra cho vui, đừng diễn giải nó quá nghiêm túc. Con cứ tập trung vào **độ dốc** — đó mới là nhân vật chính.
+:::
+
+**Bố chốt cho con:** độ dốc trả lời *"đi học thêm thì lương đổi bao nhiêu"*, điểm khởi đầu chỉ là chỗ đường cắt trục đứng. Nhìn cột `Estimate` là thấy cả hai.
+
+## Bước 4 — Đọc R²: đường của mình khít cỡ nào?
+
+Kéo mắt xuống cuối bảng `summary()`, con sẽ thấy một dòng kiểu:
+
+```r
+# Multiple R-squared:  0.42,   Adjusted R-squared:  0.41
+```
+
+Con số **R² = 0,42** này đọc là: *"đường của mình giải thích được khoảng **42%** sự khác nhau về lương giữa mọi người, dựa trên mỗi việc họ học bao nhiêu năm."* Còn lại 58% là do những thứ khác mà mô hình chưa nhìn thấy (kinh nghiệm, ngành nghề, may mắn…).
+
+Bố dặn con: **R² không phải điểm thi.** R² cao hay thấp không nói mô hình "đúng" hay "sai" — nó chỉ nói **đám chấm bám sát đường tới mức nào**. Với dữ liệu con người, R² 0,3–0,5 đã là chuyện rất bình thường rồi, vì đời người phức tạp lắm, một cái biến sao mà gói hết được.
+
+**Bố chốt cho con:** R² là tỉ lệ câu chuyện mà đường của con kể được — đọc nó như "khít cỡ nào", đừng coi nó như điểm số.
+
+## Bước 5 — Vẽ ĐƯỜNG KHỚP NHẤT chồng lên đám mây chấm
+
+Đây là khoảnh khắc bố thích nhất. Mình vẽ lại đám mây chấm, rồi đặt cái đường con vừa kẻ chồng lên trên cho con thấy tận mắt nó "khít" thế nào.
+
+```r
+plot(df$hoc, df$luong,
+     xlab = "Số năm đi học",
+     ylab = "Lương (triệu đồng)",
+     main = "Đường khớp nhất chồng lên đám mây chấm")
+
+abline(m1, col = "red", lwd = 2)   # vẽ đường khớp nhất từ mô hình m1
+```
+
+`abline(m1, ...)` lấy đúng độ dốc (0,9) và điểm khởi đầu (3,0) ở trên rồi kẻ thành một đường đỏ. Con nhìn xem: đường đỏ có đi xuyên giữa đám chấm, để các chấm rải đều hai bên không? Nếu có, nghĩa là đường khớp nhất đang làm tốt việc của nó — đứng ở chỗ ai cũng tạm hài lòng nhất, không thiên về điểm nào.
+
+Đây chính là hình ảnh của Buổi 2 mà bố hứa: máy tính đã **trượt cái thước cho tới khi tổng khoảng cách tới mọi chấm là nhỏ nhất**, và đường đỏ này là kết quả.
+
+**Bố chốt cho con:** đường đỏ trên hình chính là `lương = 3,0 + 0,9 × học` được vẽ ra — con vừa nhìn thấy ba con số ở Bước 3 và 4 hóa thành một đường thật.
+
+::: {.callout-tip}
+## 💡 Mẹo bố dặn con
+Khi muốn đường mượt và có thêm **dải tin cậy** (vùng mờ quanh đường cho biết mình chắc chắn tới đâu), con vẽ bằng `ggplot` của `tidyverse`:
+
+```r
+ggplot(df, aes(x = hoc, y = luong)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+`geom_point()` rải đám chấm, `geom_smooth(method = "lm")` tự chạy lại hồi quy và vẽ luôn đường khớp nhất kèm dải tin cậy. Cùng một câu chuyện như `abline`, chỉ là mặc thêm bộ đồ đẹp thôi con.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Chạy `lm(luong ~ hoc, data = df)` và `summary()` để **bảo máy tính kẻ đường khớp nhất** qua đám mây chấm.
+2. Đọc được ba con số quan trọng: **độ dốc** (`hoc`, đi học thêm 1 năm lương đổi bao nhiêu), **điểm khởi đầu** (`Intercept`), và **R²** (đường khít cỡ nào).
+3. Vẽ được **đường khớp nhất chồng lên đám mây chấm** bằng `abline(m1)` — nhìn tận mắt cái đường mà bố kể ở Buổi 2.
+:::

@@ -1,14 +1,133 @@
 ---
-title: "Buổi 7 — Hồi quy bội (3) — độ phù hợp, đa cộng tuyến"
-subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+title: "Buổi 7 — Chuyện 'có' hay 'không'"
+subtitle: "Biến giả (dummy) & xác định mô hình"
 reading-time: "Chương 3"
 ---
 
+Mei à, bố hỏi con một câu nhỏ: làm sao mình đưa chuyện *"là nam hay nữ"*, *"ở thành thị hay nông thôn"*, *"có bằng cấp hay không"* vào mô hình lương được?
+
+Mấy thứ đó **không phải con số** — con không thể viết "nữ = 3,7 cm" như chiều cao được. Nó là chuyện **có hay không**, **thuộc nhóm này hay nhóm kia**. Vậy mà mô hình của mình lại chỉ biết ăn con số. Hôm nay bố chỉ con một mẹo nhỏ mà cực mạnh: biến chuyện "có / không" thành một con số chỉ gồm **0 và 1**, rồi đút vào máy như thường. Đừng lo con, dễ hơn con tưởng nhiều.
+
 ::: {.callout-note appearance="simple"}
-## 🎯 Mục tiêu Buổi 7
-*(Sẽ bổ sung.)*
+## 🎯 Bố mong sau buổi này con sẽ
+- Biết dùng **biến giả** (dummy) để đưa chuyện "có/không", "nhóm nào" vào hồi quy.
+- Đọc được hệ số biến giả như một **chênh lệch** giữa nhóm và nhóm gốc.
+- Hiểu vì sao nhiều nhóm thì phải **bỏ bớt một cái**, và biết dùng tương tác để mỗi nhóm có một **độ dốc riêng**.
 :::
 
-## Nội dung
+## Cái công tắc bật / tắt
 
-*(Khung bài giảng Buổi 7 — điền sau.)*
+Con hình dung một **cái công tắc đèn**: chỉ có hai trạng thái, **bật (1)** hay **tắt (0)**. Biến giả đúng là như vậy — bố tạo một biến mới gọi là `nữ`, ai là nữ thì ghi **1** (công tắc bật), ai là nam thì ghi **0** (công tắc tắt). Thế là xong, một chuyện "không phải con số" đã thành con số.
+
+> **Biến giả** chỉ là: một biến chỉ nhận **0 hoặc 1**, để đánh dấu *"có thuộc nhóm này không"*. 1 = có, 0 = không.
+
+Cái hay là máy OLS quen thuộc của mình **không cần biết** đó là công tắc hay là chiều cao — với nó, tất cả chỉ là con số. Mình vẫn nấu bằng đúng cái nồi cũ.
+
+**Bố chốt cho con:** biến giả = cái công tắc 0/1, biến chuyện "có hay không" thành con số để máy hiểu được.
+
+## Hệ số biến giả = chênh lệch giữa hai nhóm
+
+Giờ tới phần đẹp nhất. Khi con đưa biến `nữ` (0/1) vào mô hình lương, máy in ra một hệ số đi kèm nó — ví dụ **−0,5**. Con đọc nó thế nào?
+
+Rất đơn giản: **hệ số của biến giả là khoảng cách trung bình giữa nhóm "bật" và nhóm "gốc"**, khi mọi thứ khác giữ y nguyên.
+
+::: {.callout-tip}
+## 💡 Hai hàng ghế, đo khoảng cách giữa chúng
+Con tưởng tượng nam ngồi một hàng ghế, nữ ngồi hàng ghế ngay phía dưới. Hai hàng **song song** nhau (cùng một độ dốc theo số năm học), chỉ khác là hàng nữ **thấp hơn (hoặc cao hơn) một đoạn cố định**. Hệ số biến giả `nữ` chính là **đoạn cách giữa hai hàng ghế** đó.
+
+Nhóm mình lấy làm chuẩn để so — ở đây là **nam** (vì nam = 0) — gọi là **nhóm gốc** (nhóm tham chiếu). Mọi chênh lệch đều đo *so với* nhóm này.
+:::
+
+Vì sao "khi mọi thứ khác giữ y nguyên"? Vì như Buổi 4 con đã học, mỗi hệ số trong hồi quy nhiều biến đều là *"giữ các biến kia cố định"*. Nên −0,5 nghĩa là: **hai người cùng trình độ học vấn**, người nữ trung bình lương thấp hơn người nam 0,5 triệu — chứ không phải so một cô cử nhân với một anh học hết lớp 9.
+
+**Bố chốt cho con:** hệ số biến giả không phải "mức lương của nữ", mà là **khoảng cách** lương nữ so với nam cùng điều kiện.
+
+## Nhiều nhóm thì sao? Bỏ bớt một cái làm chuẩn
+
+Chuyện "có/không" chỉ có hai cửa nên một công tắc là đủ. Nhưng nếu biến có **nhiều nhóm** thì sao — ví dụ vùng miền: **Bắc, Trung, Nam**?
+
+Mẹo: tạo một công tắc cho **mỗi nhóm**... nhưng **bỏ đi một cái**. Bố giữ `Trung` (=1 nếu ở Trung) và `Nam` (=1 nếu ở Nam), còn **Bắc thì không có công tắc riêng** — Bắc chính là **nhóm gốc**. Khi cả hai công tắc đều tắt (Trung=0, Nam=0), nghĩa là người đó ở Bắc.
+
+::: {.callout-tip}
+## 💡 Vì sao phải bỏ một cái — gặp lại "kẻ song sinh"
+Nhớ Buổi 4 không con: nếu bố nhét hai biến nói **y hệt một chuyện**, máy sẽ rối, không tách nổi ai ra ai — bố gọi đó là **kẻ song sinh** (cộng tuyến hoàn hảo).
+
+Nếu con giữ **cả ba** công tắc Bắc + Trung + Nam, thì cộng lại lúc nào cũng đúng bằng 1 (ai cũng phải ở một miền). Ba công tắc đó "kể trùng" thông tin với cái cột số 1 sẵn có trong mô hình → kẻ song sinh xuất hiện, máy báo lỗi. Bỏ một cái đi là vừa khít: mỗi nhóm còn lại đọc thành **chênh lệch so với nhóm gốc** (so với Bắc).
+:::
+
+Vậy nếu hệ số `Trung` = −0,8 thì đọc là: người miền Trung trung bình lương thấp hơn người miền Bắc 0,8 triệu, các thứ khác như nhau.
+
+**Bố chốt cho con:** có *k* nhóm thì dùng *k − 1* công tắc, chừa một nhóm làm gốc; giữ đủ hết là dính kẻ song sinh.
+
+## Cho mỗi nhóm một độ dốc riêng: biến giả nhân với biến khác
+
+Tới đây biến giả mới chỉ cho hai hàng ghế **song song** — cùng độ dốc, chỉ lệch nhau một đoạn. Nhưng nhớ Buổi 6 không con: mình từng ghép hai biến lại (tương tác) để nói *"còn tùy"*.
+
+Giờ bố ghép **biến giả `nữ` nhân với biến `học`**. Điều đó cho phép **độ dốc** — tức *"học thêm 1 năm thì lương tăng bao nhiêu"* — **khác nhau giữa nam và nữ**. Không còn hai hàng ghế song song nữa, mà hai đường có thể **nghiêng khác nhau**: lợi ích của việc đi học với nữ có thể dốc hơn (hoặc thoải hơn) nam.
+
+**Bố chốt cho con:** biến giả *một mình* dịch đường lên/xuống (khác **điểm xuất phát**); biến giả *nhân với biến khác* làm đường nghiêng khác (khác **độ dốc**).
+
+## Xác định mô hình: đưa biến nào vào cho vừa?
+
+Câu hỏi cuối, ngắn thôi nhưng quan trọng: **chọn biến nào để đưa vào mô hình?**
+
+Con hình dung như xếp đồ vào balô đi học. Thiếu món cần thì khổ; nhưng nhồi cả tủ quần áo vào thì nặng ì, lại lẫn lộn. Mô hình cũng vậy:
+
+- **Thiếu biến quan trọng** → có thể có một **kẻ giấu mặt** làm lệch kết quả (bố sẽ kể kỹ ở Buổi 8).
+- **Nhồi biến vô tội vạ** → mô hình rối, các hệ số kém tin cậy, dễ "kể trùng" như kẻ song sinh.
+
+Nguyên tắc của bố: đưa vào những biến mà **lý lẽ đời thực** bảo là có liên quan tới cả hai phía (cái mình giải thích và cái mình quan tâm), đừng đưa biến chỉ vì "có sẵn trong dữ liệu".
+
+**Bố chốt cho con:** đủ để tránh kẻ giấu mặt, nhưng đừng tham — chọn biến bằng cái đầu, không bằng việc thử bừa.
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số
+Mô hình: $\hat{lương} = 5 + 0{,}4\,\text{học} - 0{,}5\,\text{nữ}$
+
+- Một **anh nam** học 12 năm: $5 + 0{,}4\times12 - 0{,}5\times0 = 9{,}8$ triệu.
+- Một **cô nữ** cũng học 12 năm: $5 + 0{,}4\times12 - 0{,}5\times1 = 9{,}3$ triệu.
+- Khoảng cách = **0,5 triệu** — đúng bằng hệ số của `nữ`. Cùng trình độ, nữ thấp hơn nam 0,5 triệu.
+
+Giờ thêm **tương tác** $\text{nữ}\times\text{học}$ với hệ số $0{,}1$:
+$$\hat{lương} = 5 + 0{,}4\,\text{học} - 0{,}5\,\text{nữ} + 0{,}1\,(\text{nữ}\times\text{học})$$
+Mỗi năm học, **nam** được thêm 0,4 triệu; **nữ** được thêm $0{,}4 + 0{,}1 = 0{,}5$ triệu. Hai đường nghiêng khác nhau rồi đó con.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng ý tưởng đó, nhưng gần con hơn
+Con đánh dấu mỗi ngày: ngày **CÓ tập đàn** ghi 1, ngày **KHÔNG tập** ghi 0 — đúng một cái công tắc. Rồi con chấm "điểm vui" cuối ngày của mình.
+
+Hồi quy ra: $\hat{\text{điểm vui}} = 6 + 1{,}5\,\text{cótậpđàn}$. Đọc thế này: ngày **không tập** vui trung bình 6 điểm; ngày **có tập** vui $6 + 1{,}5 = 7{,}5$ điểm. Hệ số **1,5** chính là **chênh lệch** giữa hai loại ngày — ngày có đàn vui hơn ngày không đàn 1,5 điểm. Nhóm gốc ở đây là "ngày không tập".
+
+Thấy chưa con: lương–nữ hay điểm vui–tập đàn, **cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱**.
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+1. **Hệ số biến giả là CHÊNH LỆCH, không phải mức tuyệt đối.** −0,5 nghĩa là "thấp hơn nhóm gốc 0,5", chứ không phải "lương nữ = 0,5".
+2. **Đừng giữ đủ hết các công tắc** cho mọi nhóm — phải chừa một nhóm gốc, kẻo dính cộng tuyến hoàn hảo (kẻ song sinh) và máy báo lỗi.
+3. **Đọc luôn nhớ "so với ai".** Đổi nhóm gốc thì con số đổi cách diễn giải — không có gì sai, chỉ là điểm so sánh khác nhau.
+4. **Có tương tác thì đừng đọc hệ số lẻ** — như Buổi 6, phải gộp lại mới ra đúng độ dốc của từng nhóm.
+:::
+
+## Thấy bằng số
+
+Tự tay con tạo một biến giả, đọc hệ số như một chênh lệch, rồi thêm một tương tác để hai nhóm có độ dốc riêng:
+
+- 💻 [Stata Lab 7](../stata-lab/lab-07.qmd) · [R Lab 7](../r-lab/lab-07.qmd) · [Python Lab 7](../python-lab/lab-07.qmd)
+
+::: {.callout-note}
+## 🔑 Ba điều bố muốn con mang về từ Buổi 7
+1. **Biến giả** là cái **công tắc 0/1** — biến chuyện "có/không", "nhóm nào" thành con số cho máy hiểu.
+2. Hệ số biến giả = **chênh lệch trung bình** so với **nhóm gốc**; nhiều nhóm thì dùng *k−1* công tắc, chừa một nhóm làm chuẩn (giữ đủ là dính kẻ song sinh).
+3. **Nhân** biến giả với biến khác cho mỗi nhóm một **độ dốc riêng**; và chọn biến đưa vào bằng cái đầu — đủ tránh kẻ giấu mặt, đừng nhồi vô tội vạ.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu — vài chỗ cho chính xác
+- Mô hình hai hàng ghế song song: $y = \beta_0 + \beta_1 x + \delta D$, với $D$ là biến giả. Khi $D=0$, chặn là $\beta_0$; khi $D=1$, chặn là $\beta_0+\delta$. Hệ số $\delta$ chính là **khoảng cách giữa hai hàng** — chênh lệch chặn.
+- Vì sao bỏ một nhóm: nếu có hằng số (cột toàn số 1) và con cho đủ *k* biến giả, thì tổng *k* biến giả luôn = 1 = cột hằng số → ma trận **không khả nghịch** (cộng tuyến hoàn hảo). Đây gọi là **bẫy biến giả** (dummy variable trap). Bỏ một nhóm, hoặc bỏ hằng số, là cách thoát.
+- Đổi nhóm gốc **không** làm mô hình "tốt hơn/xấu hơn" — dự đoán và độ khớp y hệt, chỉ là cách diễn giải hệ số đổi điểm so sánh.
+- Mô hình có tương tác: $y = \beta_0 + \beta_1 x + \delta D + \gamma (x\cdot D)$. Với nhóm $D=0$, độ dốc theo $x$ là $\beta_1$; với nhóm $D=1$, độ dốc là $\beta_1+\gamma$. Hệ số $\gamma$ đo **chênh lệch độ dốc** giữa hai nhóm.
+- Kiểm định một nhóm biến giả có đáng giữ không (ví dụ cả cụm vùng miền) là việc của **kiểm định F** ở Buổi 5 — hỏi cho cả cụm một lần.
+:::

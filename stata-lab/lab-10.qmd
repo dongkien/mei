@@ -1,7 +1,174 @@
 ---
-title: "Lab 10 — Dạng hàm log & bậc hai"
+title: "Lab 10 — Logit/Probit, panel & báo cáo kết quả"
 subtitle: "Tương ứng [Buổi 10](../lectures/buoi-10.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Stata — điền sau.)*
+Mei à, ở [Buổi 10](../lectures/buoi-10.qmd) bố con mình đã nói về một loại câu hỏi rất khác: không phải *"lương bao nhiêu"*, mà là *"đậu hay rớt"*, *"có hay không"*. Câu trả lời chỉ có hai cửa — và để máy đoán **xác suất** rơi vào cửa "có", mình dùng một anh bạn mới tên là **logit**.
+
+Hôm nay con sẽ tự tay làm ba việc. Chạy một hồi quy logit cho biến "đậu/rớt". Đọc xem nó nói gì. Rồi học cách **xuất một bảng kết quả thật đẹp** — nhiều mô hình đứng cạnh nhau — để dán thẳng vào báo cáo. Đừng lo con, từng bước một thôi.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Buổi lab này con sẽ làm được
+- Chạy `logit` cho một biến phụ thuộc **có/không** và đọc dấu hệ số.
+- Hiểu vì sao hệ số logit "thô" khó đọc, và mình cứu nó bằng cách nào.
+- Dùng `esttab` xếp **nhiều mô hình cạnh nhau** thành một bảng gọn gàng cho báo cáo.
+:::
+
+## Bước 0 — Bộ dữ liệu mình giả định
+
+Bố giả định trong máy con đã mở sẵn một bộ dữ liệu sinh viên, mỗi dòng là một bạn, với các biến:
+
+- `dau` — bằng **1** nếu bạn đó **đậu** kỳ thi, bằng **0** nếu **rớt**. Đây là biến "có/không" mình muốn giải thích.
+- `hoc` — số năm/giờ học (biến số liên tục).
+- `kinhnghiem` — kinh nghiệm làm bài (số).
+- `nu` — bằng **1** nếu là nữ, **0** nếu nam. Đây là biến nhóm.
+
+Con không cần gõ lại lệnh `use` đâu — cứ hình dung dữ liệu đã nằm sẵn trong bộ nhớ Stata.
+
+## Bước 1 — Nhìn biến "có/không" trước đã
+
+Trước khi chạy gì, bố luôn dặn con: **nhìn dữ liệu trước**. Với biến 0/1 thì chỉ cần đếm xem bao nhiêu bạn đậu, bao nhiêu rớt.
+
+```stata
+* Đếm số bạn đậu (1) và rớt (0)
+tab dau
+```
+
+Stata in ra bảng tần suất: ví dụ 60% đậu, 40% rớt. Con cần liếc qua để chắc rằng biến đúng là **chỉ gồm 0 và 1**, và không có cửa nào trống trơn. Nếu 99% đậu hết thì mô hình sẽ khó học — nhưng đó là chuyện sau.
+
+**Bố chốt cho con:** logit là để giải thích một biến 0/1, nên việc đầu tiên là xác nhận biến của mình đúng là 0/1.
+
+## Bước 2 — Chạy hồi quy logit
+
+Giờ mình hỏi máy: *"Học nhiều hơn thì khả năng ĐẬU tăng hay giảm?"* Lệnh chỉ khác `regress` đúng một chữ.
+
+```stata
+* Logit: xác suất đậu phụ thuộc học, kinh nghiệm, và giới tính
+logit dau hoc kinhnghiem i.nu, vce(robust)
+```
+
+Bố giải thích từng mảnh cho con nghe:
+
+- `logit dau ...` — thay vì đoán *con số* lương, máy đoán **xác suất** biến `dau` bằng 1.
+- `hoc kinhnghiem` — hai biến số bình thường.
+- `i.nu` — chữ `i.` báo cho Stata biết `nu` là **biến nhóm** (nam/nữ), không phải con số để cộng trừ. Máy sẽ tự lấy một nhóm làm gốc và so nhóm kia với nó.
+- `vce(robust)` — xin **sai số chuẩn vững**, đúng như con đã học ở Lab 9, để các con số "đáng tin" không bị méo.
+
+## Bước 3 — Đọc kết quả logit
+
+Stata in ra một bảng có cột `Coef.` (hệ số). Đây là chỗ con cần bố cầm tay.
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh đầu tiên
+Hệ số logit **KHÔNG đọc thẳng được như OLS**. Nếu hệ số của `hoc` là 0,8, con **không** được nói "học thêm 1 đơn vị thì xác suất đậu tăng 0,8". Con số 0,8 nằm trong một thang đo cong queo gọi là *log-odds* — chưa phải tiếng người.
+
+Ở bước này con **chỉ đọc DẤU thôi**:
+
+- Hệ số `hoc` **dương** → học nhiều hơn thì **dễ đậu hơn**.
+- Hệ số **âm** → học nhiều hơn lại khó đậu hơn (chắc có gì lạ, phải xem lại).
+
+Còn *"nhiều hơn bao nhiêu"* thì để Bước 4 trả lời.
+:::
+
+Con cũng nhìn cột `P>|z|` (trị số p) y như đã học ở Buổi 5: p nhỏ hơn 0,05 nghĩa là *"khó mà tình cờ"* → biến đó đáng tin là có ảnh hưởng.
+
+**Bố chốt cho con:** với logit thô, con đọc **dấu** và **trị số p** trước; con số độ lớn để dành cho bước dịch sang tiếng người.
+
+## Bước 4 — Dịch logit sang tiếng người
+
+Cách dễ thương nhất để hiểu logit là hỏi máy: *"Nếu một bạn học thêm một chút, xác suất đậu nhúc nhích bao nhiêu phần trăm?"* Stata có một lệnh làm đúng việc đó.
+
+```stata
+* Hiệu ứng biên trung bình: thay đổi xác suất đậu (đơn vị %)
+margins, dydx(*)
+```
+
+Lệnh `margins, dydx(*)` cho con những con số **đọc thẳng được**: ví dụ "học thêm 1 đơn vị → xác suất đậu tăng trung bình **6 điểm phần trăm**". *Đó* mới là câu con dán vào báo cáo, chứ không phải con số log-odds khó nhằn ở Bước 3.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe: logit hay probit?
+Probit là người anh em sinh đôi của logit — đổi `logit` thành `probit` là xong, cách đọc gần như y hệt. Hai anh em hầu như luôn cho cùng một kết luận. Con đừng mất ngủ vì chọn cái nào; bố hay dùng `logit` vì hiệu ứng của nó (tỷ lệ chênh) dễ kể chuyện hơn một chút.
+:::
+
+## Bước 5 — Chuẩn bị để xuất bảng đẹp
+
+Báo cáo thật sự hiếm khi chỉ có **một** mô hình. Bố thường chạy vài phiên bản — thêm dần biến vào — rồi đặt chúng **cạnh nhau** để người đọc thấy kết quả có *vững* không khi mình thêm biến.
+
+Trước hết con cài gói `estout` (chỉ một lần cho máy):
+
+```stata
+* Cài gói esttab/estout — chỉ cần làm một lần
+ssc install estout, replace
+```
+
+Rồi con chạy vài mô hình và **cất** mỗi cái lại bằng `estimates store`, đặt cho nó một cái tên:
+
+```stata
+* Mô hình 1: chỉ học
+logit dau hoc, vce(robust)
+estimates store M1
+
+* Mô hình 2: thêm kinh nghiệm
+logit dau hoc kinhnghiem, vce(robust)
+estimates store M2
+
+* Mô hình 3: thêm giới tính và một biến tương tác "còn tùy"
+logit dau c.hoc##i.nu kinhnghiem, vce(robust)
+estimates store M3
+```
+
+Bố chỉ con để ý dòng cuối: `c.hoc##i.nu`. Dấu `c.` bảo Stata "`hoc` là biến số", `i.nu` là "nhóm", và `##` là **biến tương tác** mà con đã gặp ở Buổi 6 — nó hỏi *"tác dụng của học lên việc đậu có khác nhau giữa nam và nữ không?"*. Đúng kiểu câu "còn tùy".
+
+## Bước 6 — Xuất bảng nhiều mô hình cạnh nhau
+
+Giờ là phần vui. Một dòng `esttab` gom cả ba mô hình thành một bảng gọn:
+
+```stata
+* Ba mô hình đứng cạnh nhau, có dấu sao ý nghĩa thống kê
+esttab M1 M2 M3, ///
+    se star(* 0.10 ** 0.05 *** 0.01) ///
+    label mtitles("Chỉ học" "Thêm KN" "Đầy đủ") ///
+    title("Bảng 1. Các yếu tố ảnh hưởng khả năng đậu")
+```
+
+Bố giải nghĩa các tùy chọn để con không thấy chúng đáng sợ:
+
+- `se` — in **sai số chuẩn** trong ngoặc dưới mỗi hệ số (báo cáo thường thích kiểu này).
+- `star(...)` — gắn dấu sao theo mức ý nghĩa: một sao = 10%, hai sao = 5%, ba sao = 1%. Người đọc liếc qua là thấy ngay cái nào đáng tin.
+- `label` — dùng **nhãn tiếng Việt** của biến thay vì tên viết tắt, cho người đọc dễ hiểu.
+- `mtitles(...)` — đặt tên cho từng cột mô hình.
+
+Muốn xuất hẳn ra file để dán vào Word hay LaTeX, con thêm tên file:
+
+```stata
+* Xuất ra file Word (RTF) để dán vào báo cáo
+esttab M1 M2 M3 using bang1.rtf, replace ///
+    se star(* 0.10 ** 0.05 *** 0.01) label ///
+    mtitles("Chỉ học" "Thêm KN" "Đầy đủ")
+```
+
+Mở `bang1.rtf` lên, con sẽ thấy một bảng sạch sẽ, các con số thẳng hàng — đẹp hơn nhiều so với việc chép tay từng số từ cửa sổ kết quả (vừa mỏi tay vừa dễ sai).
+
+::: {.callout-tip}
+## 💡 Mẹo bố hay dùng nhất
+**Đừng bao giờ chép số bằng tay vào báo cáo.** Bố từng làm thế hồi trẻ và chép nhầm dấu phẩy, sửa mãi không hết. Để `esttab` xuất thẳng ra file: số nào sai là sai từ mô hình, không phải từ ngón tay con. Khi chạy lại với dữ liệu mới, con chỉ cần bấm chạy lại — bảng tự cập nhật, con không phải gõ lại một số nào. Đó là món quà lớn nhất của việc làm việc gọn gàng.
+:::
+
+::: {.callout-important}
+## 🧮 Cùng một trò chơi, ví dụ gần con hơn
+Cứ tưởng tượng thay vì "đậu/rớt", biến của con là **"hôm nay tưới cây hay quên tưới"** (1 = có tưới, 0 = quên). Con muốn biết: *trời nắng thì con có chăm tưới hơn không?*
+
+- `logit cótưới nắng` — đoán **xác suất** con tưới cây theo độ nắng.
+- Hệ số `nắng` **dương** → trời càng nắng con càng nhớ tưới. `margins` sẽ nói "nắng thêm một bậc → khả năng tưới tăng 12 điểm phần trăm".
+- Rồi con xếp ba phiên bản (chỉ nắng / thêm "có ở nhà không" / thêm "có bố nhắc không") cạnh nhau bằng `esttab` — y hệt bảng đậu/rớt ở trên.
+
+Thấy không con — cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì trong Lab 10
+1. Chạy được **`logit`** cho biến có/không, và biết ở bước thô chỉ đọc **dấu** và **trị số p**.
+2. Dùng **`margins, dydx(*)`** để dịch logit sang câu "tăng bao nhiêu điểm phần trăm" — tiếng người thật sự.
+3. Dùng **`estimates store` + `esttab`** xếp nhiều mô hình cạnh nhau và xuất ra file, không bao giờ phải chép số bằng tay nữa.
+:::

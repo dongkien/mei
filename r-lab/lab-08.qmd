@@ -1,7 +1,177 @@
 ---
-title: "Lab 8 — Khoảng tin cậy & kiểm định t"
+title: "Lab 8 — Phát hiện & xử lý chệch bỏ sót biến (OVB)"
 subtitle: "Tương ứng [Buổi 8](../lectures/buoi-08.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab R — điền sau.)*
+Mei à, ở [Buổi 8](../lectures/buoi-08.qmd) bố kể con nghe về **kẻ giấu mặt** — cái biến mình quên cho vào mô hình, thế là nó lén làm hệ số của mình sai lệch. Hôm nay con sẽ tự tay tóm cổ kẻ đó.
+
+Trò chơi rất đơn giản: con chạy một mô hình **thiếu** một biến quan trọng, ghi lại con số. Rồi con thêm biến đó vào, chạy lại, và **nhìn con số nhảy**. Cái nhảy đó chính là chệch do bỏ sót biến. Bố tin con làm được, mình bắt đầu nhé.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy được hồi quy thiếu biến rồi thêm biến, và **đọc ra hệ số đã đổi bao nhiêu**.
+- Biết dùng `factor()`, biến tương tác `x*group`, và **sai số chuẩn robust** trong R.
+- Xuất được một bảng so sánh hai mô hình cạnh nhau bằng `modelsummary()`.
+:::
+
+::: {.callout-warning}
+## ⚠️ Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – hiểu**, chưa nối với dữ liệu thật, nên con cứ đọc theo bố trước. Bố **giả định** con đã có một bảng dữ liệu tên `df` với ba cột: `luong` (lương, triệu đồng), `hoc` (số năm đi học), và `kinhnghiem` (số năm đi làm). Khi nào có dữ liệu thật, con chỉ việc đổ vào đúng tên cột này là chạy được ngay.
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Mình gọi mấy gói cần dùng ra trước. `lmtest` và `sandwich` lo phần sai số chuẩn robust; `modelsummary` lo phần xuất bảng đẹp.
+
+```r
+library(lmtest)       # coeftest() — kiểm định lại hệ số với SE mới
+library(sandwich)     # vcovHC()  — công thức SE robust
+library(modelsummary) # modelsummary() — bảng so sánh nhiều mô hình
+
+# Bố giả định con đã có sẵn data.frame tên df với 3 cột:
+#   df$luong       lương, triệu đồng/tháng
+#   df$hoc         số năm đi học
+#   df$kinhnghiem  số năm kinh nghiệm đi làm
+head(df)
+```
+
+`head(df)` chỉ in vài dòng đầu cho con liếc mắt xem dữ liệu có đúng hình hài mình mong không. Lúc nào mở dữ liệu mới, con cũng nhìn qua như thế nhé — như sờ trán xem con có sốt không vậy đó.
+
+**Bố chốt cho con:** gọi gói xong, ngó dữ liệu một cái, rồi mới chạy.
+
+## Bước 1 — Mô hình THIẾU biến (bỏ quên kinh nghiệm)
+
+Mình cố tình chạy mô hình *thiếu* trước: chỉ giải thích lương bằng **học**, quên béng kinh nghiệm đi.
+
+```r
+m1 <- lm(luong ~ hoc, data = df)
+summary(m1)
+```
+
+Giả sử R in ra hệ số của `hoc` là **0,9**. Con đọc nó thế này: *"thêm 1 năm đi học thì lương cao hơn 0,9 triệu."*
+
+Nhưng khoan đã con — con số 0,9 này **đang gánh oan**. Vì người học nhiều thường cũng đi làm lâu hơn (nhiều kinh nghiệm hơn), mà mô hình lại không thấy kinh nghiệm. Thế là phần công của kinh nghiệm bị **đổ dồn hết lên đầu "học"**. Đó chính là kẻ giấu mặt đang ngồi lẫn trong số 0,9.
+
+**Bố chốt cho con:** con số ở mô hình thiếu biến nhìn thì gọn, nhưng nó đang ôm thêm phần của kẻ vắng mặt.
+
+## Bước 2 — Thêm "kẻ giấu mặt" vào & nhìn hệ số nhảy
+
+Giờ mình mời kinh nghiệm ra ánh sáng, cho vào mô hình:
+
+```r
+m2 <- lm(luong ~ hoc + kinhnghiem, data = df)
+summary(m2)
+```
+
+Giả sử lần này hệ số của `hoc` tụt xuống còn **0,55**, còn `kinhnghiem` là **0,2**.
+
+Con thấy chưa? Con số của "học" vừa **nhảy từ 0,9 xuống 0,55**.
+
+::: {.callout-important}
+## 🧮 Đọc cái nhảy đó bằng số
+
+| Mô hình | Hệ số `hoc` | Có kinh nghiệm? |
+|---|---|---|
+| `m1` thiếu biến | **0,90** | Không |
+| `m2` đủ biến | **0,55** | Có |
+
+Chênh lệch **0,90 − 0,55 = 0,35**. Đó chính là **độ chệch do bỏ sót biến** — phần mà kẻ giấu mặt (kinh nghiệm) đã lén nhét vào hệ số "học" khi nó còn ẩn mặt.
+
+Khi thêm kinh nghiệm vào, kinh nghiệm đòi lại phần công của mình (0,2/năm), nên "học" trả lại bớt và về đúng giá trị thật hơn: 0,55.
+:::
+
+**Bố chốt cho con:** thêm một biến quan trọng mà hệ số cũ **nhảy nhiều** → đúng là trước đó nó đang bị chệch. Con vừa bắt tận tay kẻ giấu mặt rồi đó.
+
+## Bước 3 — Xuất một bảng so sánh hai mô hình cạnh nhau
+
+Nói miệng "nhảy từ 0,9 xuống 0,55" thì dễ quên. Mình bày hai mô hình **đứng cạnh nhau** một bảng cho rõ ràng:
+
+```r
+modelsummary(
+  list("Thiếu kinh nghiệm" = m1, "Đủ biến" = m2),
+  stars = TRUE,                       # gắn dấu sao cho hệ số có ý nghĩa
+  gof_omit = "AIC|BIC|Log.Lik"        # bỏ bớt mấy dòng thống kê con chưa cần
+)
+```
+
+Cột bên trái là mô hình thiếu, cột bên phải là mô hình đủ. Con đưa mắt theo **hàng `hoc`** từ trái sang phải là thấy ngay con số tụt xuống. Một bức ảnh đáng giá hơn nghìn lời, con nhỉ.
+
+**Bố chốt cho con:** đặt hai mô hình cạnh nhau là cách thuyết phục nhất để cho người khác (và chính con) thấy chệch bỏ sót biến.
+
+## Bước 4 — Vài đồ nghề con sẽ cần dùng chung với OVB
+
+Khi đi săn kẻ giấu mặt, con hay phải thêm biến nhóm, biến tương tác, và kiểm tra lại bằng SE robust. Bố gom sẵn cho con ở đây.
+
+### 4a. Biến giả bằng `factor()`
+
+Nếu kẻ giấu mặt là một biến **phân loại** (ví dụ `vung` = miền Bắc / Trung / Nam), con bọc nó trong `factor()` để R tự tạo biến giả:
+
+```r
+m3 <- lm(luong ~ hoc + kinhnghiem + factor(vung), data = df)
+summary(m3)
+```
+
+R sẽ chọn một miền làm **mốc** và in chênh lệch của các miền còn lại so với mốc đó.
+
+### 4b. Biến tương tác bằng `x * group`
+
+Muốn hỏi *"lợi ích của học có khác nhau giữa nam và nữ không?"* — đó là tương tác. Trong R con chỉ cần viết dấu sao giữa hai biến:
+
+```r
+m4 <- lm(luong ~ hoc * gioitinh, data = df)
+summary(m4)
+```
+
+Viết `hoc * gioitinh`, R tự bỏ vào cả `hoc`, cả `gioitinh`, **và** số hạng tương tác `hoc:gioitinh` — không phải gõ tay từng cái.
+
+### 4c. Sai số chuẩn robust bằng `coeftest` + `vcovHC`
+
+Buổi sau con sẽ học kỹ, nhưng bố giới thiệu trước: nếu nghi phần dư **không đều** (chỗ tản rộng chỗ tản hẹp), con kiểm định lại hệ số bằng SE robust:
+
+```r
+coeftest(m2, vcov = vcovHC(m2, type = "HC1"))
+```
+
+Hệ số **giữ nguyên**, chỉ có cột sai số chuẩn (và t, p) được tính lại cho chắc ăn hơn. Như đổi sang một cái cân chính xác hơn để cân lại, chứ không đổi món hàng.
+
+### 4d. Nhìn phần dư bằng mắt
+
+```r
+plot(m2, which = 1)   # phần dư so với giá trị dự đoán
+```
+
+Con nhìn đám chấm: nếu chúng rải đều quanh đường ngang số 0, đẹp; nếu loe ra hình cái phễu thì đó là dấu hiệu phương sai không đều (lý do dùng SE robust ở 4c).
+
+### 4e. Khi y là "có / không" thì dùng logit
+
+Nếu biến cần giải thích chỉ nhận **0 hoặc 1** (ví dụ `co_viec` = có việc làm hay không), con không dùng `lm` mà dùng `glm` với họ nhị thức:
+
+```r
+m5 <- glm(co_viec ~ hoc + kinhnghiem, data = df, family = binomial)
+summary(m5)
+```
+
+`family = binomial` chính là dòng nói với R: *"biến này là có/không, hãy chạy logit giùm con."*
+
+**Bố chốt cho con:** `factor()` cho biến nhóm, `x*group` cho "còn tùy", `coeftest+vcovHC` cho SE chắc ăn, `glm(family=binomial)` cho câu hỏi có/không. Bốn đồ nghề, dùng mãi.
+
+::: {.callout-tip}
+## 💡 Mẹo bố dặn con
+Trước khi vội thêm cả tá biến vào cho "đủ", con hãy **chạy mô hình gọn trước, ghi lại hệ số, rồi thêm từng biến một** và xem hệ số chính nhảy bao nhiêu sau mỗi lần thêm. Nếu thêm một biến mà hệ số quan tâm **gần như đứng yên** → biến đó không phải kẻ giấu mặt đáng lo. Nếu nó **nhảy mạnh** → con vừa tìm đúng thủ phạm. Cứ thêm từng người một thì con luôn biết ai đã làm con số đổi.
+:::
+
+## Cùng một trò chơi, đổi tên hai trục
+
+Ví dụ trên là chuyện "người lớn": lương – học – kinh nghiệm. Giờ bố kể phiên bản gần con hơn.
+
+Con đo: **bạn nào tưới cây nhiều hơn thì cây cao hơn**. Con chạy `chieu_cao ~ luong_nuoc` và thấy hệ số to đùng — tưới càng nhiều cây càng cao! Nhưng khoan: mấy chậu con tưới nhiều lại tình cờ là mấy chậu **đặt gần cửa sổ, nhiều nắng hơn**. Khi con thêm `nang` (lượng nắng) vào mô hình, hệ số của nước **tụt xuống** — vì một phần công lớn vốn là của nắng, chứ không phải nước. Nắng chính là kẻ giấu mặt trong chậu cây của con.
+
+Thấy không Mei — *cùng một trò chơi, chỉ thay tên hai trục thôi con* 🌱. Lương–học–kinh nghiệm hay chiều cao–nước–nắng, kẻ giấu mặt vẫn chơi đúng một chiêu.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Chạy `lm(luong ~ hoc)` rồi `lm(luong ~ hoc + kinhnghiem)` và **thấy tận mắt hệ số học nhảy** — đó là chệch do bỏ sót biến.
+2. Biết dùng `modelsummary()` để bày hai mô hình cạnh nhau, cùng bộ đồ nghề `factor()`, `x*group`, `coeftest`+`vcovHC`, `plot` phần dư và `glm(family=binomial)`.
+3. Nhớ chiêu của bố: **thêm từng biến một, theo dõi con số nhảy** — hệ số nhảy mạnh là dấu vết của kẻ giấu mặt.
+:::

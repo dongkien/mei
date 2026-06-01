@@ -1,7 +1,169 @@
 ---
-title: "Lab 4 — Đánh giá độ phù hợp & phần dư"
+title: "Lab 4 — Kiểm tra giả định & đa cộng tuyến"
 subtitle: "Tương ứng [Buổi 4](../lectures/buoi-04.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Python — điền sau.)*
+Mei à, ở [Buổi 4](../lectures/buoi-04.qmd) bố kể con nghe về **hai anh em sinh đôi** — hai biến đi đâu cũng dắt tay nhau, giống nhau như đúc, đến mức mô hình không biết phải khen ai. Bố gọi chuyện đó là **đa cộng tuyến** (tiếng Anh là *multicollinearity*, nghe ghê vậy thôi chứ chỉ là "hai biến trùng nhau quá mức").
+
+Hôm nay con sẽ tự tay dựng lại tình huống ấy bằng Python: cố tình mời **cả hai anh em sinh đôi** là `kinhnghiem` (số năm đi làm) và `tuoi` (số tuổi) vào cùng một mô hình. Rồi con xem chuyện gì xảy ra — hệ số trở nên kỳ cục, **sai số chuẩn phình to** như bong bóng. Sau đó mình đo mức trùng nhau bằng một con số gọi là **VIF**, và vẽ đồ thị phần dư để ngắm. Đừng lo con, mình đi từng bước nhỏ một.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy được mô hình có **cả `kinhnghiem` lẫn `tuoi`** và thấy hệ số, sai số chuẩn "loạn" lên thế nào.
+- Tính được **VIF** để đo xem hai biến trùng nhau bao nhiêu.
+- Vẽ được **đồ thị phần dư** để mắt thường cũng nhìn ra mô hình có ổn không.
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Nếu máy con chưa có Python, con cài **Anaconda** nhé — nó gói sẵn mọi thứ mình cần, khỏi lắp ráp lặt vặt. Cài xong, con mở **Jupyter Notebook** (hoặc **VS Code**) lên. Trong Jupyter, mỗi khung con gõ lệnh gọi là một **ô lệnh** (cell); gõ xong con bấm **Shift + Enter** là nó chạy. Cứ coi mỗi ô như một câu mình nói với máy, bấm Shift+Enter là "nói cho nó nghe". Sai thì sửa rồi bấm lại, không hỏng máy đâu mà sợ con.
+
+Giả sử bố đã để sẵn cho con bộ dữ liệu mẫu trong file `dulieu.csv`, có các cột: `luong` (lương, triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm) và `tuoi` (số tuổi). Con cứ hình dung mỗi dòng là một người mình đã đi hỏi.
+
+```python
+import pandas as pd
+import statsmodels.formula.api as smf
+
+# Đọc bộ dữ liệu mẫu bố để sẵn
+df = pd.read_csv("dulieu.csv")
+df.head()
+```
+
+`pd.read_csv` đọc file vào thành bảng `df`, còn `.head()` cho con xem 5 dòng đầu để chắc dữ liệu vào đúng. `smf` là người giúp việc viết công thức hồi quy — con viết `"luong ~ hoc"` thì nó đọc là *"lương phụ thuộc vào học"*.
+
+**Bố chốt cho con:** chưa có gì đáng sợ. Đọc dữ liệu, ngó qua vài dòng, rồi mình bắt đầu.
+
+## Bước 1 — Mô hình "ngoan" (chỉ mời MỘT anh em)
+
+Trước tiên mình hỏi câu lành mạnh: *"lương phụ thuộc vào học và kinh nghiệm thế nào?"* — chỉ mời **một** trong hai anh em sinh đôi.
+
+```python
+mo_hinh_ngoan = smf.ols("luong ~ hoc + kinhnghiem", data=df).fit()
+print(mo_hinh_ngoan.summary())
+```
+
+Con để mắt vào dòng `kinhnghiem`, hai cột `coef` (hệ số) và `std err` (sai số chuẩn). Giả sử hệ số hiện ra **0,40** với sai số chuẩn **0,05**. Mình đọc thành tiếng người:
+
+> "Làm thêm 1 năm thì lương cao hơn khoảng **0,40 triệu**, và con số này khá chắc tay (sai số chuẩn nhỏ)."
+
+Con ghi hai số này ra giấy nhé — **0,40** và **0,05** — lát nữa mình so. Đây là dáng vẻ của một mô hình **khỏe mạnh**.
+
+**Bố chốt cho con:** một anh em vào thì yên ổn — hệ số rõ ràng, sai số chuẩn gọn gàng.
+
+## Bước 2 — Mời CẢ HAI anh em sinh đôi vào (`kinhnghiem` + `tuoi`)
+
+Giờ mình nghịch một chút: thêm `tuoi` vào. Mà con biết đấy, người càng nhiều tuổi thường càng nhiều năm đi làm — hai đứa này đi đâu cũng kè kè nhau, đúng kiểu sinh đôi.
+
+```python
+mo_hinh_loan = smf.ols("luong ~ hoc + kinhnghiem + tuoi", data=df).fit()
+print(mo_hinh_loan.summary())
+```
+
+Con nhìn lại dòng `kinhnghiem`. Giả sử bây giờ hệ số nhảy thành **1,10** còn sai số chuẩn phình lên **0,60**. Và dòng `tuoi` có khi ra số **âm** kỳ cục, kiểu **−0,70**.
+
+> Trước: hệ số `kinhnghiem` = 0,40, sai số chuẩn = 0,05.
+> Sau khi thêm `tuoi`: hệ số = 1,10, sai số chuẩn = **0,60** — phình to gấp hơn 10 lần!
+
+Con thấy chưa! Hệ số trở nên **kỳ cục**, và **sai số chuẩn phình to** như bong bóng. Vì sao? Vì mô hình nhìn `kinhnghiem` và `tuoi` giống hệt nhau, nó **không biết khen ai**, nên đành chia phần công lung tung — lúc dồn cho đứa này, lúc dồn cho đứa kia. Sự "phân vân" đó hiện ra thành sai số chuẩn lớn.
+
+::: {.callout-important}
+## 🧮 Vì sao sai số chuẩn phình to
+Sai số chuẩn lớn nghĩa là mô hình **không chắc** về hệ số. Khi hai biến trùng nhau gần như hoàn toàn, dữ liệu không đủ thông tin để tách riêng công của từng đứa. Hệ số vẫn "đúng trung bình" nhưng **bấp bênh** — chạy lại với mẫu khác một chút là nó nhảy lung tung. Đó chính là cái giá của việc mời cả hai anh em sinh đôi vào cùng lúc.
+:::
+
+**Bố chốt cho con:** hệ số méo mó + sai số chuẩn phình to = dấu hiệu kinh điển của đa cộng tuyến. Mô hình đang "rối" vì hai biến trùng nhau.
+
+## Bước 3 — Đo mức trùng nhau bằng VIF
+
+Mắt thường đoán thì cũng được, nhưng mình nên có **một con số** để đo. Con số đó là **VIF** (*Variance Inflation Factor* — "hệ số thổi phồng phương sai"). Quy ước dễ nhớ bố dặn con: VIF dưới 5 là yên tâm, trên 10 là **báo động đỏ** — hai biến trùng nhau quá nặng.
+
+```python
+import pandas as pd
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+from patsy import dmatrices
+
+# Tạo ma trận biến đúng như mô hình loạn ở Bước 2
+y, X = dmatrices("luong ~ hoc + kinhnghiem + tuoi", data=df, return_type="dataframe")
+
+vif = pd.DataFrame()
+vif["bien"] = X.columns
+vif["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+print(vif)
+```
+
+`dmatrices` dựng lại đúng bộ biến của mô hình, rồi `variance_inflation_factor` tính VIF cho từng cột. Giả sử con thấy `kinhnghiem` có VIF = **25** và `tuoi` có VIF = **24** — cả hai vọt qua mốc 10. Con số này xác nhận điều mắt mình đã ngờ ở Bước 2: hai anh em sinh đôi đang trùng nhau nặng. (Dòng `Intercept` thường có VIF cao, con cứ bỏ qua nó, chỉ nhìn các biến thật.)
+
+**Bố chốt cho con:** VIF là cái nhiệt kế đo đa cộng tuyến. Trên 10 là sốt cao — mình nên bỏ bớt một trong hai biến trùng nhau (ở đây bỏ `tuoi` đi, giữ `kinhnghiem`, là mô hình về lại ngoan ngoãn như Bước 1).
+
+## Bước 4 — Vẽ đồ thị phần dư để ngắm
+
+Cuối cùng, mình kiểm tra giả định bằng mắt. **Phần dư** là phần mô hình đoán hụt ở mỗi người (thực tế trừ đi dự đoán). Một mô hình ngoan thì phần dư phải **rải đều quanh số 0**, không tạo hình thù gì. Mình vẽ phần dư theo giá trị dự đoán:
+
+```python
+import matplotlib.pyplot as plt
+
+du_doan = mo_hinh_loan.fittedvalues   # giá trị mô hình dự đoán
+phan_du = mo_hinh_loan.resid          # phần dư = thực tế − dự đoán
+
+plt.scatter(du_doan, phan_du, alpha=0.5)
+plt.axhline(0, color="red", linestyle="--")
+plt.xlabel("Giá trị dự đoán")
+plt.ylabel("Phần dư")
+plt.title("Đồ thị phần dư")
+plt.show()
+```
+
+Con nhìn đám chấm: nếu chúng rải **đều hai bên đường đỏ** (đường số 0), không loe ra hình cái phễu, không cong hình chuối — thì giả định của mình ổn. Còn nếu đám chấm loe rộng dần (hình phễu) thì đó là dấu hiệu **phương sai sai số thay đổi**, mình sẽ học cách chữa ở buổi sau. Hôm nay con chỉ cần tập **nhìn và nhận xét** thôi.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe — một mẹo nhỏ mà chắc tay
+Trước khi chạy mô hình, con cứ làm một bảng tương quan nhanh để **soi trước** xem cặp nào hay đi đôi:
+
+```python
+df[["hoc", "kinhnghiem", "tuoi"]].corr()
+```
+
+Nếu con thấy `kinhnghiem` và `tuoi` có tương quan tới **0,95** chẳng hạn, là biết ngay hai đứa này sinh đôi rồi — khỏi cần đợi mô hình loạn mới phát hiện. Bố hay liếc bảng này đầu tiên cho yên tâm.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱
+Bỏ chuyện lương đi, mình về với con. Con muốn biết tập đàn có giúp con đàn hay hơn không. Con đo **số buổi tập** và **số giờ tập** — nhưng hai cái này gần như là một, vì mỗi buổi con đều tập đúng một giờ! Nhét cả hai vào, mô hình sẽ y hệt hôm nay: nó không biết khen "buổi" hay khen "giờ", hệ số nhảy lung tung, sai số chuẩn phình to. Lúc đó con chỉ cần giữ **một** trong hai. Cùng một trò chơi, chỉ thay tên hai trục thôi con. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+1. **Đa cộng tuyến KHÔNG làm hệ số "sai".** Trung bình thì nó vẫn đúng, chỉ là **bấp bênh** (sai số chuẩn lớn). Đừng tưởng mô hình hỏng hoàn toàn.
+2. **VIF cao chỉ đáng lo với biến con QUAN TÂM.** Nếu hai biến trùng nhau đều là biến phụ con không cần diễn giải, đôi khi cứ để yên cũng được.
+3. **Cách chữa đơn giản nhất là bỏ bớt một biến trùng.** Đừng vội nghĩ tới phép màu phức tạp — bỏ `tuoi`, giữ `kinhnghiem`, thường là xong.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu — vài cách kiểm tra giả định khác
+Khi con vững hơn, đây là vài món cùng họ mà con sẽ gặp:
+
+```python
+# Kiểm định phương sai sai số thay đổi (Breusch–Pagan) bằng con số thay vì mắt
+from statsmodels.stats.diagnostic import het_breuschpagan
+het_breuschpagan(mo_hinh_loan.resid, mo_hinh_loan.model.exog)
+
+# Khi nghi ngờ phương sai thay đổi, bật sai số chuẩn vững cho yên tâm
+smf.ols("luong ~ hoc + kinhnghiem", data=df).fit(cov_type="HC1")
+
+# Vẽ Q–Q plot xem phần dư có "hình chuông" không
+import statsmodels.api as sm
+sm.qqplot(mo_hinh_loan.resid, line="45")
+```
+
+- `het_breuschpagan` cho con một con số (p-value) thay vì phải đoán bằng mắt từ đồ thị phễu.
+- `cov_type="HC1"` tính sai số chuẩn theo kiểu "chịu được dữ liệu lổn nhổn" — hệ số không đổi, độ tin cậy chắc hơn.
+- `sm.qqplot` giúp con kiểm tra phần dư có phân phối "hình chuông" đẹp không.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Chạy mô hình **chỉ một anh em** (`kinhnghiem`) rồi mời **cả hai** (`kinhnghiem + tuoi`), và thấy tận mắt hệ số méo mó với **sai số chuẩn phình to** từ 0,05 lên 0,60.
+2. Tính **VIF** và đọc được con số 25 ≫ 10 là báo động đa cộng tuyến.
+3. Vẽ **đồ thị phần dư** và biết một đám chấm rải đều quanh số 0 nghĩa là mô hình ổn.
+:::

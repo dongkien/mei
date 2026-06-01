@@ -1,7 +1,152 @@
 ---
-title: "Lab 5 — Hồi quy bội"
+title: "Lab 5 — Kiểm định t, F & khoảng tin cậy"
 subtitle: "Tương ứng [Buổi 5](../lectures/buoi-05.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Stata — điền sau.)*
+Mei à, ở [Buổi 5](../lectures/buoi-05.qmd) bố kể con nghe câu hỏi quan trọng nhất sau khi chạy hồi quy: con số mình tìm được là **thật**, hay chỉ là **tình cờ**? Học thêm một năm gắn với lương cao hơn — nhưng biết đâu chỉ do mẫu của mình rơi đúng vào mấy người may mắn?
+
+Hôm nay con sẽ tự tay trả lời câu đó. Bố chỉ con đọc bốn con số trong bảng kết quả: **sai số chuẩn**, **trị số t**, **trị số p**, và **khoảng tin cậy 95%**. Rồi mình làm thêm một **kiểm định F** để xét cả một nhóm biến cùng lúc. Đừng lo, bố đi cùng con từng dòng.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Nhìn bảng `regress` là chỉ ngay được cột sai số chuẩn, t, p và khoảng tin cậy 95%.
+- Đọc được "thật hay tình cờ" từ trị số p và từ chuyện khoảng tin cậy có chứa số 0 không.
+- Làm một kiểm định F cho cả một nhóm biến bằng lệnh `test`.
+:::
+
+## Bước 0 — Làm quen cái bàn làm việc mới
+
+Stata là phần mềm thương mại (con sẽ gặp bản SE hoặc MP). Mở nó lên, con thấy bốn cửa sổ — bố giới thiệu nhanh như giới thiệu bốn góc bàn học:
+
+- **Command** (dưới cùng): ô con gõ lệnh vào. Gõ một dòng, bấm Enter.
+- **Results** (giữa, to nhất): nơi Stata in kết quả ra cho con đọc.
+- **Variables** (phải): danh sách các biến trong dữ liệu.
+- **Review** (trái): lịch sử các lệnh con đã gõ — bấm lại là chạy lại, khỏi gõ.
+
+Đừng sợ con nhé, đây chỉ là làm quen cái bàn làm việc mới thôi. Giờ mình đặt thư mục làm việc rồi mở một bộ dữ liệu mẫu có sẵn của Stata cho ấm tay.
+
+```stata
+* Đặt thư mục làm việc (đổi đường dẫn cho đúng máy con)
+cd "C:/ktl"
+
+* Mở bộ dữ liệu mẫu auto có sẵn trong Stata
+sysuse auto, clear
+
+* Nhìn qua dữ liệu một cái cho quen
+summarize
+```
+
+`sysuse auto, clear` mở bộ dữ liệu xe hơi mẫu — gõ là chạy được ngay, không cần file ngoài. `summarize` cho con thấy trung bình, nhỏ nhất, lớn nhất của từng biến, như mở hộp đồ ra ngắm trước khi làm.
+
+Khi đã quen tay, con nên gõ `doedit` để mở **Do-file Editor** — chỗ con lưu lại cả chuỗi lệnh thành một file, lần sau mở ra chạy một phát là xong, khỏi gõ lại.
+
+**Bố chốt cho con:** bốn cửa sổ, đặt `cd`, mở dữ liệu bằng `sysuse auto, clear`, và nhớ `doedit` để cất lệnh lại — quen cái bàn rồi mình mới làm việc.
+
+## Bước 1 — Chạy hồi quy và nhìn toàn bảng
+
+Từ Bước này bố dùng bộ dữ liệu lương quen thuộc của mình. Con cứ hình dung mình **đã có sẵn** một file với các biến: `luong` (lương, triệu đồng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), và `nu` (bằng 1 nếu là nữ, 0 nếu nam).
+
+```stata
+* Mở dữ liệu lương của mình
+use "luong.dta", clear
+
+* Chạy hồi quy lương theo học và kinh nghiệm
+regress luong hoc kinhnghiem
+```
+
+Stata in ra một bảng. Phần trên là chuyện kiểm định F của cả mô hình (lát nữa mình quay lại). Phần dưới là **bảng hệ số** — đây là chỗ con cần nhìn. Mỗi dòng là một biến, và có sáu cột chạy ngang. Bố sẽ chỉ con đọc từng cột ở Bước 2.
+
+**Bố chốt cho con:** chạy `regress` xong, mắt con dừng ở **bảng hệ số phía dưới** — đó là nơi cất câu trả lời "thật hay tình cờ".
+
+## Bước 2 — Đọc bốn con số: sai số chuẩn, t, p, khoảng tin cậy
+
+Giả sử dòng `hoc` trong bảng hiện ra như thế này:
+
+| Biến | Coef. | Std. Err. | t | P>\|t\| | [95% Conf. Interval] |
+|---|---|---|---|---|---|
+| `hoc` | **0,45** | **0,09** | **5,00** | **0,000** | **0,27 — 0,63** |
+
+Bố đọc từng cột cho con, bằng tiếng người:
+
+- **Coef. = 0,45** — đây là con số chính: học thêm 1 năm gắn với lương cao hơn 0,45 triệu (đã giữ kinh nghiệm cố định).
+- **Std. Err. = 0,09** — **sai số chuẩn**, tức "độ lắc lư" của con số 0,45. Nếu mình lấy mẫu khác, con số sẽ nhảy quanh 0,45 cỡ chừng này. Số này càng nhỏ, con số càng vững.
+- **t = 5,00** — **trị số t**, chính là `0,45 ÷ 0,09 = 5,0`. Nó đo: con số mình tìm được **cách số 0 bao nhiêu lần độ lắc lư**. Cách xa 0 nhiều (thường từ 2 trở lên) thì khó mà là tình cờ.
+- **P>|t| = 0,000** — **trị số p**. Đây là "xác suất ra con số mạnh thế này nếu thật ra học chẳng ảnh hưởng gì". p = 0,000 nghĩa là cực kỳ khó xảy ra do may rủi → mình tin đây là **thật**. Quy ước quen: p < 0,05 thì gọi là "có ý nghĩa thống kê".
+- **[95% Conf. Interval] = 0,27 — 0,63** — **khoảng tin cậy 95%**. Bố dịch: "bố khá chắc con số thật nằm đâu đó từ 0,27 đến 0,63 triệu". Điểm mấu chốt: khoảng này **không chứa số 0** → mình tin học có ảnh hưởng thật.
+
+::: {.callout-important}
+## 🧮 Mẹo đọc nhanh "thật hay tình cờ"
+Con chỉ cần nhớ hai cái nhìn, chúng luôn đồng ý với nhau:
+
+- **Nhìn p**: p < 0,05 → thật. p ≥ 0,05 → chưa đủ bằng chứng, có thể tình cờ.
+- **Nhìn khoảng tin cậy**: khoảng **không chứa 0** → thật. Khoảng **vắt qua 0** → tình cờ.
+
+Hai cách này luôn cho cùng một kết luận, con dùng cái nào cũng được.
+:::
+
+**Bố chốt cho con:** t = hệ số chia sai số chuẩn; p nhỏ và khoảng tin cậy không chứa 0 — cả hai cùng nói con số là **thật, không phải tình cờ**.
+
+## Bước 3 — Đổi mức tin cậy và xem riêng khoảng tin cậy
+
+Mặc định Stata cho con khoảng 95%. Đôi khi con muốn chặt hơn (99%) hoặc xem lại khoảng của một mô hình vừa chạy mà không phải gõ lại.
+
+```stata
+* Chạy lại nhưng yêu cầu khoảng tin cậy 99% (chặt hơn)
+regress luong hoc kinhnghiem, level(99)
+
+* Xem riêng các khoảng tin cậy của mô hình vừa chạy
+estat summarize
+```
+
+`level(99)` bảo Stata nới khoảng ra cho mức tin cậy 99% — con sẽ thấy khoảng **rộng hơn** khoảng 95%. Đúng thôi: muốn chắc ăn hơn thì phải chấp nhận một khoảng rộng hơn, giống như muốn chắc chắn bắt được cá thì lưới phải to hơn.
+
+**Bố chốt cho con:** muốn tin chắc hơn (99%) thì khoảng tin cậy **rộng ra** — chắc chắn hơn luôn đi kèm cái giá là kém chính xác hơn.
+
+## Bước 4 — Kiểm định F: xét cả một nhóm biến cùng lúc
+
+Trị số t xét **từng biến một**. Nhưng nhiều khi con muốn hỏi một câu lớn hơn: *"Cả nhóm biến này gộp lại có ảnh hưởng gì không?"* Đó là việc của **kiểm định F**.
+
+Bố thêm hai biến nữa vào mô hình cho có nhóm: `nu` (giới tính) và `kinhnghiem`. Câu hỏi: *"Học vấn và kinh nghiệm, hai cái này gộp lại, có thật sự liên quan tới lương không?"*
+
+```stata
+* Chạy mô hình đầy đủ
+regress luong hoc kinhnghiem nu
+
+* Kiểm định F: hoc và kinhnghiem CÙNG LÚC có bằng 0 không?
+test hoc kinhnghiem
+```
+
+Lệnh `test hoc kinhnghiem` đặt một giả thuyết: *"cả hệ số của `hoc` lẫn `kinhnghiem` đều bằng 0"* — tức cả hai cùng vô can. Stata trả về một trị số **F** và một **Prob > F** (chính là p của kiểm định F).
+
+Giả sử con thấy `F(2, 70) = 18,5` và `Prob > F = 0,0000`. Con đọc: p = 0,0000 < 0,05 → mình **bác bỏ** chuyện "cả hai cùng vô can". Nghĩa là ít nhất một trong hai biến — học hoặc kinh nghiệm — thật sự ảnh hưởng tới lương. Cả nhóm có tiếng nói.
+
+::: {.callout-tip}
+## 💡 Mẹo nhỏ bố dắt túi cho con
+Trị số F ở **đầu bảng** `regress` (dòng `Prob > F`) là một kiểm định F **đặc biệt**: nó hỏi "tất cả các biến gộp lại có vô can hết không". Còn lệnh `test` để con tự chọn **một nhóm con** bất kỳ để xét.
+
+Dùng F khi nào? Khi từng biến lẻ trông yếu (p hơi cao), nhưng con nghi cả nhóm gộp lại vẫn mạnh — F sẽ nói cho con biết. Một mũi tên nhỏ có thể yếu, nhưng cả bó tên thì khác. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+- **p lớn KHÔNG có nghĩa là "chứng minh được không ảnh hưởng".** Nó chỉ nghĩa là *chưa đủ bằng chứng* để nói có ảnh hưởng. Vắng bằng chứng khác với bằng chứng vắng mặt, con nhớ nhé.
+- **"Có ý nghĩa thống kê" khác với "quan trọng trong đời thực".** Một hệ số có thể p rất nhỏ nhưng con số bé tí (0,001 triệu), chẳng đáng kể. Con luôn nhìn cả **độ lớn của hệ số**, đừng chỉ nhìn dấu sao.
+:::
+
+## Ví dụ gần con hơn
+
+Bố đổi sân chơi cho con dễ thấy. Con tập nhảy dây, muốn biết: *"Tập thêm mỗi ngày thì số cái nhảy liên tục có tăng thật không, hay hôm đó con tình cờ sung sức?"*
+
+Con đo: mỗi ngày tập bao nhiêu phút, và nhảy được bao nhiêu cái. Chạy hồi quy ra hệ số "mỗi phút tập thêm gắn với +2 cái". Giờ con nhìn **sai số chuẩn** để biết con số 2 đó lắc lư cỡ nào, nhìn **trị số p** và **khoảng tin cậy** để biết: ảnh hưởng này là thật, hay chỉ vì hôm đo con tình cờ vui chân.
+
+Rồi con gộp thêm "số giờ ngủ đêm trước" và "có ăn sáng không", làm một **kiểm định F**: *"mấy yếu tố chăm sóc bản thân này gộp lại có giúp nhảy nhiều hơn không?"*
+
+Thấy không Mei: lương–học–kinh nghiệm hay nhảy dây–tập–ngủ–ăn sáng — **cùng một trò chơi hỏi "thật hay tình cờ", chỉ thay tên các biến thôi con** 🌱.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Làm quen bốn cửa sổ Stata, đặt `cd`, mở dữ liệu bằng `sysuse auto, clear`, và cất lệnh vào do-file bằng `doedit`.
+2. Đọc được bốn con số trong bảng `regress`: **sai số chuẩn**, **trị số t** (= hệ số ÷ sai số chuẩn), **trị số p**, và **khoảng tin cậy 95%** — để trả lời "thật hay tình cờ".
+3. Dùng lệnh `test hoc kinhnghiem` làm một **kiểm định F** xét cả một nhóm biến cùng lúc, và nhớ hai cái bẫy: p lớn không phải bằng chứng vắng mặt, và có ý nghĩa thống kê khác với quan trọng đời thực.
+:::

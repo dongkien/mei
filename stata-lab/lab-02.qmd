@@ -1,7 +1,157 @@
 ---
-title: "Lab 2 — Thống kê mô tả & phân phối"
+title: "Lab 2 — Hồi quy đơn & đọc kết quả"
 subtitle: "Tương ứng [Buổi 2](../lectures/buoi-02.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Stata — điền sau.)*
+Mei à, ở [Buổi 2](../lectures/buoi-02.qmd) bố kể con nghe chuyện **kẻ một đường vừa khít** đi qua đám mây chấm — sao cho nó càng gần lũ chấm càng tốt. Hôm nay con sẽ tự tay kẻ đường đó, rồi đọc xem cái đường ấy đang nói gì với mình.
+
+Một đường thẳng chỉ cần nhớ hai con số: nó **bắt đầu từ đâu** (điểm khởi đầu) và **dốc lên bao nhiêu** (độ dốc). Stata sẽ tính giúp con hai con số đó trong nháy mắt. Việc của con là đọc chúng ra tiếng người, và xem đường mình kẻ có khít với lũ chấm không. Đừng lo con, bố đi cùng con từng bước.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy được hồi quy đơn lương theo học bằng một dòng lệnh.
+- Chỉ tay đúng vào **độ dốc** (hệ số học), **điểm khởi đầu** (hằng số) và **R²** trên bảng kết quả.
+- Vẽ được **đường khớp nhất** chồng lên đám mây chấm, thấy bằng mắt đường mình vừa kẻ.
+:::
+
+## Bước 0 — Làm quen cái bàn làm việc mới
+
+Stata là phần mềm trả tiền (con sẽ thấy bản **SE** hoặc **MP**). Lần đầu mở lên, đừng hoảng vì có nhiều ô — bố chỉ con bốn ô quan trọng thôi:
+
+- **Command** (ô gõ lệnh ở dưới) — chỗ con gõ từng câu lệnh, gõ xong bấm Enter.
+- **Results** (ô lớn ở giữa) — Stata in kết quả ra đây.
+- **Variables** (bên phải) — danh sách các biến trong dữ liệu.
+- **Review** (bên trái) — lịch sử những lệnh con đã gõ, bấm lại là chạy lại.
+
+Mình tập trước với một bộ dữ liệu có sẵn ngay trong Stata cho quen tay, rồi mới sang dữ liệu lương của mình.
+
+```stata
+* Chọn thư mục làm việc của con (đổi đường dẫn cho đúng máy con)
+cd "C:/Users/Mei/ktl"
+
+* Mở một bộ dữ liệu mẫu có sẵn trong Stata cho quen tay
+sysuse auto, clear
+```
+
+`cd` là bảo Stata *"bàn làm việc của mình ở thư mục này nhé"* — sau này con mở file hay lưu hình đều rơi vào đó. `sysuse auto, clear` mở bộ dữ liệu xe hơi đi kèm Stata; chữ `clear` nghĩa là *"dọn sạch bàn trước đã"*. Con cứ gõ thử, nhìn ô Variables hiện ra một loạt biến là con biết dữ liệu đã vào.
+
+**Bố chốt cho con:** Stata chỉ là một cái bàn làm việc mới với bốn ô; `cd` đặt chỗ ngồi, `sysuse auto, clear` bày đồ ra cho con tập tay.
+
+## Bước 1 — Mở dữ liệu của mình và ngắm trước
+
+Giờ mình sang bộ dữ liệu thật. Con hình dung mình **đã có sẵn một file** tên `luong.dta` với các biến: `luong` (lương, triệu đồng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm) và `nu` (1 nếu là nữ).
+
+```stata
+* Mở dữ liệu lương của mình
+use "luong.dta", clear
+
+* Ngắm qua dữ liệu cho quen mặt
+summarize luong hoc
+```
+
+`summarize` cho con thấy trung bình, nhỏ nhất, lớn nhất của lương và học — như mở hộp đồ ra ngắm trước khi bắt tay. Quen mặt dữ liệu rồi mới kẻ đường con nhé.
+
+**Bố chốt cho con:** luôn `summarize` để chào hỏi dữ liệu trước khi hồi quy — bố không bao giờ chạy mô hình trên một bộ dữ liệu mình chưa nhìn mặt.
+
+## Bước 2 — Kẻ đường vừa khít bằng một dòng lệnh
+
+Đây là khoảnh khắc chính. Con hỏi: *"Học thêm một năm thì lương cao hơn bao nhiêu?"* — và mình kẻ đường thẳng đẹp nhất đi qua đám mây chấm.
+
+```stata
+* Kẻ đường khớp nhất: lương theo học
+regress luong hoc
+```
+
+`regress luong hoc` đọc là *"giải thích **lương** theo **học**"* — biến cần giải thích đứng trước, biến giải thích đứng sau. Stata lập tức tìm đường thẳng làm tổng khoảng cách tới lũ chấm nhỏ nhất, rồi in ra một bảng. Con đừng sợ cái bảng đầy số đó — bố chỉ con đúng ba chỗ cần nhìn thôi.
+
+**Bố chốt cho con:** chỉ một dòng `regress luong hoc` là con đã kẻ xong đường vừa khít ở Buổi 2.
+
+## Bước 3 — Đọc ba con số: độ dốc, điểm khởi đầu, R²
+
+Trong bảng kết quả, con tìm cột tên hệ số (`Coef.`). Có hai dòng quan trọng: dòng `hoc` và dòng `_cons`.
+
+```stata
+* Bảng kết quả trông như thế này (con số minh họa)
+*
+*       luong | Coef.   Std. Err.    t    ...
+* ------------+----------------------------------
+*         hoc | 0.70    0.08       8.75  ...
+*       _cons | 3.20    0.50       6.40  ...
+*
+* R-squared = 0.42
+```
+
+Bố dịch từng dòng ra tiếng người:
+
+- **Độ dốc** — dòng `hoc` là **0,70**. Con đọc: *"học thêm 1 năm thì lương cao hơn 0,70 triệu."* Đây chính là độ dốc của đường con vừa kẻ — cứ đi sang phải 1 năm học, đường nhích lên 0,70.
+- **Điểm khởi đầu** — dòng `_cons` (hằng số) là **3,20**. Đó là chỗ đường cắt trục đứng, tức lương dự đoán khi `hoc = 0`. Con đừng quá tin con số này nếu trong dữ liệu chẳng ai học 0 năm — nó chỉ là *điểm neo* để vẽ đường, không phải lời tiên tri.
+- **R²** — ở góc bảng, `R-squared = 0.42`. Nghĩa là đường của con giải thích được **42%** sự chênh lệch lương giữa mọi người; 58% còn lại do những chuyện khác mình chưa cho vào. R² chạy từ 0 tới 1, càng gần 1 thì đường càng ôm sát lũ chấm.
+
+::: {.callout-important}
+## 🧮 Ba con số gói lại
+| Tên trên bảng | Con đọc thành | Ý nghĩa |
+|---|---|---|
+| `hoc` = 0,70 | Độ dốc | Học thêm 1 năm, lương + 0,70 triệu |
+| `_cons` = 3,20 | Điểm khởi đầu | Đường cắt trục đứng tại đây |
+| R² = 0,42 | Độ khít | Đường giải thích 42% chênh lệch lương |
+:::
+
+**Bố chốt cho con:** một đường thẳng chỉ là hai con số — **độ dốc** (`hoc`) nói nó nghiêng bao nhiêu, **điểm khởi đầu** (`_cons`) nói nó bắt đầu ở đâu; còn **R²** chấm điểm xem nó khít tới mức nào.
+
+## Bước 4 — Vẽ đường khớp nhất chồng lên đám mây chấm
+
+Đọc số xong, mình nhìn bằng mắt cho chắc. Con vẽ đám mây chấm thật, rồi phủ đường con vừa kẻ lên trên.
+
+```stata
+* Vẽ đám mây chấm (lfit = đường khớp nhất) chồng lên nhau
+twoway (scatter luong hoc) (lfit luong hoc), ///
+    title("Lương theo số năm học") ///
+    ytitle("Lương (triệu đồng)") ///
+    xtitle("Số năm đi học")
+```
+
+Bố giải thích từng mảnh:
+
+- `scatter luong hoc` — rải lũ chấm, mỗi chấm là một người: cao thấp theo lương, trái phải theo số năm học.
+- `lfit luong hoc` — vẽ **đường khớp nhất** (linear fit), đúng cái đường mà `regress` vừa tính ở Bước 2.
+- Hai cặp ngoặc gộp trong `twoway` nghĩa là *"chồng hai bức lên cùng một khung"*. Dấu `///` chỉ là để bố xuống dòng cho dễ đọc, Stata vẫn hiểu là một lệnh.
+
+Khi hình hiện ra, con sẽ thấy đường thẳng đi xuyên giữa đám mây, nghiêng lên đúng độ dốc 0,70. Lũ chấm bám sát đường thì R² cao; chấm văng tung tóe thì R² thấp. Giờ con *thấy tận mắt* cái mà Bước 3 chỉ nói bằng số.
+
+**Bố chốt cho con:** `twoway (scatter ...) (lfit ...)` cho con nhìn đường khớp nhất nằm giữa đám mây chấm — số và hình khớp nhau thì con yên tâm là mình đọc đúng.
+
+## Bước 5 — Cất lệnh vào do-file để khỏi gõ lại
+
+Gõ tay vào ô Command thì chạy được một lần rồi quên. Bố dạy con thói quen tốt: cất mọi lệnh vào một **do-file** — một tờ giấy ghi công thức, lần sau mở ra bấm chạy là xong.
+
+```stata
+* Mở Do-file Editor để dán/lưu lệnh lại
+doedit
+```
+
+Gõ `doedit` (hoặc bấm nút Do-file Editor trên thanh công cụ), một cửa sổ soạn thảo hiện ra. Con dán hết các lệnh ở trên vào đó, lưu thành `lab02.do`. Lần sau chỉ cần mở file này, bôi đen rồi bấm chạy — không phải gõ lại từng dòng. Bố làm việc gì cũng để trong do-file, vì nó giúp con **lặp lại y hệt** kết quả về sau, và sửa một chỗ là chạy lại được cả bài.
+
+**Bố chốt cho con:** ô Command để thử nhanh, còn do-file để lưu lại — gõ `doedit`, dán lệnh vào, lưu thành `lab02.do` là con có một tờ công thức chạy lại bao nhiêu lần cũng được.
+
+::: {.callout-tip}
+## 💡 Mẹo nhỏ bố dắt túi cho con
+Đừng vội mê con số R² cao. R² chỉ trả lời *"đường khít cỡ nào"*, chứ không trả lời *"con số 0,70 có đáng tin không"* hay *"học có thật sự làm tăng lương không"*. Một đường có R² thấp vẫn có thể cho độ dốc rất đáng kể, và ngược lại.
+
+Mẹo của bố: đọc **độ dốc** trước (nó là câu trả lời cho câu hỏi của con), rồi mới liếc R² để biết mình tin tới đâu. Và luôn vẽ hình — mắt con bắt được những chuyện mà con số giấu đi. 🌱
+:::
+
+## Ví dụ gần con hơn
+
+Bố đổi sân chơi cho con dễ thấy. Con muốn biết: *"Tập đàn nhiều phút mỗi ngày thì điểm thi đàn có cao hơn không?"* Con ghi lại số phút tập (`phut`) và điểm thi (`diem`) của các bạn trong lớp, rồi chạy `regress diem phut`.
+
+Stata trả về độ dốc — ví dụ 0,3 điểm cho mỗi 10 phút tập thêm — và một điểm khởi đầu, và R². Con vẽ `twoway (scatter diem phut) (lfit diem phut)` là thấy ngay đường nghiêng lên giữa đám chấm các bạn.
+
+Thấy không Mei: lương–học hay điểm–phút tập — **cùng một trò kẻ đường vừa khít, chỉ thay tên hai trục thôi con** 🌱.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Làm quen bốn ô của Stata, đặt thư mục bằng `cd`, mở dữ liệu bằng `use`/`sysuse`.
+2. Kẻ đường khớp nhất bằng một dòng `regress luong hoc`, rồi đọc **độ dốc** (`hoc` = 0,70), **điểm khởi đầu** (`_cons` = 3,20) và **R²** (0,42).
+3. Vẽ đường khớp nhất chồng lên đám mây chấm bằng `twoway (scatter)(lfit)`, và cất tất cả vào một do-file để chạy lại về sau.
+:::

@@ -1,7 +1,150 @@
 ---
-title: "Lab 4 — Đánh giá độ phù hợp & phần dư"
+title: "Lab 4 — Kiểm tra giả định & đa cộng tuyến"
 subtitle: "Tương ứng [Buổi 4](../lectures/buoi-04.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab R — điền sau.)*
+Mei à, ở [Buổi 4](../lectures/buoi-04.qmd) bố kể con nghe về **hai anh em sinh đôi** — hai biến lúc nào cũng đi cùng nhau, giống nhau như đúc, đến mức mô hình nhìn vào mà **không biết ai làm việc gì**. Hôm nay con sẽ tự tay dựng ra cảnh đó để thấy nó kỳ cục cỡ nào.
+
+Trò chơi thế này: bố sẽ rủ con cố tình nhét cả `kinhnghiem` (số năm đi làm) **và** `tuoi` (số tuổi) vào chung một mô hình. Hai cái này đi với nhau như hình với bóng — tuổi càng cao thường kinh nghiệm càng nhiều. Con sẽ thấy hệ số trở nên **kỳ cục** và sai số chuẩn **phình to**. Rồi mình đo mức cộng tuyến bằng **VIF**, và ngó phần dư bằng mắt. Đừng lo con, mình đi từng bước một.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Tự tạo được cảnh **đa cộng tuyến** và đọc ra dấu hiệu của nó: hệ số kỳ cục, **sai số chuẩn phình to**.
+- Tính được **VIF** để đo xem hai biến "dính" nhau cỡ nào.
+- Vẽ và đọc được **đồ thị phần dư** để soi mấy giả định của hồi quy.
+:::
+
+::: {.callout-warning}
+## ⚠️ Bố nói trước cho con yên tâm
+Nếu con mới làm quen R: con cài R ở [cran.r-project.org](https://cran.r-project.org), rồi cài thêm **RStudio** (hoặc VS Code kèm extension R cũng được). Mở RStudio lên con sẽ thấy mấy ô: **Console** (gõ lệnh chạy ngay), **Script/Source** (nơi con lưu lệnh vào file `.R`), **Environment** (xem các bảng dữ liệu đang có), **Plots** (xem đồ thị). Cài gói thì gõ `install.packages("tidyverse")`. Mở dữ liệu thì `read.csv("file.csv")`. Bố khuyên con gõ lệnh vào file `.R` rồi bấm chạy từng dòng — để dành lại còn xem lại.
+
+Các khối mã dưới đây bố để ở dạng **đọc – hiểu**, chưa nối dữ liệu thật, nên con cứ đọc theo bố trước. Bố **giả định** con đã có một bảng tên `df` với các cột: `luong` (triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm), `tuoi` (tuổi), và `nu` (1 nếu là nữ, 0 nếu nam). Khi có dữ liệu thật, con đổ vào đúng tên cột là chạy được ngay.
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Mình gọi mấy gói cần dùng. `car` lo phần tính VIF; phần còn lại R có sẵn rồi.
+
+```r
+install.packages("car")   # chỉ cần cài 1 lần, lần sau khỏi
+library(car)              # vif() — đo mức đa cộng tuyến
+
+# Bố giả định con đã có sẵn data.frame tên df với các cột:
+#   df$luong       lương, triệu đồng/tháng
+#   df$hoc         số năm đi học
+#   df$kinhnghiem  số năm đi làm
+#   df$tuoi        tuổi
+#   df$nu          1 = nữ, 0 = nam
+head(df)
+```
+
+`head(df)` chỉ in vài dòng đầu cho con liếc xem dữ liệu đúng hình hài chưa — như sờ trán xem có sốt không vậy đó. Lúc nào mở dữ liệu mới con cũng nên ngó qua một cái.
+
+**Bố chốt cho con:** gọi gói xong, ngó dữ liệu một cái, rồi mới chạy.
+
+## Bước 1 — Mô hình "ngoan", chỉ một anh em sinh đôi
+
+Mình chạy mô hình bình thường trước, chỉ dùng `kinhnghiem`, **chưa** mời `tuoi` vào:
+
+```r
+m1 <- lm(luong ~ hoc + kinhnghiem, data = df)
+summary(m1)
+```
+
+Giả sử R in hệ số của `kinhnghiem` là **0,20**, với sai số chuẩn nhỏ gọn, ví dụ **0,03**. Con đọc: *"thêm 1 năm kinh nghiệm thì lương cao hơn khoảng 0,2 triệu, và con số này khá chắc chắn"* (sai số chuẩn nhỏ tức là cây kim đứng yên, không run).
+
+**Bố chốt cho con:** đây là mô hình khỏe mạnh — con ghi nhớ con số 0,20 và sai số 0,03 này, lát nữa mình so sánh.
+
+## Bước 2 — Mời cả "người anh em sinh đôi" `tuoi` vào & nhìn nó loạn
+
+Giờ mình cố tình nhét thêm `tuoi` vào cạnh `kinhnghiem`. Hai cái này đi cùng nhau như hình với bóng:
+
+```r
+m2 <- lm(luong ~ hoc + kinhnghiem + tuoi, data = df)
+summary(m2)
+```
+
+Giả sử lần này R in ra những con số kỳ cục: `kinhnghiem` nhảy lên **0,65** với sai số chuẩn **0,40**, còn `tuoi` lại ra **−0,45** với sai số **0,38**. Con nhìn mà thấy lạ đúng không?
+
+::: {.callout-important}
+## 🧮 So hai mô hình bằng số
+
+| | Hệ số `kinhnghiem` | Sai số chuẩn của nó |
+|---|---|---|
+| `m1` (không có `tuoi`) | **0,20** | **0,03** |
+| `m2` (thêm `tuoi`) | **0,65** | **0,40** |
+
+Con thấy hai chuyện cùng xảy ra:
+
+1. **Hệ số kỳ cục** — `kinhnghiem` nhảy từ 0,20 lên 0,65, còn `tuoi` ra số **âm** (tuổi cao thì lương thấp?!), nghe vô lý.
+2. **Sai số chuẩn phình to** — từ 0,03 phình lên **0,40**, gấp hơn chục lần.
+
+Đây không phải lỗi của con. Đây đúng là **đa cộng tuyến**: vì `tuoi` và `kinhnghiem` quá giống nhau, mô hình **không tách nổi** công của ai ra ai. Nó đoán mò, mỗi lần đoán một kiểu, nên cây kim run bần bật — đó chính là sai số chuẩn phình to.
+:::
+
+Bố ví thế này cho dễ hình dung: con hỏi hai anh em sinh đôi *"ai ăn hết hộp bánh?"*. Hai đứa lúc nào cũng đi chung, làm gì cũng cùng nhau, nên con **không cách nào** biết đứa nào ăn. Con đoán "thằng anh ăn 9 cái, thằng em trả lại 4 cái" cũng được, mà "thằng anh ăn 2, em ăn 3" cũng được — vô số cách. Mô hình của con đang đúng cảnh đó: nó lúng túng vì hai biến quá dính nhau.
+
+**Bố chốt cho con:** hệ số nhảy lung tung **và** sai số chuẩn phình to khi con thêm một biến "anh em sinh đôi" — đó là chữ ký của đa cộng tuyến.
+
+## Bước 3 — Đo mức "dính nhau" bằng VIF
+
+Nói miệng "hai biến dính nhau" thì mơ hồ. Mình đo bằng một con số gọi là **VIF** (Variance Inflation Factor — hệ số phóng đại phương sai). VIF càng to thì biến đó càng bị mấy biến khác "giải thích thay", tức càng dính:
+
+```r
+vif(m2)
+```
+
+Giả sử R in ra:
+
+| Biến | VIF |
+|---|---|
+| `hoc` | 1,2 |
+| `kinhnghiem` | **9,8** |
+| `tuoi` | **9,5** |
+
+Con đọc thế này: `hoc` VIF ~ 1 nghĩa là nó đứng riêng một mình, không dính ai — tốt. Còn `kinhnghiem` và `tuoi` đều **gần 10** — đó là dấu hiệu hai đứa đang ôm chặt lấy nhau.
+
+::: {.callout-tip}
+## 💡 Cách nhớ ngưỡng VIF
+Bố cho con cái thước nhanh: **VIF dưới 5 thì yên tâm**, **5–10 thì nhíu mày để ý**, **trên 10 thì báo động** — hai biến dính nhau quá rồi. Mẹo đọc nhanh hơn nữa: căn bậc hai của VIF cho con biết sai số chuẩn đã **phình to gấp mấy lần** so với khi biến đứng một mình. VIF = 9,8 thì √9,8 ≈ 3,1 — sai số chuẩn to gấp hơn 3 lần. Đúng kiểu cây kim run bố nói ở Bước 2.
+:::
+
+**Bố chốt cho con:** VIF là cái cân đo mức dính. Thấy `kinhnghiem` và `tuoi` cùng gần 10 → con biết ngay phải **bỏ bớt một đứa** đi, thường là giữ cái mình quan tâm hơn (ở đây giữ `kinhnghiem`, bỏ `tuoi`), rồi chạy lại `m1`.
+
+## Bước 4 — Soi giả định bằng đồ thị phần dư
+
+Đa cộng tuyến mới là một giả định. Buổi 4 còn dặn con vài giả định khác về **phần dư** (cái phần mô hình đoán hụt). Cách soi nhanh nhất là vẽ ra nhìn bằng mắt. R cho con xem 4 đồ thị chẩn đoán chỉ với một lệnh:
+
+```r
+plot(m1)   # bấm Enter để lật qua từng đồ thị trong ô Plots
+```
+
+Bố chỉ con đọc hai cái quan trọng nhất:
+
+**Đồ thị "Residuals vs Fitted"** (phần dư so với giá trị dự đoán): con nhìn đám chấm. Nếu chúng **rải đều quanh đường ngang số 0**, không theo hình thù gì — đẹp. Nếu chúng **loe ra như cái phễu** (chỗ chụm chỗ tản) thì đó là dấu hiệu phương sai không đều. Nếu chúng **uốn cong** thì quan hệ có lẽ không thẳng, mô hình thiếu cái gì đó.
+
+**Đồ thị "Normal Q-Q"**: nếu các chấm **bám sát đường chéo**, phần dư phân phối chuẩn đẹp; nếu chúng cong vênh ở hai đầu thì có vài điểm dị thường.
+
+Nếu con chỉ muốn xem riêng đồ thị phần dư quan trọng nhất:
+
+```r
+plot(m1, which = 1)   # which = 1 là Residuals vs Fitted
+```
+
+**Bố chốt cho con:** vẽ phần dư ra là cách rẻ nhất để soi giả định — chấm rải đều quanh số 0 là yên tâm, loe phễu hay uốn cong là phải xem lại mô hình.
+
+## Cùng một trò chơi, đổi tên hai trục
+
+Ví dụ trên là chuyện "người lớn": lương – kinh nghiệm – tuổi. Giờ bố kể phiên bản gần con hơn.
+
+Con muốn biết điều gì làm cây con cao lên. Con đo `chieu_cao` theo hai biến: **số lần con tưới** và **số lít nước con đổ**. Nhưng con là đứa đều đặn — mỗi lần tưới con luôn đổ đúng một ca nước. Thế là "số lần tưới" và "số lít nước" gần như **đi y hệt nhau**, đúng cặp sinh đôi. Con bỏ cả hai vào mô hình, hệ số ra kỳ cục, sai số phình to, VIF của hai biến cùng vọt lên gần 10. Mô hình không biết cây cao là nhờ *số lần* hay nhờ *lượng nước* — vì với con, hai cái là một.
+
+Thấy không Mei — *cùng một trò chơi, chỉ thay tên hai trục thôi con* 🌱. Lương–kinh nghiệm–tuổi hay chiều cao–số lần tưới–lít nước, hai anh em sinh đôi vẫn chơi đúng một chiêu: làm mô hình lúng túng. Cách chữa cũng y hệt — **giữ một, bỏ một**.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Cố tình nhét cả `kinhnghiem` và `tuoi` vào mô hình và **thấy tận mắt** hệ số trở nên kỳ cục, **sai số chuẩn phình to** — chữ ký của đa cộng tuyến.
+2. Dùng `vif()` để **đo mức dính** giữa các biến, và nhớ thước của bố: dưới 5 yên tâm, trên 10 báo động.
+3. Vẽ `plot(m1)` để **soi giả định bằng mắt** — phần dư rải đều quanh số 0 là khỏe; cách chữa cộng tuyến là giữ một biến, bỏ biến sinh đôi kia đi.
+:::

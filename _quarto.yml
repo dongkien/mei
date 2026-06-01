@@ -1,26 +1,32 @@
 # ============================================================
-# Kinh tế lượng — Học liệu mở FTU
-# Quarto Website project
+# Kinh tế lượng dành cho bé Mei — Học liệu (giọng người bố)
+# Quarto Website project · 10 buổi
 # ============================================================
 
 project:
   type: website
   output-dir: _site
+  render:
+    - "*.qmd"
+    - "lectures/*.qmd"
+    - "stata-lab/*.qmd"
+    - "r-lab/*.qmd"
+    - "python-lab/*.qmd"
+    - "problem-sets/*.qmd"
+    - "exams/*.qmd"
   resources:
     - "data/"
 
 execute:
-  freeze: auto      # không re-run code chưa đổi → render nhanh
-  echo: true        # mặc định hiện code cho sinh viên đọc
+  freeze: auto
+  echo: true
   warning: false
 
-# Code (Stata/R/Python) chạy với cwd = thư mục project
 execute-dir: project
 
-# ----- Site config -----
 website:
-  title: "Kinh tế lượng"
-  description: "Học liệu mở môn Kinh tế lượng. Bộ môn Kinh tế và Quản lý, Viện Kinh tế và Kinh doanh Quốc tế, Trường ĐH Ngoại Thương."
+  title: "Kinh tế lượng dành cho bé Mei"
+  description: "Kinh tế lượng kể bằng giọng người bố ấm áp — viết cho bé Mei. Đi từ trực giác, không làm con sợ."
   search:
     location: navbar
     type: overlay
@@ -76,11 +82,6 @@ website:
             - python-lab/lab-08.qmd
             - python-lab/lab-09.qmd
             - python-lab/lab-10.qmd
-            - python-lab/lab-11.qmd
-            - python-lab/lab-12.qmd
-            - python-lab/lab-13.qmd
-            - python-lab/lab-14.qmd
-            - python-lab/lab-15.qmd
     - id: r-lab
       title: "R Lab"
       style: docked
@@ -105,11 +106,6 @@ website:
             - r-lab/lab-08.qmd
             - r-lab/lab-09.qmd
             - r-lab/lab-10.qmd
-            - r-lab/lab-11.qmd
-            - r-lab/lab-12.qmd
-            - r-lab/lab-13.qmd
-            - r-lab/lab-14.qmd
-            - r-lab/lab-15.qmd
     - id: stata-lab
       title: "Stata Lab"
       style: docked
@@ -134,11 +130,6 @@ website:
             - stata-lab/lab-08.qmd
             - stata-lab/lab-09.qmd
             - stata-lab/lab-10.qmd
-            - stata-lab/lab-11.qmd
-            - stata-lab/lab-12.qmd
-            - stata-lab/lab-13.qmd
-            - stata-lab/lab-14.qmd
-            - stata-lab/lab-15.qmd
     - id: bai-giang
       title: "Bài giảng"
       style: docked
@@ -147,47 +138,35 @@ website:
       contents:
         - text: "← Trang chủ"
           href: index.qmd
-        - section: "Chương 1 — Nhập môn & nền tảng thống kê"
+        - section: "Chương 1 — Bắt đầu hành trình"
           contents:
             - lectures/buoi-01.qmd
-            - lectures/buoi-02.qmd
-        - section: "Chương 2 — Hồi quy tuyến tính đơn"
+        - section: "Chương 2 — Học kẻ đường qua dữ liệu"
           contents:
+            - lectures/buoi-02.qmd
             - lectures/buoi-03.qmd
             - lectures/buoi-04.qmd
-        - section: "Chương 3 — Hồi quy bội"
+        - section: "Chương 3 — Đọc hiểu & uốn nắn mô hình"
           contents:
             - lectures/buoi-05.qmd
             - lectures/buoi-06.qmd
             - lectures/buoi-07.qmd
-        - section: "Chương 4 — Suy diễn & kiểm định giả thuyết"
+        - section: "Chương 4 — Những cái bẫy phải tránh"
           contents:
             - lectures/buoi-08.qmd
             - lectures/buoi-09.qmd
-        - section: "Chương 5 — Dạng hàm, biến giả & xác định mô hình"
+        - section: "Chương 5 — Chân trời phía trước"
           contents:
             - lectures/buoi-10.qmd
-            - lectures/buoi-11.qmd
-        - section: "Chương 6 — Các vấn đề của OLS"
-          contents:
-            - lectures/buoi-12.qmd
-            - lectures/buoi-13.qmd
-        - section: "Chương 7 — Mở rộng"
-          contents:
-            - lectures/buoi-14.qmd
-        - section: "Seminar / Ôn tập"
-          contents:
-            - lectures/buoi-15.qmd
 
   page-footer:
     border: true
     background: light
     left: |
-      © 2026 — Bộ môn Kinh tế và Quản lý, Viện Kinh tế và Kinh doanh Quốc tế, ĐH Ngoại Thương · [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.vi)
-    center: "TS. Đỗ Ngọc Kiên — Trưởng Bộ môn"
+      © 2026 · [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.vi)
+    center: "Bố viết tặng con — bé Mei ❤️"
     right: "Tạo bằng [Quarto](https://quarto.org/)"
 
-# ----- Format -----
 format:
   html:
     theme:

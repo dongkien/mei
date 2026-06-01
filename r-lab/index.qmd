@@ -1,6 +1,6 @@
 ---
 title: "R Lab"
-subtitle: "Tự học R qua 15 bài thực hành — tương ứng 15 buổi môn Kinh tế lượng"
+subtitle: "Tự học R qua 10 bài thực hành — tương ứng 10 buổi"
 listing:
   contents: "lab-*.qmd"
   type: table
@@ -16,4 +16,4 @@ listing:
 toc: false
 ---
 
-Chuỗi **16 bài thực hành R** (Lab 0 cài đặt + Lab 1–15) đi kèm môn Kinh tế lượng. Mỗi lab vận dụng khái niệm của một buổi giảng trên dữ liệu thực tế.
+Chuỗi **11 bài thực hành R** (Lab 0 cài đặt + Lab 1–10) đi kèm môn học. Mỗi lab vận dụng khái niệm của một buổi giảng trên dữ liệu thực tế.

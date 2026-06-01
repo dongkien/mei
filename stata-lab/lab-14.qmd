@@ -1,7 +1,0 @@
----
-title: "Lab 14 — Logit/Probit & dữ liệu bảng"
-subtitle: "Tương ứng [Buổi 14](../lectures/buoi-14.qmd)"
-reading-time: "~20 phút"
----
-
-*(Nội dung lab Stata — điền sau.)*

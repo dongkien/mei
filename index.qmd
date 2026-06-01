@@ -1,15 +1,15 @@
 ---
-title: "Kinh tế lượng"
-subtitle: "Bộ môn Kinh tế và Quản lý, Viện KT&KDQT, ĐH Ngoại Thương"
+title: "Kinh tế lượng dành cho bé Mei"
+subtitle: "Bố kể con nghe — đi từ trực giác, từng bước một, không vội"
 toc: false
 page-layout: full
 ---
 
 ::: {.column-page}
 
-## Về học phần
+## Bố viết cái này cho con
 
-**Kinh tế lượng** trang bị cho sinh viên công cụ phân tích dữ liệu để **ước lượng độ lớn các quan hệ kinh tế** và **kiểm định giả thuyết** bằng dữ liệu thực tế. Môn học đi từ hồi quy tuyến tính đơn đến hồi quy bội, suy diễn thống kê, và các vấn đề thường gặp của mô hình (chệch do bỏ sót biến, phương sai sai số thay đổi…), kèm thực hành trên **Stata, R và Python**.
+Mei à, đây là chỗ bố gom lại tất cả những gì bố muốn kể con nghe về **kinh tế lượng** — môn giúp mình trả lời câu hỏi *"x ảnh hưởng tới y bao nhiêu?"* bằng số liệu thật. Bố hứa dắt con đi **trực giác trước, công thức sau**, không làm con sợ. Mỗi ý đều có bài thực hành trên **Stata, R và Python** để con tự tay gõ ra số.
 
 ::: {.grid}
 
@@ -19,18 +19,15 @@ page-layout: full
 
 Lý thuyết được minh hoạ bằng **dữ liệu thực tế** và **ba lab song song** (Stata · R · Python) để sinh viên vừa hiểu trực giác vừa biết thao tác. Giáo trình tham chiếu: **Wooldridge — *Introductory Econometrics: A Modern Approach***.
 
-### Cấu trúc học phần (15 buổi)
+### Cấu trúc học phần (10 buổi)
 
 | Chương | Buổi | Trọng tâm |
 |---|:---:|---|
-| **1** — Nhập môn & nền tảng | 1–2 | Kinh tế lượng là gì; ôn xác suất, thống kê |
-| **2** — Hồi quy đơn | 3–4 | OLS, R², giả định cổ điển |
-| **3** — Hồi quy bội | 5–7 | Mô hình k biến, giả định, đa cộng tuyến |
-| **4** — Suy diễn | 8–9 | Khoảng tin cậy, kiểm định t & F |
-| **5** — Dạng hàm & biến giả | 10–11 | Log, bậc hai, tương tác, dummy, xác định mô hình |
-| **6** — Vấn đề của OLS | 12–13 | Chệch bỏ sót biến, phương sai sai số thay đổi |
-| **7** — Mở rộng | 14 | Biến phụ thuộc nhị phân, dữ liệu bảng, IV |
-| **Seminar** | 15 | Ôn tập & trình bày kết quả hồi quy |
+| **1** — Bắt đầu hành trình | 1 | Kinh tế lượng là gì; loại dữ liệu; ôn thống kê nhẹ |
+| **2** — Học kẻ đường qua dữ liệu | 2–4 | Hồi quy đơn & bội, R², giả định, đa cộng tuyến |
+| **3** — Đọc hiểu & uốn nắn mô hình | 5–7 | Kiểm định t & F; log/bậc hai/tương tác; biến giả |
+| **4** — Những cái bẫy phải tránh | 8–9 | Chệch bỏ sót biến (OVB); phương sai sai số thay đổi |
+| **5** — Chân trời phía trước | 10 | Logit/probit, dữ liệu bảng, IV; ôn tập |
 
 :::
 

@@ -1,14 +1,96 @@
 ---
-title: "Buổi 3 — Hồi quy tuyến tính đơn (1) — mô hình & ước lượng OLS"
-subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+title: "Buổi 3 — Khi không chỉ một điều quyết định"
+subtitle: "Hồi quy bội — nhiều nguyên nhân cùng lúc"
 reading-time: "Chương 2"
 ---
 
+Mei à, buổi trước mình kẻ một đường: *lương phụ thuộc số năm đi học*. Gọn gàng, đẹp đẽ.
+
+Nhưng bố hỏi con một câu khó nhé: người học nhiều thường cũng **nhiều tuổi hơn, nhiều kinh nghiệm hơn**. Vậy khi thấy họ lương cao — bao nhiêu phần là **nhờ đi học**, bao nhiêu phần là **nhờ kinh nghiệm**?
+
+Một đường với *một* nguyên nhân không tách được hai thứ đó ra. Mà cuộc đời thì hiếm khi chỉ có một nguyên nhân, con nhỉ. Hôm nay bố chỉ con cách cho **nhiều nguyên nhân vào cùng một lúc**.
+
 ::: {.callout-note appearance="simple"}
-## 🎯 Mục tiêu Buổi 3
-*(Sẽ bổ sung.)*
+## 🎯 Bố mong sau buổi này con sẽ
+- Hiểu vì sao đôi khi **một biến là không đủ**.
+- Nắm được ý quan trọng nhất của cả buổi: *"giữ những thứ khác cố định"*.
+- Đọc được mỗi con số trong mô hình nhiều biến mà không bị lẫn.
 :::
 
-## Nội dung
+## Thêm nguyên nhân vào đường của mình
 
-*(Khung bài giảng Buổi 3 — điền sau.)*
+Ở Buổi 2, đường của mình là: lương đoán = điểm khởi đầu + (độ dốc) × (số năm học).
+
+Giờ mình thêm **kinh nghiệm** vào. Người ta viết thế này:
+
+$$\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2$$
+
+::: {.callout-tip}
+## 💡 Bố dịch sang tiếng nhà mình
+- $x_1$ = số năm học, $x_2$ = số năm kinh nghiệm.
+- $\beta_1$ = học thêm 1 năm thì lương đổi bao nhiêu — **khi kinh nghiệm giữ y nguyên**.
+- $\beta_2$ = kinh nghiệm thêm 1 năm thì lương đổi bao nhiêu — **khi số năm học giữ y nguyên**.
+
+Vẫn là phép cộng quen thuộc thôi con: *lương đoán = điểm khởi đầu + phần do học + phần do kinh nghiệm.* Muốn thêm nguyên nhân nữa (ngành nghề, vùng miền…) thì cứ cộng thêm.
+:::
+
+## Ý quan trọng nhất cả buổi: "giữ những thứ khác cố định"
+
+Con để ý cụm bố in đậm ở trên chứ? **"Khi kinh nghiệm giữ y nguyên."** Đây là phép màu của hồi quy bội, bố muốn con nhớ kỹ.
+
+::: {.callout-tip}
+## 💡 So sánh người giống hệt nhau
+Con tưởng tượng mình tìm hai người **giống hệt nhau** mọi mặt — cùng kinh nghiệm, cùng ngành, cùng vùng — **chỉ khác** một điều: một người học nhiều hơn một năm. Chênh lệch lương giữa hai người đó chính là $\beta_1$.
+
+Hồi quy bội làm đúng việc đó cho con, tự động: nó **so táo với táo**, tách riêng ảnh hưởng của từng nguyên nhân ra khỏi nhau. Người ta gọi sang là *"giữ các yếu tố khác không đổi"* — nhưng con cứ nhớ là **so sánh hai người chỉ khác nhau một điều** là đúng.
+:::
+
+**Bố chốt cho con:** mỗi con số trong hồi quy bội là ảnh hưởng *riêng* của một nguyên nhân, sau khi đã gạt ảnh hưởng của các nguyên nhân kia sang một bên.
+
+## Vì sao điều này quý đến thế
+
+Con nhớ bài học lớn nhất ở Buổi 1 không — *giống nhau chưa chắc là tại nhau?* Hồi quy bội là **vũ khí đầu tiên** của mình để tới gần "tại nhau" hơn.
+
+Hồi nãy mình lo: người học nhiều lương cao, nhưng có thể chỉ vì họ nhiều kinh nghiệm. Bằng cách **đưa kinh nghiệm vào mô hình**, mình đã *gạt* lý do gây nhiễu đó ra. Con số còn lại cho việc học giờ đáng tin hơn nhiều.
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số
+Giả sử mô hình cho mình:
+
+$$\hat{lương} = 4{,}0 + 0{,}4 \times \text{học} + 0{,}3 \times \text{kinh nghiệm}$$
+
+- **0,4**: hai người *cùng số năm kinh nghiệm*, ai học thêm 1 năm thì lương cao hơn ~0,4 triệu.
+- **0,3**: hai người *cùng số năm học*, ai nhiều thêm 1 năm kinh nghiệm thì lương cao hơn ~0,3 triệu.
+
+Để ý: ở Buổi 2 độ dốc của "học" là 0,5; giờ thêm kinh nghiệm vào, nó tụt còn 0,4 — vì **một phần công lao trước đây gán nhầm cho học, thật ra là của kinh nghiệm.** Đó chính là lý do mình thêm biến.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng ý tưởng đó, nhưng gần con hơn
+Điểm bài kiểm tra của con đâu chỉ do **số giờ con ôn bài**, đúng không? Còn do **đêm trước con ngủ đủ không** nữa.
+
+Nếu mình chỉ nhìn giờ ôn, mình có thể khen nhầm: "ôn nhiều nên điểm cao!" — trong khi thật ra bạn nào ôn nhiều cũng là bạn ngủ ngon. Muốn biết **riêng việc ôn** giúp được bao nhiêu, mình so các bạn **ngủ giống nhau** rồi mới xét ai ôn nhiều hơn. Đưa cả "giờ ôn" và "giờ ngủ" vào mô hình là làm đúng việc đó. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+Hồi quy bội chỉ giữ cố định được **những thứ mình ĐO và ĐƯA VÀO**. Nếu có một nguyên nhân quan trọng mà mình *quên* hoặc *không đo được* (ví dụ: sự chăm chỉ bẩm sinh), nó vẫn lẻn vào làm lệch con số. Cái bẫy "kẻ giấu mặt" này lớn tới mức bố dành hẳn **[Buổi 8](buoi-08.qmd)** để kể cho con.
+:::
+
+## Thấy bằng số
+
+Tự tay con chạy một hồi quy nhiều biến và xem con số "học" thay đổi ra sao khi thêm "kinh nghiệm":
+
+- 💻 [Stata Lab 3](../stata-lab/lab-03.qmd) · [R Lab 3](../r-lab/lab-03.qmd) · [Python Lab 3](../python-lab/lab-03.qmd)
+
+::: {.callout-note}
+## 🔑 Ba điều bố muốn con mang về từ Buổi 3
+1. Đời thực hiếm khi chỉ một nguyên nhân — mình **cộng thêm các biến** vào đường: $\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots$
+2. Mỗi con số là ảnh hưởng **riêng** của một nguyên nhân, **khi giữ các thứ khác cố định** = *so sánh hai người chỉ khác nhau một điều*.
+3. Đây là vũ khí đầu tiên để tới gần **nhân quả** — nhưng nó chỉ gạt được những thứ mình **đo và đưa vào** (cẩn thận kẻ giấu mặt!).
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu — đường biến thành mặt phẳng
+Với một biến, mình kẻ một **đường** trong mặt phẳng. Với hai biến, "đường khớp nhất" trở thành một **mặt phẳng** lơ lửng trong không gian 3 chiều; với nhiều biến hơn thì là một "siêu phẳng" mà mình không vẽ ra được nữa — nhưng ý tưởng *y hệt*: vẫn là **bình phương nhỏ nhất** (OLS), vẫn là kéo mặt phẳng tới chỗ tổng khoảng cách dọc bình phương bé nhất. Máy tính chẳng ngại số chiều, con cứ yên tâm.
+:::

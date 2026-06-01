@@ -1,7 +1,170 @@
 ---
-title: "Lab 10 — Dạng hàm log & bậc hai"
+title: "Lab 10 — Logit/Probit, panel & báo cáo kết quả"
 subtitle: "Tương ứng [Buổi 10](../lectures/buoi-10.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab R — điền sau.)*
+Mei à, ở [Buổi 10](../lectures/buoi-10.qmd) bố kể chuyện cái biến phụ thuộc chỉ có **hai mặt**: đậu hay rớt, có việc hay không, mua hay không mua. Đường thẳng OLS cố đi xuyên qua đám 0 và 1 thì có lúc nó dự đoán ra... 1,3 hay −0,2 — mà xác suất thì làm gì có chuyện vượt quá 100% hay âm. Nên mình đổi sang một cái máy biết "ép" kết quả vào khoảng 0 đến 1: đó là **logit**.
+
+Hôm nay con tự tay làm hai việc. Một, chạy một hồi quy **logit** cho biến có/không (bố lấy ví dụ đậu/rớt) và đọc sơ bộ. Hai, học cách **xuất một bảng kết quả đẹp** — nhiều mô hình xếp cạnh nhau — để dán thẳng vào báo cáo. Đừng lo con, mỗi bước chỉ vài dòng.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy được một mô hình **logit** bằng `glm(..., family = binomial)` cho biến phụ thuộc 0/1.
+- Đọc được dấu của hệ số (đẩy xác suất đậu lên hay xuống) mà không bị rối.
+- Dùng `modelsummary()` để in **nhiều mô hình cạnh nhau** thành một bảng gọn đẹp cho báo cáo.
+:::
+
+Bố giả định con đã có sẵn một bảng dữ liệu tên `lop` trong R, mỗi dòng là một học trò, với các cột: `dau` (bằng 1 nếu **đậu** kỳ thi, 0 nếu rớt), `hoc` (số giờ ôn mỗi tuần), `kinhnghiem` (số lần đã thi thử trước đó), và `nu` (bằng 1 nếu là nữ, 0 nếu nam). Site chưa kèm file dữ liệu thật nên con đừng bấm chạy — cứ đọc và hình dung kết quả theo lời bố.
+
+## Bước 1 — Vì sao không dùng thẳng `lm()`?
+
+Mình thử cái sai trước cho con thấm. Con có thể chạy OLS lên biến 0/1 như thường:
+
+```r
+m_ols <- lm(dau ~ hoc + kinhnghiem, data = lop)
+summary(m_ols)
+```
+
+Nó chạy được, không báo lỗi. Nhưng cái máy này coi `dau` như một con số bình thường, nên với học trò ôn cực nhiều nó có thể dự đoán xác suất đậu là **1,2** — tức 120%. Vô lý, con nhỉ. Mình cần một cái máy biết: dù đẩy mạnh tới đâu, xác suất cũng chỉ bò sát 1 chứ không vượt qua.
+
+**Bố chốt cho con:** OLS lên biến 0/1 không chết máy, nhưng nó dự đoán ra xác suất vô lý — nên mình đổi sang logit.
+
+## Bước 2 — Chạy hồi quy logit
+
+Chỉ đổi đúng một chỗ: thay `lm()` bằng `glm()` và thêm `family = binomial`.
+
+```r
+m_logit <- glm(dau ~ hoc + kinhnghiem,
+               data = lop,
+               family = binomial)   # binomial = bật chế độ logit cho biến 0/1
+
+summary(m_logit)
+```
+
+`glm` là "general linear model" — cùng họ với `lm` nhưng rộng hơn. Còn `family = binomial` là câu thần chú nói với R: *"biến phụ thuộc của con chỉ có hai mặt, hãy dùng logit ép kết quả vào khoảng 0–1."* Nếu con muốn **probit** thay vì logit, chỉ đổi một chữ: `family = binomial(link = "probit")`. Hai anh em này gần như cho cùng một câu chuyện, con dùng cái nào cũng được.
+
+**Bố chốt cho con:** logit chỉ là `glm()` + `family = binomial` — quen tay `lm()` rồi thì đây là một bước nhỏ xíu.
+
+## Bước 3 — Đọc kết quả: dấu trước, độ lớn sau
+
+Bảng `summary()` lại cho con cột `Estimate` (hệ số) và `Std. Error` quen thuộc. Nhưng bố dặn con: **đừng đọc con số hệ số logit theo kiểu OLS**. Hệ số logit không phải "ôn thêm 1 giờ thì xác suất đậu tăng 0,3" đâu — nó là chuyện của "log-odds", nghe đã thấy nhức đầu.
+
+Cái con đọc được **ngay và luôn** là **dấu** của hệ số:
+
+```r
+summary(m_logit)$coefficients   # in riêng bảng hệ số cho gọn
+```
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số
+Giả sử máy in ra hệ số của `hoc` là **+0,45** (dương) và của `kinhnghiem` là **+0,30** (dương).
+
+- Dấu **dương** của `hoc` → ôn càng nhiều giờ, **xác suất đậu càng cao**. Đúng trực giác.
+- Muốn nói bằng "lần", con lấy `exp(0,45) ≈ 1,57`: mỗi giờ ôn thêm làm **tỉ lệ ăn thua (odds) đậu tăng khoảng 57%**.
+- Nếu một hệ số ra **âm**, đọc ngược lại: biến đó **kéo xác suất đậu xuống**.
+
+Con thấy không — bước đầu chỉ cần nhìn **dấu** là đã nắm được câu chuyện rồi.
+:::
+
+Muốn xem nhanh phần "đổi ra lần" cho cả bảng:
+
+```r
+exp(coef(m_logit))   # biến hệ số log-odds thành "odds ratio" — tỉ lệ ăn thua
+```
+
+**Bố chốt cho con:** với logit, đọc **dấu** trước (đẩy lên hay kéo xuống), rồi mới dùng `exp()` để nói bằng "lần" nếu cần. Đừng diễn giải con số thô như OLS.
+
+## Bước 4 — Dựng vài mô hình để xếp cạnh nhau
+
+Báo cáo đẹp là báo cáo cho người đọc thấy con **thêm dần biến vào** và kết quả có vững không. Mình dựng ba phiên bản, từ đơn giản tới đầy đủ:
+
+```r
+# Mô hình 1: chỉ giờ ôn
+m1 <- glm(dau ~ hoc, data = lop, family = binomial)
+
+# Mô hình 2: thêm số lần thi thử
+m2 <- glm(dau ~ hoc + kinhnghiem, data = lop, family = binomial)
+
+# Mô hình 3: thêm biến giả giới tính, và tương tác "còn tuỳ"
+#   factor(nu) biến cột 0/1 thành biến giả gọn gàng
+#   hoc*nu = hoc + nu + hoc:nu  → cho phép giờ ôn có tác dụng khác nhau ở nam và nữ
+m3 <- glm(dau ~ hoc * factor(nu) + kinhnghiem, data = lop, family = binomial)
+```
+
+Ba mô hình này là ba "lát cắt" của cùng một câu hỏi. Đặt cạnh nhau, người đọc thấy ngay: thêm biến vào thì hệ số `hoc` có đứng yên không, hay nhảy lung tung (dấu hiệu thiếu biến quan trọng).
+
+**Bố chốt cho con:** đừng chỉ khoe một mô hình "đẹp nhất" — dựng vài mô hình tăng dần để người đọc tin con không gian lận.
+
+## Bước 5 — Xuất bảng đẹp bằng `modelsummary`
+
+Đây là phần chính của lab hôm nay. `modelsummary` nhận một **danh sách** các mô hình rồi xếp chúng thành các cột cạnh nhau, tự lo căn lề, dấu sao ý nghĩa, số dòng quan sát — đúng kiểu bảng con thấy trong các bài báo.
+
+```r
+# install.packages("modelsummary")   # cài một lần cho cả máy
+library(modelsummary)
+
+modelsummary(
+  list(
+    "Chỉ giờ ôn"      = m1,
+    "Thêm thi thử"    = m2,
+    "Đầy đủ + tương tác" = m3
+  ),
+  stars = TRUE,              # gắn dấu sao cho hệ số có ý nghĩa thống kê
+  gof_omit = "AIC|BIC|Log",  # bỏ bớt vài dòng thống kê ít dùng cho gọn
+  title = "Khả năng đậu kỳ thi — mô hình logit"
+)
+```
+
+Mỗi cột là một mô hình; mỗi dòng là một biến. Con số trên là **hệ số**, con số trong ngoặc bên dưới là **sai số chuẩn** (độ lắc lư). Dấu sao `*` `**` `***` cho biết hệ số càng nhiều sao thì càng chắc là khác 0. Người đọc liếc một cái là so được ba mô hình.
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số
+Trong bảng, dòng `hoc` có thể hiện cỡ thế này: cột 1 ghi `0.52***`, cột 2 ghi `0.45***`, cột 3 ghi `0.43***`. Con thấy hệ số **nhúc nhích nhẹ** khi thêm biến nhưng vẫn dương và vẫn ba sao — đó là tín hiệu **đáng tin**: giờ ôn thực sự đẩy xác suất đậu lên, dù mình thêm biến gì vào. Ngược lại nếu nó nhảy từ `0.52***` xuống `0.05` (mất sạch sao) thì con phải nghi: chắc có biến nào đó đang gánh thay.
+:::
+
+Muốn lưu bảng ra file để dán vào báo cáo Word hay Quarto, con chỉ thêm một tham số `output`:
+
+```r
+modelsummary(list(m1, m2, m3),
+             stars = TRUE,
+             output = "bang_ket_qua.docx")   # hoặc "bang.html", "bang.tex" cho LaTeX
+```
+
+**Bố chốt cho con:** `modelsummary()` biến mấy mô hình rời rạc thành **một bảng báo cáo** trong một dòng — con không phải copy từng con số bằng tay nữa, đỡ sai sót.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe — đặt tên đẹp cho biến
+Người đọc báo cáo không quen với chữ `hoc`, `kinhnghiem`. Con đặt lại tên hiển thị cho lịch sự bằng `coef_rename`:
+
+```r
+modelsummary(
+  list("Đầy đủ" = m3),
+  stars = TRUE,
+  coef_rename = c("hoc" = "Số giờ ôn/tuần",
+                  "kinhnghiem" = "Số lần thi thử",
+                  "factor(nu)1" = "Nữ")
+)
+```
+
+Bảng vẫn y nguyên con số, chỉ đổi cái nhãn cho dễ đọc. Một báo cáo gọn nhãn trông chuyên nghiệp hơn hẳn — bố tin con làm được. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+1. **Đừng đọc hệ số logit như hệ số OLS.** Nó là log-odds, không phải "tăng bao nhiêu xác suất". Đọc **dấu**, hoặc dùng `exp()` để nói bằng "lần".
+2. **Đừng quên ngoặc trong bảng là sai số chuẩn**, không phải con số thứ hai của hệ số. Nhìn nhầm chỗ này là hiểu sai cả bảng.
+3. **Đừng chỉ giữ lại mô hình p nhỏ nhất** rồi vứt phần còn lại. Xếp nhiều mô hình cạnh nhau chính là để thành thật.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng một trò chơi, gần con hơn
+Tưởng tượng con đoán hôm nay **cây đậu nhà mình có nảy mầm không** (1 = nảy, 0 = chưa). Tưới càng đều, để nắng càng vừa thì khả năng nảy càng cao — nhưng "khả năng" thì chỉ chạy từ 0% đến 100%, không bao giờ 120%. Đó đúng là lý do mình dùng logit thay vì đường thẳng: nó tôn trọng cái trần 100% và cái sàn 0%. Rồi con xếp "mô hình chỉ có nước tưới" cạnh "mô hình thêm ánh nắng" trong một bảng — y như con vừa làm với đậu/rớt vậy. Cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Hiểu vì sao biến 0/1 cần **logit** thay vì OLS, và chạy nó bằng `glm(dau ~ ..., family = binomial)` (đổi `link = "probit"` nếu muốn probit).
+2. Đọc kết quả logit cho đúng: nhìn **dấu** trước, rồi `exp(coef())` để nói bằng "lần" — không diễn giải con số thô như OLS.
+3. Dùng `modelsummary()` xếp **nhiều mô hình cạnh nhau** thành một bảng đẹp, gắn dấu sao, đổi tên biến, và xuất ra `.docx`/`.html`/`.tex` để dán thẳng vào báo cáo.
+:::

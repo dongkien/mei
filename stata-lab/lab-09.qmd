@@ -1,7 +1,189 @@
 ---
-title: "Lab 9 — Kiểm định F & kiểm định gộp"
+title: "Lab 9 — Sai số chuẩn vững (robust SE)"
 subtitle: "Tương ứng [Buổi 9](../lectures/buoi-09.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Stata — điền sau.)*
+Mei à, ở [Buổi 9](../lectures/buoi-09.qmd) bố kể con nghe chuyện đám phần dư không chịu nằm ngoan: chỗ thì sát đường, chỗ thì văng xa, xòe ra như cái **phễu**. Khi đó con số hệ số vẫn ổn, nhưng cái thước đo "độ lắc lư" của nó — **sai số chuẩn** — lại bị đo sai. Bố gọi cách chữa là **sai số chuẩn vững** (robust SE).
+
+Hôm nay con sẽ tự tay làm một việc rất thú vị: chạy đúng một hồi quy, in sai số chuẩn **thường**, rồi in sai số chuẩn **vững**, đặt cạnh nhau mà ngắm. Sau đó con vẽ đồ thị phần dư để tận mắt thấy cái phễu. Đừng lo, bố đi cùng con từng bước, chậm rãi thôi.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Chạy được một hồi quy lương theo học và kinh nghiệm.
+- In **sai số chuẩn thường** rồi **sai số chuẩn vững**, và đọc được sự khác nhau.
+- Vẽ `rvfplot` thấy hình cái phễu, và biết cách **bật robust thành mặc định**.
+:::
+
+::: {.callout-tip}
+## 💡 Bố nói trước cho con yên tâm
+Các khối mã dưới đây bố để ở dạng **đọc – không tự chạy**, vì website chưa gắn dữ liệu thật. Con cứ hình dung mình **đã có sẵn một bộ dữ liệu** với ba biến: `luong` (lương, triệu đồng), `hoc` (số năm đi học), và `kinhnghiem` (số năm đi làm). Khi ngồi trước máy Stata thật, con gõ y hệt vậy là chạy được con nhé.
+:::
+
+## Bước 0 — Chuẩn bị đồ nghề
+
+Mình cần một gói nhỏ tên `estout` (chứa lệnh `esttab`) để lát nữa bày hai loại sai số chuẩn cạnh nhau cho đẹp. Cài một lần thôi, lần sau khỏi cài lại.
+
+```stata
+* Cài gói estout (chỉ cần làm một lần trên máy con)
+ssc install estout, replace
+
+* Mở dữ liệu của mình (giả định con đã có file luong.dta)
+use "luong.dta", clear
+
+* Nhìn qua dữ liệu cho quen mặt
+summarize luong hoc kinhnghiem
+```
+
+`summarize` mở hộp đồ ra cho con ngắm trước: trung bình, lớn nhất, nhỏ nhất của từng biến. Quen mặt rồi mình mới bắt tay vào.
+
+**Bố chốt cho con:** cài `estout` một lần, rồi luôn `summarize` để làm quen dữ liệu trước khi hồi quy.
+
+## Bước 1 — Sai số chuẩn THƯỜNG
+
+Mình chạy hồi quy bình thường trước. Đây là kiểu mặc định của Stata: nó **giả định** đám phần dư lắc lư đều nhau ở mọi nơi (dân trong nghề gọi là *phương sai đồng nhất*).
+
+```stata
+* Hồi quy thường — sai số chuẩn mặc định
+regress luong hoc kinhnghiem
+
+* Cất kết quả lại để lát nữa so sánh
+estimates store thuong
+```
+
+Giả sử Stata in ra hệ số `hoc` là **0,45**, với **sai số chuẩn = 0,10**. Con đọc thành tiếng người: *"học thêm 1 năm gắn với lương cao hơn 0,45 triệu; con số 0,45 này có độ lắc lư cỡ 0,10."* Con ghi cặp số **0,45 (0,10)** lên giấy nháp nhé — lát nữa mình xem cái 0,10 có đổi không.
+
+**Bố chốt cho con:** sai số chuẩn thường ở đây là **0,10** — đẹp, nhưng nó tin rằng phần dư lắc lư đều khắp nơi. Hãy nhớ con số này.
+
+## Bước 2 — Sai số chuẩn VỮNG (robust)
+
+Giờ mình chạy **đúng hồi quy đó**, chỉ thêm một cái khăn quàng an toàn: `vce(robust)`. Hệ số sẽ **không đổi** — vẫn là 0,45. Chỉ có cái thước đo độ lắc lư được tính lại theo kiểu **bền hơn**, không cần tin rằng phần dư lắc đều.
+
+```stata
+* Hồi quy y hệt, nhưng dùng sai số chuẩn vững
+regress luong hoc kinhnghiem, vce(robust)
+
+estimates store vung
+```
+
+Giả sử lần này hệ số `hoc` vẫn là **0,45**, nhưng sai số chuẩn nhảy lên **0,14**. Con thấy chưa Mei — *hệ số y nguyên, chỉ độ lắc lư đổi.* Cái 0,10 lúc nãy là một lời hứa hơi lạc quan; sự thật thì con số 0,45 lắc mạnh hơn thế, cỡ 0,14. `vce(robust)` nói thật với con về độ lắc đó.
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe `vce(robust)` làm gì
+Hãy tưởng tượng con đo độ run của một bàn tay. Cách **thường** giả định tay run đều suốt buổi nên đo một lúc rồi suy ra cả buổi. Cách **vững** thì chịu khó nhìn từng đoạn — đoạn nào run nhiều tính nhiều, đoạn nào run ít tính ít — nên nó tả đúng thực tế hơn khi tay lúc run mạnh lúc run nhẹ. Hệ số (vị trí trung bình của bàn tay) không đổi; chỉ con số mô tả độ run là chính xác hơn.
+:::
+
+**Bố chốt cho con:** thêm `vce(robust)`, hệ số giữ nguyên 0,45 nhưng sai số chuẩn từ 0,10 thành 0,14 — đó là sự thật trung thực hơn về độ lắc lư.
+
+## Bước 3 — Đặt thường và vững cạnh nhau
+
+Nói miệng "0,10 rồi 0,14" thì dễ quên. Mình bày hai cột cạnh nhau cho mắt thấy ngay, bằng `esttab`.
+
+```stata
+* Hai cột: sai số chuẩn thường và vững, cùng một mô hình
+esttab thuong vung, ///
+    b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) ///
+    mtitles("SE thường" "SE vững") ///
+    label
+```
+
+Bố giải thích các nút bấm:
+
+- `b(3) se(3)` — in hệ số và sai số chuẩn, làm tròn 3 chữ số. Trong bảng `esttab`, con số trong **ngoặc đơn dưới mỗi hệ số chính là sai số chuẩn**.
+- `star(...)` — gắn dấu sao theo mức ý nghĩa (nhớ Buổi 5: sao càng nhiều, càng tin con số khác 0).
+- `mtitles(...)` — đặt tên hai cột để con khỏi lẫn.
+
+Nhìn bảng, con sẽ thấy dòng `hoc` ở hai cột có **cùng hệ số 0,45**, nhưng số trong ngoặc khác nhau: cột trái 0,10, cột phải 0,14. Một bức tranh nói thay cả câu chuyện robust.
+
+::: {.callout-important}
+## 🧮 Đọc sự khác nhau bằng số
+| Cách tính | Hệ số `hoc` | Sai số chuẩn | Trị số t ≈ hệ số / SE |
+|---|---|---|---|
+| (1) Thường | **0,45** | **0,10** | 0,45 / 0,10 = **4,5** |
+| (2) Vững | **0,45** | **0,14** | 0,45 / 0,14 = **3,2** |
+
+Hệ số y nguyên. Nhưng SE vững **to hơn**, nên trị số t **nhỏ hơn** (4,5 → 3,2). Ở đây cả hai vẫn lớn hơn 2 nên kết luận không đổi — nhưng con thấy đấy, nếu dùng SE thường lạc quan, có khi con **tự tin nhầm** vào một con số thật ra bấp bênh hơn.
+:::
+
+**Bố chốt cho con:** `esttab thuong vung` bày hai cách tính cạnh nhau — cùng hệ số, khác độ lắc, và SE vững thường thật thà hơn.
+
+## Bước 4 — Vẽ cái phễu
+
+Tại sao SE thường lại sai? Vì phần dư **không lắc đều**. Mình vẽ ra xem tận mắt: phần dư theo giá trị dự đoán, bằng `rvfplot`.
+
+```stata
+* Vẽ lại từ mô hình thường để soi phần dư
+regress luong hoc kinhnghiem
+rvfplot, yline(0)
+```
+
+`rvfplot` đặt **giá trị dự đoán** lên trục ngang và **phần dư** (sai lệch thực tế so với dự đoán) lên trục dọc. Đường `yline(0)` là vạch số 0 để con dễ nhìn.
+
+- Nếu các chấm rải **đều một dải ngang** quanh vạch 0 — phần dư lắc đều, SE thường ổn.
+- Nếu các chấm **xòe rộng dần** thành hình **cái phễu** (bên trái hẹp, bên phải toè ra) — phần dư lắc lư mạnh dần. Đó đúng là dấu hiệu cần `vce(robust)`.
+
+Với dữ liệu lương, con sẽ hay thấy cái phễu: người lương thấp thì khá giống nhau, người lương cao thì người ít người nhiều, văng tứ tung. Nhìn thấy phễu là con biết ngay vì sao SE thường nói dối ở Bước 1.
+
+**Bố chốt cho con:** thấy cái phễu trong `rvfplot` là thấy bằng mắt lý do mình cần sai số chuẩn vững.
+
+## Bước 5 — Bật robust thành mặc định
+
+Bố thú thật: bố lười gõ `vce(robust)` mỗi lần. Stata cho con đặt nó thành **mặc định** một lần cho cả phiên làm việc.
+
+```stata
+* Từ giờ mọi regress trong phiên này tự dùng SE vững
+set vce robust, permanently
+
+* Sau dòng trên, gõ gọn thế này là đã có SE vững rồi
+regress luong hoc kinhnghiem
+```
+
+`set vce robust` bảo Stata: *"từ giờ cứ tự quàng khăn an toàn cho con."* Thêm `permanently` thì lần sau mở Stata vẫn nhớ. Nếu lúc nào con muốn quay lại kiểu thường, gõ `set vce oim`.
+
+**Bố chốt cho con:** đặt `set vce robust` một lần, khỏi phải nhớ gõ `vce(robust)` mỗi câu — nhưng con vẫn phải *hiểu* nó làm gì.
+
+## Bước 6 — Vài đồ chơi con sẽ gặp lại
+
+Robust không chỉ sống với `regress`. Bố cho con thấy nó đi cùng các lệnh khác con đã quen ở Buổi 6 và Buổi 8.
+
+```stata
+* Biến giả: nam và nữ có mức lương nền khác nhau — vẫn dùng SE vững
+regress luong hoc kinhnghiem i.gioitinh, vce(robust)
+
+* Tương tác: cho "lợi ích mỗi năm học" KHÁC nhau giữa nam và nữ
+regress luong c.hoc##i.gioitinh kinhnghiem, vce(robust)
+
+* Logit cũng nhận robust: biến phụ thuộc CÓ/KHÔNG (vd có việc làm)
+logit colam hoc kinhnghiem, vce(robust)
+```
+
+- `i.gioitinh` — báo Stata `gioitinh` là **biến giả** (nam/nữ), tách thành các nhóm có mức nền riêng.
+- `c.hoc##i.gioitinh` — `c.` báo `hoc` là biến **liên tục**; `##` tạo **tương tác**, cho độ dốc của học khác nhau giữa hai giới (công cụ "còn tùy" của Buổi 6).
+- `logit ... , vce(robust)` — khi biến cần giải thích chỉ có hai giá trị (có/không), con dùng `logit`, và nó cũng nhận cái khăn `vce(robust)` y như vậy.
+
+::: {.callout-tip}
+## 💡 Mẹo nhỏ bố dắt túi cho con
+Khi viết báo cáo, con cứ **mặc định dùng SE vững** rồi nói rõ một câu: *"sai số chuẩn vững (robust)."* Lý do: nếu phần dư thật ra lắc đều, SE vững và SE thường gần như bằng nhau — con chẳng mất gì. Nhưng nếu phần dư lắc lư (mà đời thực hay thế), SE vững cứu con khỏi tự tin nhầm. **Vững là lựa chọn an toàn, mất mát gần như bằng không.** 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+- **Robust chữa cái SE, KHÔNG chữa cái hệ số.** Nếu hệ số bị lệch vì bỏ sót biến (Buổi 8), thêm `vce(robust)` chẳng cứu được — đó là bệnh khác, thuốc khác.
+- **Đừng tưởng SE vững luôn to hơn.** Phần lớn trường hợp nó to hơn, nhưng đôi khi nhỏ hơn chút. Điểm mấu chốt là nó **đúng hơn**, không phải "luôn to hơn".
+- **Thấy phễu rồi thì đừng đọc SE thường nữa** — con đã biết nó nói dối, quay sang đọc cột vững.
+:::
+
+## Ví dụ gần con hơn
+
+Bố đổi sân chơi cho con dễ thấy. Con muốn biết: *"Tập nhảy dây càng nhiều phút thì nhảy được càng nhiều cái không?"* Con đo số phút tập (`phut`) và số cái nhảy được (`socai`), chạy `regress socai phut`.
+
+Giờ con vẽ `rvfplot`. Con sẽ thấy: những hôm tập **ít phút**, kết quả của con khá giống nhau (chấm chụm lại). Nhưng những hôm tập **nhiều phút**, có hôm con sung lên nhảy vọt, có hôm mỏi chân tụt hẳn — chấm **văng tứ tung**, xòe thành cái phễu. Vậy là độ lắc lư của con không đều: nhảy nhiều thì lắc mạnh. Lúc này con thêm `vce(robust)`: hệ số "mỗi phút tập thêm bao nhiêu cái" giữ nguyên, nhưng độ tin cậy của nó được đo lại cho thật thà.
+
+Thấy không Mei: lương–học–kinh nghiệm hay phút tập–số cái nhảy — **cùng một trò chơi cái phễu, chỉ thay tên hai trục thôi con** 🌱.
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì
+1. Chạy một hồi quy, in **sai số chuẩn thường** (0,10) rồi **sai số chuẩn vững** (0,14), thấy **hệ số y nguyên, chỉ độ lắc lư đổi**.
+2. Dùng `esttab` bày hai cột cạnh nhau, và `rvfplot` để tận mắt thấy **cái phễu** — lý do cần robust.
+3. Biết cách **bật robust mặc định** với `set vce robust`, và dùng `vce(robust)` cùng `i.group`, `c.x##i.group`, `logit` cho những buổi sau.
+:::

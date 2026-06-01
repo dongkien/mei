@@ -1,14 +1,85 @@
 ---
-title: "Buổi 6 — Hồi quy bội (2) — các giả định & tính chất của ước lượng"
-subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+title: "Buổi 6 — Khi đường thẳng chịu thua, mình uốn cong nó"
+subtitle: "Dạng hàm: log, bậc hai, biến tương tác"
 reading-time: "Chương 3"
 ---
 
+Mei à, đường thẳng của mình có một tật: nó bảo *"học thêm 1 năm luôn cộng đúng 0,4 triệu — năm đầu cũng vậy, năm thứ 30 cũng vậy."*
+
+Nhưng đời đâu thẳng băng như thế, con nhỉ. Tăng lương theo **phần trăm** tự nhiên hơn theo số cố định. Kinh nghiệm thì lúc trẻ quý lắm, về già thì… cũng thường. Hôm nay bố dạy con cách làm cho **đường biết uốn cong** — mà vẫn dùng đúng cái máy OLS quen thuộc.
+
 ::: {.callout-note appearance="simple"}
-## 🎯 Mục tiêu Buổi 6
-*(Sẽ bổ sung.)*
+## 🎯 Bố mong sau buổi này con sẽ
+- Biết dùng **log** để nói chuyện bằng **phần trăm**.
+- Biết dùng **bình phương** để vẽ đường **cong như quả đồi**.
+- Biết dùng **biến tương tác** để nói *"còn tùy"*.
 :::
 
-## Nội dung
+::: {.callout-tip}
+## 💡 Bí mật làm con yên tâm
+Mình **không** đổi máy. Vẫn là OLS của Buổi 2. Mình chỉ **biến hình các biến trước khi đút vào** — như cắt rau trước khi cho vào nồi. Máy vẫn nấu y như cũ.
+:::
 
-*(Khung bài giảng Buổi 6 — điền sau.)*
+## Công cụ 1 — Log: nói chuyện bằng phần trăm
+
+Thay vì để lương ở dạng "triệu đồng", mình lấy **log của lương**. Nghe lạ, nhưng tác dụng thì rất đời:
+
+> Khi y ở dạng log, hệ số đọc thành **phần trăm**: "học thêm 1 năm → lương cao hơn khoảng **8%**", thay vì "+0,4 triệu".
+
+Vì sao hay? Vì +0,4 triệu với người lương 5 triệu là *to*, với người lương 50 triệu là *bé tí*. Còn "+8%" thì **công bằng cho mọi mức lương** — đúng cách con người cảm nhận chuyện tăng lương.
+
+## Công cụ 2 — Bình phương: đường cong như quả đồi
+
+Muốn đường được phép **cong**, mình cho thêm chính biến đó **bình phương** vào (ví dụ: kinh nghiệm và kinh nghiệm²).
+
+::: {.callout-tip}
+## 💡 Hình dung quả đồi
+Lương theo kinh nghiệm thường giống **leo một quả đồi**: lúc đầu lên nhanh (mỗi năm kinh nghiệm quý), lên chậm dần, tới đỉnh rồi có khi đi xuống (gần nghỉ hưu). Một đường thẳng không tả nổi quả đồi. Thêm số hạng bình phương là cho đường **quyền cong lên rồi cong xuống**.
+:::
+
+## Công cụ 3 — Biến tương tác: nói "còn tùy"
+
+Đôi khi tác dụng của một thứ **phụ thuộc vào một thứ khác**. "Học thêm có lợi bao nhiêu?" — *còn tùy*: có thể khác nhau giữa nam và nữ, giữa thành thị và nông thôn.
+
+Mình ghép hai biến lại thành một biến mới (nhân chúng với nhau) — gọi là **biến tương tác**. Nó cho mô hình nói được: *"lợi ích của học ở nhóm này khác nhóm kia."*
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số
+- **Log:** $\widehat{\log(lương)} = \dots + 0{,}08 \times \text{học}$ → mỗi năm học, lương **+8%**.
+- **Bình phương:** $\hat{lương} = \dots + 0{,}3\,\text{kn} - 0{,}005\,\text{kn}^2$ → lên rồi chững; đỉnh đồi rơi vào khoảng **30 năm** kinh nghiệm.
+- **Tương tác:** thêm số hạng $0{,}1 \times (\text{học} \times \text{nữ})$ → mỗi năm học, nữ được lợi **nhiều hơn nam 0,1 triệu**.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng ý tưởng đó, nhưng gần con hơn
+- **Quả đồi (bình phương):** con **tưới cây**. Tưới quá ít → cây héo; tưới vừa → cây tươi tốt; tưới *quá nhiều* → cây úng, chết. Lượng nước và sức khoẻ cây là một **đường cong quả đồi**, không phải đường thẳng "càng nhiều càng tốt".
+- **Còn tùy (tương tác):** con ôn bài nhiều có giúp điểm cao không? *Còn tùy* đêm đó con **ngủ đủ** không. Ôn nhiều chỉ phát huy khi con đủ tỉnh táo — tác dụng của cái này **tùy** cái kia. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+1. **Có log thì đọc bằng %**, đừng đọc bằng đơn vị gốc nữa.
+2. **Có bình phương (kn²) thì ĐỪNG đọc hệ số của kn một mình** — tác dụng của kinh nghiệm *thay đổi* tùy con đang ở chân đồi hay đỉnh đồi.
+3. **Có tương tác thì cũng ĐỪNG đọc từng hệ số đơn lẻ** — phải đọc *cùng nhau* mới ra nghĩa "còn tùy".
+:::
+
+## Thấy bằng số
+
+Tự tay con uốn cong một đường — thử log, thêm bình phương, ghép tương tác:
+
+- 💻 [Stata Lab 6](../stata-lab/lab-06.qmd) · [R Lab 6](../r-lab/lab-06.qmd) · [Python Lab 6](../python-lab/lab-06.qmd)
+
+::: {.callout-note}
+## 🔑 Ba điều bố muốn con mang về từ Buổi 6
+1. Vẫn là **OLS**, chỉ **biến hình biến** trước khi đút vào — đường thẳng vì thế biết uốn cong.
+2. **Log** = nói bằng %; **bình phương** = đường cong quả đồi; **tương tác** = "còn tùy".
+3. Khi đã uốn cong, **đừng đọc hệ số lẻ một mình** — phải đọc cả cụm mới ra đúng nghĩa.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu — vài chỗ cho chính xác
+- **log–log** (cả y và x đều log): hệ số chính là **độ co giãn** — "x tăng 1% thì y tăng bao nhiêu %".
+- Hệ số log-level $\beta$ đọc gần đúng là $100\beta\%$; muốn *chính xác* thì phần trăm = $(e^{\beta}-1)\times100\%$ (với $\beta$ nhỏ thì hai cách gần bằng nhau).
+- **Đỉnh quả đồi** của dạng $\beta_1 x + \beta_2 x^2$ nằm ở $x^* = -\beta_1/(2\beta_2)$ — chỗ đường đổi chiều. Ví dụ trên: $0{,}3/(2\times0{,}005)=30$ năm.
+- Với tương tác $y = \dots + \beta_1 x + \beta_3 (x\cdot z)$: tác dụng của $x$ là $\beta_1 + \beta_3 z$ — đúng nghĩa *"tùy $z$"*.
+:::

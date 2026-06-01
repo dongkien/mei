@@ -1,7 +1,0 @@
----
-title: "Lab 13 — Sai số chuẩn vững (robust SE)"
-subtitle: "Tương ứng [Buổi 13](../lectures/buoi-13.qmd)"
-reading-time: "~20 phút"
----
-
-*(Nội dung lab Stata — điền sau.)*

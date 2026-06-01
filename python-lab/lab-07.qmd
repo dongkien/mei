@@ -1,7 +1,194 @@
 ---
-title: "Lab 7 — Đa cộng tuyến & chẩn đoán"
+title: "Lab 7 — Biến giả & biến tương tác"
 subtitle: "Tương ứng [Buổi 7](../lectures/buoi-07.qmd)"
 reading-time: "~20 phút"
 ---
 
-*(Nội dung lab Python — điền sau.)*
+Mei à, ở [Buổi 7](../lectures/buoi-07.qmd) bố đã kể con nghe: có những thứ **không đo bằng số** được — nam hay nữ, thành thị hay nông thôn, có bằng lái hay chưa. Mình không cộng "giới tính" vào lương như cộng "số năm học" được, con nhỉ.
+
+Cách của mình là gắn cho mỗi nhóm một cái **công tắc 0/1** — gọi là **biến giả**. Hôm nay con sẽ tự tay bật cái công tắc đó trong Python, đọc xem nó nói gì, rồi làm thêm một bước thú vị: cho hai nhóm **có độ dốc khác nhau**. Đừng lo, từng bước một thôi, bố đi cùng con.
+
+::: {.callout-note appearance="simple"}
+## 🎯 Bố mong sau lab này con sẽ
+- Tự tạo được một **biến giả** (ví dụ `nu = 1` nếu là nữ) và chạy hồi quy với nó.
+- Đọc hệ số biến giả như **chênh lệch trung bình giữa hai nhóm**.
+- Thêm **biến tương tác** để hai nhóm có **độ dốc khác nhau**, rồi diễn giải bằng lời.
+:::
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ con nghe trước khi bắt đầu
+Giả sử nhà mình đã có sẵn một bảng dữ liệu tên `df`, mỗi dòng là một người, với các cột: `luong` (triệu đồng/tháng), `hoc` (số năm đi học), `kinhnghiem` (số năm đi làm) và `nu` (1 nếu nữ, 0 nếu nam). Trong lab này con cứ hình dung như mình **đã nạp xong** bảng đó — bố tập trung dạy con cách *đọc kết quả*, phần nạp dữ liệu mình đã quen từ các lab trước rồi.
+:::
+
+## Bước 0 — Mở đồ nghề
+
+Mình chỉ cần đúng một người bạn: `statsmodels`. Bố thích dùng kiểu "công thức" (`formula`) của nó vì viết gần giống tiếng người: `luong ~ hoc + nu` đọc là *"lương phụ thuộc vào học và giới tính."*
+
+```python
+import pandas as pd
+import statsmodels.formula.api as smf
+from statsmodels.iolib.summary2 import summary_col
+
+# Giả định df đã có sẵn các cột: luong, hoc, kinhnghiem, nu
+df.head()
+```
+
+**Bố chốt cho con:** dấu `~` chỉ là chữ "phụ thuộc vào". Bên trái là thứ mình muốn giải thích (`luong`), bên phải là những thứ dùng để giải thích.
+
+## Bước 1 — Bật công tắc: chạy hồi quy có biến giả
+
+Cột `nu` của mình chỉ gồm hai giá trị: 0 và 1. Con đút thẳng nó vào mô hình như một biến bình thường:
+
+```python
+m1 = smf.ols("luong ~ hoc + nu", data=df).fit()
+print(m1.summary())
+```
+
+Giả sử máy in ra (bố bịa số cho dễ hình dung):
+
+```python
+# Intercept    4.0
+# hoc          0.4
+# nu          -1.2
+```
+
+Bố dịch cho con từng dòng:
+
+- `hoc = 0.4`: học thêm **1 năm**, lương cao hơn khoảng **0,4 triệu** — y như mình đã quen.
+- `nu = -1.2`: đây là phần mới. Vì `nu = 1` là nữ và `nu = 0` là nam, con số này nghĩa là: **cùng số năm học như nhau**, một người nữ trung bình lương **thấp hơn nam 1,2 triệu**.
+
+Để ý chữ "cùng số năm học như nhau" — đó là nhờ mình đã giữ `hoc` trong mô hình. Hệ số `nu` so hai nhóm **sau khi đã san bằng trình độ học vấn**.
+
+::: {.callout-important}
+## 🧮 Hình dung bằng hai đường thẳng
+Mô hình `luong = 4 + 0.4·hoc − 1.2·nu` thật ra là **hai đường thẳng song song**:
+
+- Nam (`nu = 0`):  `luong = 4 + 0.4·hoc`
+- Nữ  (`nu = 1`):  `luong = (4 − 1.2) + 0.4·hoc = 2.8 + 0.4·hoc`
+
+Hai đường **cùng độ dốc 0,4** (học có lợi như nhau ở cả hai nhóm), chỉ **khác điểm xuất phát**: đường của nữ thấp hơn đúng **1,2 triệu**. Hệ số `nu` chính là khoảng cách dọc giữa hai đường đó.
+:::
+
+**Bố chốt cho con:** hệ số của một biến giả = **chênh lệch trung bình** giữa nhóm "1" và nhóm "0", sau khi đã giữ các biến khác như nhau.
+
+## Bước 2 — Để Python tự lo việc đánh số nhóm với `C( )`
+
+Cột `nu` của mình may mắn đã là 0/1 sẵn. Nhưng nếu con có một cột chữ, ví dụ `gioitinh` ghi `"Nam"` / `"Nu"`, thì sao? Con bọc nó trong `C(...)` — chữ C là "category" (nhóm) — và `statsmodels` tự tạo công tắc giúp con:
+
+```python
+m1b = smf.ols("luong ~ hoc + C(gioitinh)", data=df).fit()
+print(m1b.summary())
+```
+
+Máy sẽ tự chọn một nhóm làm **mốc** (nhóm nền) và in ra dòng kiểu `C(gioitinh)[T.Nu]`. Con đọc nó y hệt hệ số `nu` ở Bước 1: *chênh lệch của nhóm "Nu" so với nhóm mốc.* Cái hay của `C(...)` là khi có **nhiều hơn hai nhóm** (ví dụ vùng: Bắc/Trung/Nam), con không phải tự tay tạo từng công tắc — Python làm hết.
+
+**Bố chốt cho con:** `C(...)` là cách nói với Python *"đây là cột phân nhóm, con tự bật công tắc giùm bố."*
+
+## Bước 3 — Cho hai nhóm độ dốc khác nhau: biến tương tác
+
+Ở Bước 1 hai đường **song song** — tức là mình đã ngầm giả định *"học có lợi cho nam và nữ y như nhau"*. Nhưng biết đâu không phải vậy? Biết đâu mỗi năm học giúp nhóm này nhiều hơn nhóm kia? Để hỏi câu đó, mình cho hai nhóm được phép có **độ dốc riêng** bằng **biến tương tác**.
+
+Trong công thức, con dùng dấu sao `*`:
+
+```python
+m2 = smf.ols("luong ~ hoc * nu", data=df).fit()
+print(m2.summary())
+```
+
+::: {.callout-tip}
+## 💡 Bố nói nhỏ: dấu `*` và dấu `:` khác gì nhau
+- `hoc * nu` là cách viết gọn, Python tự bung thành **ba thứ**: `hoc` + `nu` + `hoc:nu`.
+- `hoc:nu` (dấu hai chấm) chỉ là **riêng phần tương tác** — tức cột `hoc` nhân với `nu`.
+
+Con cứ dùng `*` cho tiện, nó cho con đủ cả ba và đó là điều mình muốn.
+:::
+
+Giả sử kết quả ra (bố lại bịa số cho dễ đọc):
+
+```python
+# Intercept    4.0
+# hoc          0.3
+# nu          -1.2
+# hoc:nu       0.2
+```
+
+Đây là chỗ con phải đọc **cả cụm**, đừng đọc lẻ từng dòng. Bố tách thành hai đường cho con thấy:
+
+- Nam (`nu = 0`):  `luong = 4 + 0.3·hoc`  → mỗi năm học thêm **0,3 triệu**.
+- Nữ  (`nu = 1`):  `luong = (4 − 1.2) + (0.3 + 0.2)·hoc = 2.8 + 0.5·hoc`  → mỗi năm học thêm **0,5 triệu**.
+
+Vậy mình đọc:
+
+- `hoc = 0.3`: độ dốc của **nhóm mốc** (nam) — mỗi năm học nam được +0,3 triệu.
+- `hoc:nu = 0.2`: **phần độ dốc cộng thêm** cho nữ. Nghĩa là mỗi năm học, **nữ được lợi nhiều hơn nam 0,2 triệu** (0,5 so với 0,3).
+- `nu = -1.2`: chênh lệch điểm xuất phát giữa hai đường (lúc `hoc = 0`).
+
+::: {.callout-important}
+## 🧮 Cùng một trò chơi, gần con hơn
+Thay "lương" bằng **số trang con đọc trôi chảy**, thay "học" bằng **số buổi luyện đọc**, thay "nữ" bằng **"có bố ngồi đọc cùng" (1) hay đọc một mình (0)**.
+
+- Không có tương tác: luyện đọc giúp con tiến bộ đều nhau, dù có bố ngồi cùng hay không — hai đường song song.
+- Có tương tác dương: mỗi buổi luyện đọc giúp con tiến **nhanh hơn khi có bố ngồi cùng**. Độ dốc của con "có bố" dốc hơn — đúng là cái `hoc:nu` dương đó.
+
+Thấy chưa con, cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱
+:::
+
+**Bố chốt cho con:** không có tương tác = hai đường **song song** (khác điểm xuất phát); có tương tác = hai đường được phép **dốc khác nhau**.
+
+## Bước 4 — Sai số chuẩn vững (robust SE)
+
+Con nhớ Buổi 5 chứ: cạnh mỗi hệ số có một "độ lắc lư" — sai số chuẩn. Đôi khi độ lắc đó không đều giữa các nhóm (nhóm lương cao thường lắc mạnh hơn). Để khỏi lo, con xin loại sai số chuẩn **vững** bằng `cov_type="HC1"`:
+
+```python
+m2_robust = smf.ols("luong ~ hoc * nu", data=df).fit(cov_type="HC1")
+print(m2_robust.summary())
+```
+
+Hệ số **không đổi** — chỉ cột sai số chuẩn, trị số t và p được tính lại cho đáng tin hơn. Con cứ quen tay thêm `cov_type="HC1"` cho yên lòng.
+
+**Bố chốt cho con:** `HC1` không sửa con số ước lượng, chỉ làm cho phần "đáng tin tới đâu" chắc chắn hơn.
+
+## Bước 5 — Khi kết quả là "có / không": logit
+
+Nếu thứ con muốn giải thích không phải con số mà là **một câu hỏi có/không** — ví dụ `cohieu = 1` nếu người đó có việc làm, 0 nếu không — thì OLS không hợp. Con đổi sang `smf.logit`:
+
+```python
+mlog = smf.logit("cohieu ~ hoc + nu", data=df).fit()
+print(mlog.summary())
+```
+
+Hệ số logit không đọc trực tiếp bằng "triệu đồng" được, nhưng **dấu** thì đọc ngay được: dấu dương nghĩa là biến đó làm **tăng khả năng** xảy ra "có". Bố sẽ kể kỹ chuyện đọc logit ở buổi sau, hôm nay con chỉ cần biết: cùng cú pháp công thức, chỉ đổi `ols` thành `logit`.
+
+**Bố chốt cho con:** kết quả là số → `ols`; kết quả là có/không → `logit`. Công thức viết y hệt nhau.
+
+## Bước 6 — Xếp các mô hình cạnh nhau cho dễ so
+
+Cuối cùng, để con nhìn cả ba mô hình một lượt, mình dùng `summary_col` xếp chúng thành một bảng gọn:
+
+```python
+bang = summary_col(
+    [m1, m2, m2_robust],
+    model_names=["Song song", "Tương tác", "Tương tác (robust)"],
+    stars=True,
+    info_dict={"N": lambda x: f"{int(x.nobs)}"}
+)
+print(bang)
+```
+
+Bảng này đặt các hệ số thành từng hàng, mỗi mô hình một cột — con liếc một cái là thấy `hoc:nu` xuất hiện ở cột "Tương tác" mà cột "Song song" không có. Đây cũng là dạng bảng con sẽ dán vào báo cáo sau này.
+
+::: {.callout-warning}
+## ⚠️ Ba cái bẫy bố dặn con tránh
+1. **Có tương tác thì ĐỪNG đọc hệ số `hoc` một mình.** Nó chỉ là độ dốc của *nhóm mốc*; nhóm kia phải cộng thêm `hoc:nu`.
+2. **Đừng tự tay tạo cột `hoc × nu` rồi quên cột `nu`.** Cứ dùng `hoc * nu`, Python giữ đủ cả ba số hạng giúp con — thiếu một cái là diễn giải sai.
+3. **Biến giả 0/1, đừng đảo lộn.** Nếu con đổi `nu` thành "nam = 1", thì mọi dấu sẽ lật ngược. Luôn ghi rõ **"1 nghĩa là gì"** trước khi đọc kết quả.
+:::
+
+::: {.callout-note}
+## 🔑 Con vừa làm được gì trong Lab 7
+1. Tạo và chạy hồi quy với **biến giả** (`nu`, hoặc `C(...)`), đọc hệ số của nó như **chênh lệch trung bình giữa hai nhóm**.
+2. Thêm **biến tương tác** bằng `hoc * nu` để hai nhóm có **độ dốc khác nhau**, và diễn giải đúng: độ dốc nhóm mốc là `hoc`, nhóm kia cộng thêm `hoc:nu`.
+3. Biết thêm vài mẹo nghề: `cov_type="HC1"` cho sai số vững, `smf.logit` cho kết quả có/không, và `summary_col` để xếp các mô hình cạnh nhau.
+:::
+
+Giỏi lắm Mei. Con đã dạy cho mô hình biết phân biệt nhóm — và còn cho mỗi nhóm một con đường riêng. Bố tin con đọc được mọi bảng có biến giả từ giờ trở đi. 🌱

@@ -1,14 +1,84 @@
 ---
-title: "Buổi 4 — Hồi quy tuyến tính đơn (2) — độ phù hợp R² và các giả định cổ điển"
-subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+title: "Buổi 4 — Khi nào con tin được đường mình vừa kẻ?"
+subtitle: "Các giả định của OLS & đa cộng tuyến"
 reading-time: "Chương 2"
 ---
 
+Mei à, ba buổi vừa rồi mình kẻ được đường, thêm được nhiều nguyên nhân, đọc được từng con số. Giỏi lắm.
+
+Nhưng bố muốn con tỉnh táo một chút. Máy tính **luôn luôn** nhả ra cho con một con số — kể cả khi con số đó **vô nghĩa**. Vậy làm sao biết lúc nào *tin được*, lúc nào *nên nghi ngờ*? Hôm nay bố trao cho con một **danh sách kiểm tra niềm tin**.
+
 ::: {.callout-note appearance="simple"}
-## 🎯 Mục tiêu Buổi 4
-*(Sẽ bổ sung.)*
+## 🎯 Bố mong sau buổi này con sẽ
+- Biết vài điều kiện cần có để con số OLS **đáng tin**.
+- Hiểu vì sao đôi khi máy cho con số **đúng trung bình nhưng rất bấp bênh**.
+- Nhận ra "kẻ song sinh" trong dữ liệu — hiện tượng **đa cộng tuyến**.
 :::
 
-## Nội dung
+## Danh sách bố dặn con kiểm trước khi tin
 
-*(Khung bài giảng Buổi 4 — điền sau.)*
+Đường OLS chỉ đáng tin khi vài điều kiện được thỏa. Bố nói bằng tiếng nhà mình, không công thức:
+
+1. **Quan hệ đại khái thẳng** — nếu thực tế cong queo mà con ép đường thẳng, đường sẽ tả sai. (Buổi 6 bố chỉ con cách *uốn cong* khi cần.)
+2. **Dữ liệu lấy công bằng, đại diện** — nếu con chỉ hỏi mấy bạn nhà giàu rồi kết luận cho cả lớp thì hỏng.
+3. **Không có kẻ giấu mặt quan trọng** — đây là điều kiện *khó nhất*, lớn tới mức bố để dành hẳn **[Buổi 8](buoi-08.qmd)**.
+4. **Các nguyên nhân không "dẫm chân nhau"** — chính là chuyện hôm nay: **đa cộng tuyến**.
+5. **Độ "ồn" đều nhau** — nếu chỗ ồn chỗ lặng thì con số *vẫn đúng* nhưng *mức tin cậy bị tính sai*; bố kể ở **[Buổi 9](buoi-09.qmd)**.
+
+**Bố chốt cho con:** máy luôn cho con số — việc của con là hỏi *"điều kiện để tin nó có thỏa không?"* trước khi tin.
+
+## "Kẻ song sinh": khi hai nguyên nhân luôn đi cùng nhau
+
+Giờ tới ngôi sao của buổi hôm nay. Con nhớ Buổi 3 chứ — hồi quy bội tách riêng ảnh hưởng từng nguyên nhân bằng cách *so sánh hai người chỉ khác nhau một điều*.
+
+Nhưng… nếu hai nguyên nhân **lúc nào cũng đi cùng nhau** thì sao? Mình *không tìm nổi* hai người chỉ khác một điều nữa!
+
+::: {.callout-tip}
+## 💡 Hai anh em sinh đôi luôn dính nhau
+Tưởng tượng có hai anh em sinh đôi lúc nào cũng đi cùng nhau. Một hôm cái bình bị vỡ. Con biết chắc *một trong hai* làm, nhưng vì chúng **luôn ở cùng chỗ**, con **không thể biết đứa nào**.
+
+Đa cộng tuyến là y vậy: hai biến quá giống nhau (luôn lên xuống cùng nhau) thì mô hình biết *chung cả hai* có ảnh hưởng, nhưng **không tách nổi ai đóng góp bao nhiêu**. Nó đành đoán bừa — nên con số nhảy lung tung, **sai số rất lớn**.
+:::
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số
+Con đưa **cả "số năm kinh nghiệm" lẫn "tuổi"** vào mô hình lương. Hai cái này gần như đi cùng nhau (nhiều tuổi thì thường nhiều kinh nghiệm). Kết quả có thể ra kỳ cục:
+
+$$\hat{lương} = \dots + 0{,}9 \times \text{kinh nghiệm} - 0{,}5 \times \text{tuổi}$$
+
+Tuổi mang dấu *âm*?! Không phải tuổi làm giảm lương đâu — đó là mô hình **bối rối** vì hai biến dẫm chân nhau. Dấu hiệu nhận biết: hệ số to bất thường, đổi dấu vô lý, và **sai số chuẩn phình rất to**.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng ý tưởng đó, nhưng gần con hơn
+Con muốn biết: tập **đàn** giúp con hát hay hơn, hay tập **thanh nhạc** mới giúp? Nhưng mỗi buổi con **luôn tập cả hai, cùng số phút**. Vậy thì dù con hát hay lên, mình **chẳng tách được** công của cái nào — vì chúng luôn đi cùng nhau.
+
+Muốn biết riêng từng cái, thi thoảng con phải tập **chỉ một thứ**. Dữ liệu cũng thế: hai nguyên nhân cần *đôi lúc tách nhau ra* thì mô hình mới phân biệt được. 🌱
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh — và một sự an tâm
+- **Đa cộng tuyến KHÔNG làm sai con số trung bình** — nó chỉ làm con số *bấp bênh* (sai số lớn). Đừng nhầm nó với "kẻ giấu mặt" ở Buổi 8 (cái đó mới làm *lệch*).
+- Nếu con **chỉ quan tâm dự đoán** y, hoặc chỉ quan tâm một biến *không* dính cộng tuyến, thì nhiều khi **kệ nó cũng được**.
+- Đừng nhồi vào mô hình hai biến đo gần như cùng một thứ (vd "tuổi" và "kinh nghiệm", "chiều cao cm" và "chiều cao inch") — chọn một thôi.
+:::
+
+## Thấy bằng số
+
+Tự tay con tạo ra đa cộng tuyến rồi xem sai số chuẩn phình to thế nào:
+
+- 💻 [Stata Lab 4](../stata-lab/lab-04.qmd) · [R Lab 4](../r-lab/lab-04.qmd) · [Python Lab 4](../python-lab/lab-04.qmd)
+
+::: {.callout-note}
+## 🔑 Ba điều bố muốn con mang về từ Buổi 4
+1. Máy *luôn* cho con số — con phải tự hỏi **"điều kiện để tin có thỏa không?"** (danh sách 5 điều ở trên).
+2. **Đa cộng tuyến** = hai nguyên nhân luôn đi cùng nhau → mô hình không tách nổi → con số **bấp bênh, sai số to**.
+3. Nó làm con số *kém chắc chắn* chứ **không làm lệch** — bình tĩnh, đôi khi kệ được; chỉ đừng đưa hai biến đo cùng một thứ.
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu — VIF và cộng tuyến "hoàn hảo"
+Người ta đo mức dẫm chân nhau bằng **VIF** (hệ số phóng đại phương sai): VIF của một biến càng lớn thì sai số chuẩn của nó càng bị phình; quy ước thô là VIF > 10 thì nên để ý.
+
+Trường hợp cực đoan — **cộng tuyến hoàn hảo** (vd con đưa cả "chiều cao tính bằng cm" và "tính bằng m" vào, một cái đúng bằng 100 lần cái kia) — thì OLS **không giải được luôn**, máy sẽ báo lỗi hoặc tự bỏ một biến. Lý do toán học: không thể "đảo ngược" được một ma trận bị trùng cột; con chưa cần lo, chỉ cần biết *đừng đưa hai biến là bản sao của nhau*.
+:::

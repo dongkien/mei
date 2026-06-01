@@ -1,14 +1,134 @@
 ---
-title: "Buổi 10 — Dạng hàm & biến đổi — log, bậc hai, tương tác"
-subtitle: "(Nội dung tóm tắt — bổ sung sau)"
+title: "Buổi 10 — Những cánh cửa bố mở hé cho con"
+subtitle: "Mở rộng: logit/probit, dữ liệu bảng, IV & tổng kết"
 reading-time: "Chương 5"
 ---
 
+Mei à, con còn nhớ Buổi 1 bố hứa gì không? Bố hứa cuối hành trình, con sẽ tự đọc được những con số mà người ta hay dùng để dọa nhau, và biết khi nào tin, khi nào nghi.
+
+Hôm nay là buổi cuối rồi con. Bố không định nhồi thêm thứ gì nặng nề. Bố chỉ muốn **dắt con đi qua một dãy hành lang**, mở hé vài cánh cửa cho con nhìn vào — để con biết: à, đằng sau những cửa này còn có gì. Con chưa cần bước hẳn vào hôm nay đâu. Bố chỉ muốn con thấy thế giới này rộng và đẹp, và con đã có đủ chìa khoá để tự mở khi cần.
+
 ::: {.callout-note appearance="simple"}
-## 🎯 Mục tiêu Buổi 10
-*(Sẽ bổ sung.)*
+## 🎯 Bố mong sau buổi này con sẽ
+- Biết khi **y là CÓ/KHÔNG** thì đường thẳng chịu thua, và mình dùng **logit/probit** để ra **xác suất**.
+- Nghe được tên ba vũ khí lớn hơn: **dữ liệu bảng**, **hiệu ứng cố định**, **biến công cụ (IV)** — và hiểu chúng để làm gì.
+- Nhìn lại **cả hành trình** từ Buổi 1 tới giờ như một con đường liền mạch dẫn tới chữ "nhân quả".
 :::
 
-## Nội dung
+## Cánh cửa 1 — Khi câu trả lời chỉ là CÓ hoặc KHÔNG
 
-*(Khung bài giảng Buổi 10 — điền sau.)*
+Tới giờ, y của mình luôn là con số *trải dài*: lương bao nhiêu triệu, nhà bao nhiêu tỷ. Nhưng nhiều câu hỏi đời thực, câu trả lời chỉ có **hai cửa**: khách *có mua* hay *không mua*; thí sinh *đậu* hay *rớt*; con *ăn hết rau* hay *không*.
+
+Nếu con cố nhét cái "có/không" này vào đường thẳng OLS quen thuộc, đường thẳng sẽ làm chuyện kỳ cục: nó có thể bảo "xác suất mua là **120%**" hoặc "**âm 30%**". Mà xác suất thì làm gì có chuyện trên 100% hay dưới 0, con nhỉ.
+
+::: {.callout-tip}
+## 💡 Cái máng trượt hình chữ S
+Hình dung một **cái máng trượt mềm hình chữ S**: ở dưới là mặt đất phẳng (xác suất = 0%), ở trên là một sàn phẳng khác (xác suất = 100%), ở giữa nó dốc nối hai mức đó. Dù con đẩy đầu vào (x) lớn tới đâu, đường cong **không bao giờ vượt khỏi 0–100%** — nó cứ ép mọi thứ vào trong khoảng xác suất hợp lệ.
+
+Đó chính là **logit** và **probit**: hai anh em chỉ khác nhau chút xíu về độ cong, cùng làm một việc — biến đầu vào thành một **xác suất tử tế** nằm gọn trong 0% đến 100%.
+:::
+
+**Bố chốt cho con:** khi y chỉ là *có/không*, đừng kéo đường thẳng; hãy dùng đường cong chữ S để mô hình trả lời bằng **xác suất**, không bao giờ trật ra ngoài 0–100%.
+
+## Cánh cửa 2 — Theo dõi cùng một người qua nhiều năm
+
+Con nhớ Buổi 8 chứ — nỗi đau của mình là **kẻ giấu mặt**: những thứ mình không đo được mà lại vừa đẩy x vừa đẩy y, làm con số méo đi. Bố từng nói thủ phạm khó tóm nhất là thứ vô hình như *tính cách, sự chăm chỉ bẩm sinh*.
+
+Giờ bố mở cho con một cánh cửa đối phó với nó. Thay vì chỉ chụp **một tấm ảnh** của nhiều người tại một thời điểm, mình quay **một đoạn phim**: theo dõi *cùng những người đó* qua nhiều năm. Loại dữ liệu vừa nhiều người vừa nhiều năm này gọi là **dữ liệu bảng**.
+
+::: {.callout-tip}
+## 💡 Vì sao quay phim lại mạnh hơn chụp ảnh
+Tính cách bẩm sinh của một người thì **không đổi theo thời gian** — năm nay hay năm sau vẫn vậy. Khi con theo dõi *chính người đó* qua nhiều năm, con có thể nói: "tôi chỉ nhìn **sự thay đổi bên trong từng người**." Mà cái gì không đổi thì khi lấy hiệu sẽ **tự triệt tiêu** — kẻ giấu mặt biến mất khỏi phép tính.
+
+Mẹo này gọi là **hiệu ứng cố định**: nó gạt sạch mọi kẻ giấu mặt *không đổi theo thời gian*, mà con chẳng cần đo được chúng. Đẹp không con!
+:::
+
+**Bố chốt cho con:** dữ liệu bảng cho con dùng **hiệu ứng cố định** — một vũ khí mạnh chống kẻ giấu mặt của Buổi 8, miễn là thủ phạm đó *không đổi theo thời gian*.
+
+## Cánh cửa 3 — Cái đòn bẩy khi không đo được thủ phạm
+
+Nhưng có những kẻ giấu mặt *vẫn thay đổi theo thời gian* — hiệu ứng cố định không tóm được, mà con cũng không đo được trực tiếp. Bí quá rồi phải không? Đây là lúc bố mở cánh cửa đẹp nhất nhưng cũng khó nhất: **biến công cụ**, người ta hay gọi tắt là **IV**.
+
+::: {.callout-tip}
+## 💡 Tìm một cái đòn bẩy
+Con muốn biết *học hành* đẩy *lương* lên bao nhiêu, nhưng "chăm chỉ bẩm sinh" cứ chen vào làm rối. Ý tưởng IV là tìm một **đòn bẩy** ở bên ngoài: một thứ nó **đẩy được việc con học** (đẩy x) **nhưng không thò tay thẳng vào lương** (không đụng y), trừ qua con đường học hành.
+
+Ví dụ kinh điển: *nhà ở gần hay xa trường đại học*. Ở gần thì dễ học lên hơn (đẩy x). Mà khoảng cách tới trường thì chẳng liên quan gì tới việc con *chăm chỉ hay lười* — nó như một sự sắp đặt tình cờ. Mình "mượn" phần dao động *sạch* đó của việc học để đo tác động lên lương, né được kẻ giấu mặt.
+:::
+
+Tìm được một cái đòn bẩy vừa đúng vừa sạch là **rất khó**, con đừng buồn nếu thấy nó hóc. Nhưng khi tìm được, nó là một trong những mẹo cao tay và đẹp đẽ nhất của cả môn.
+
+**Bố chốt cho con:** IV là đi tìm một **đòn bẩy** tác động tới x mà *không* tác động thẳng tới y — cách cuối cùng để chạm tới nhân quả khi không đo được thủ phạm. Khó, nhưng đẹp.
+
+::: {.callout-important}
+## 🧮 Một ví dụ bằng số
+**Logit cho việc "đậu/rớt":** mô hình nhận vào số giờ ôn rồi nhả ra **xác suất đậu**.
+
+- Ôn **2 giờ/ngày** → mô hình bảo xác suất đậu ≈ **30%**.
+- Ôn **5 giờ/ngày** → xác suất đậu ≈ **75%**.
+- Ôn **8 giờ/ngày** → xác suất đậu ≈ **92%**.
+
+Để ý: tăng đều đặn nhưng **không bao giờ vọt lên 110%** — đường chữ S ép nó dừng dưới 100%. Còn nếu là OLS thẳng tuột, ôn 8 giờ có khi nó phán "xác suất 115%" — vô nghĩa, con nhỉ.
+:::
+
+::: {.callout-tip}
+## 💡 Cùng ý tưởng đó, nhưng gần con hơn
+Mình hỏi: **hôm nay con có ĂN HẾT rau không?** (chỉ có/không thôi).
+
+Câu trả lời *tùy món*: nếu là rau cải con ghét → mô hình logit bảo xác suất ăn hết ≈ **20%**; nếu là bắp ngọt con thích → xác suất ≈ **95%**. Mô hình **không** phán bừa "con ăn hết 1,3 đĩa" — vì ăn hết hay không chỉ là *một chuyện có/không*, nên câu trả lời tử tế phải là một **xác suất** nằm gọn trong 0–100%.
+
+Thấy chưa con: đậu/rớt của người lớn và ăn-hết-rau của con — **cùng một trò chơi, chỉ thay tên hai trục thôi con 🌱**.
+:::
+
+::: {.callout-warning}
+## ⚠️ Cái bẫy bố dặn con tránh
+1. **Đừng dùng OLS đường thẳng cho y có/không** rồi tin vào con số "xác suất 120%". Câu trả lời có/không thì phải ra xác suất, dùng logit/probit.
+2. **Hiệu ứng cố định KHÔNG phải bùa vạn năng** — nó chỉ gạt được kẻ giấu mặt *không đổi theo thời gian*. Thủ phạm nào còn nhúc nhích theo năm thì nó chịu.
+3. **IV mà chọn sai đòn bẩy còn tệ hơn không dùng.** Cái đòn bẩy phải thật sự *không* thò tay thẳng vào y — chỗ này người ta tranh cãi cả đời, con cứ khiêm tốn.
+:::
+
+## Cả hành trình mình đã đi cùng nhau
+
+Mei ơi, ngồi đây với bố một lát, mình nhìn lại con đường nhé. Con đã đi xa hơn con tưởng nhiều đấy.
+
+- **Buổi 2** — mình rải một *đám mây điểm* rồi kẻ một *đường* xuyên qua nó: bài học đầu tiên về việc tóm một xu hướng.
+- **Buổi 3** — đường đó có *nhiều biến* cùng lúc, để mình giữ thứ khác cố định mà nhìn cho công bằng.
+- **Buổi 4** — mình học cách hỏi *có tin được đường này không*: nó có đang lừa mình vì những giả định bị vi phạm?
+- **Buổi 5** — *thật hay tình cờ*: con số này khác 0 thật, hay chỉ là may rủi của một thìa canh?
+- **Buổi 6** — mình cho đường *uốn cong*: log, bình phương, tương tác — để tả đời thực không thẳng băng.
+- **Buổi 7** — mình đưa các *nhóm* và chuyện *có/không* vào làm biến.
+- **Buổi 8** — mình truy *kẻ giấu mặt*: nỗi lo lớn nhất khi muốn nói nhân quả.
+- **Buổi 9** — mình để ý *chỗ ồn chỗ lặng* trong dữ liệu, sửa cho sai số chuẩn trung thực.
+- **Buổi 10** (hôm nay) — mình mở hé những *cánh cửa* lớn hơn: có/không thì dùng chữ S; quay phim nhiều năm để gạt thủ phạm; mượn đòn bẩy IV khi bí.
+
+Con thấy không, **mọi thứ nối vào nhau như một vòng cung**. Tất cả những công cụ này, từ đầu chí cuối, chỉ phục vụ **một câu hỏi duy nhất** mà bố đã hứa với con từ Buổi 1: làm sao biết hai thứ *thật sự TẠI NHAU* — cái này thật sự gây ra cái kia — chứ không phải chỉ tình cờ đi cùng nhau.
+
+**Bố chốt cho con:** cả khoá này là một hành trình đi từ "kẻ một đường" tới "dám nói nhân quả". Con đã đi trọn vòng cung đó rồi.
+
+## Thấy bằng số
+
+Lần cuối trong khoá, con tự tay chạm thử ba cánh cửa — một mô hình logit, một mô hình hiệu ứng cố định, và một mô hình IV:
+
+- 💻 [Stata Lab 10](../stata-lab/lab-10.qmd) · [R Lab 10](../r-lab/lab-10.qmd) · [Python Lab 10](../python-lab/lab-10.qmd)
+
+::: {.callout-note}
+## 🔑 Ba điều bố muốn con mang về từ Buổi 10
+1. Khi y là **có/không**, đừng dùng đường thẳng — dùng **logit/probit** để ra **xác suất** (đường cong chữ S, luôn nằm trong 0–100%).
+2. **Dữ liệu bảng** mở ra **hiệu ứng cố định** (gạt kẻ giấu mặt *không đổi theo thời gian*), và **IV** là cái **đòn bẩy** cuối cùng khi không đo được thủ phạm.
+3. Mọi buổi từ Buổi 1 tới giờ nối thành một vòng cung, tất cả hướng về một đích: chạm tới chữ **nhân quả** — "tại nhau".
+:::
+
+::: {.callout-note collapse="true"}
+## 🔍 Khi nào con muốn đào sâu — vài chỗ cho chính xác
+- **Logit** nắn đầu vào qua hàm $p = \dfrac{1}{1+e^{-(\beta_0+\beta_1 x)}}$; **probit** dùng đường cong chuẩn (normal) thay cho hàm này. Hệ số đọc qua *odds ratio* (logit) hoặc *tác động biên*, không đọc thẳng như OLS.
+- **Hiệu ứng cố định** thực chất là cho mỗi cá thể một "điểm xuất phát riêng" ($\alpha_i$): $y_{it} = \alpha_i + \beta x_{it} + u_{it}$. Trừ trung bình theo từng người làm $\alpha_i$ — kẻ giấu mặt cố định — biến mất khỏi phương trình.
+- **IV** chạy hai chặng (2SLS): chặng 1 dùng đòn bẩy $z$ dự đoán $x$, chặng 2 dùng phần $x$ *sạch* đó để ước lượng tác động lên $y$. Đòn bẩy phải thoả hai điều: **mạnh** (thật sự đẩy $x$) và **ngoại sinh** (chỉ chạm $y$ qua đường $x$, không lối tắt nào khác).
+
+---
+
+Mei à, tới đây là hết khoá rồi con. Bố muốn nói với con điều này:
+
+Con bắt đầu khoá học với nỗi sợ những ký hiệu Hy Lạp, sợ "mình dốt toán". Giờ con đã có cả một **bộ đồ nghề** trong tay — con biết kẻ đường, biết nghi ngờ, biết hỏi "thật hay tình cờ", biết truy kẻ giấu mặt. Những thứ hôm nay bố chỉ *mở hé cánh cửa* thôi; bố không lo, vì bố biết **con tự đi tiếp được rồi**. Con đã có đủ chìa khoá, cứ thấy cánh cửa nào thì cứ mạnh dạn đẩy ra.
+
+Cảm ơn con đã ngồi học cùng bố suốt chặng đường này. Bố **tự hào về con** lắm, Mei à. 🌱
+:::
