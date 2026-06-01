@@ -487,6 +487,21 @@ window.Quarto = {
 </ol>
 </div>
 </div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>🇻🇳 Chuyện nước mình — lương thành thị và nông thôn
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cùng một người, cùng số năm đi học, làm việc ở <strong>thành phố</strong> thường lương cao hơn ở <strong>nông thôn</strong> — vì giá cả, vì loại công việc khác nhau. Muốn đưa “thành thị hay nông thôn” vào mô hình, mình dùng đúng <strong>biến giả</strong> hôm nay: đặt <em>thanhthi = 1</em> nếu sống ở đô thị, <em>= 0</em> nếu ở nông thôn.</p>
+<p>Hệ số của biến giả đó cho biết: hai người <strong>giống hệt nhau</strong> (cùng học vấn, cùng kinh nghiệm) nhưng một người ở phố, một người ở quê, thì lương chênh nhau trung bình bao nhiêu.</p>
+<p>Và nếu bố ngờ rằng <em>mỗi năm đi học</em> ở thành phố “đáng giá” hơn ở quê, bố thêm một <strong>biến tương tác</strong> (Buổi 6) giữa học vấn và thành thị — cho phép độ dốc khác nhau giữa hai nơi. 🌱</p>
+</div>
+</div>
 </section>
 <section id="thấy-bằng-số" class="level2">
 <h2 class="anchored" data-anchor-id="thấy-bằng-số">Thấy bằng số</h2>
@@ -512,7 +527,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -521,7 +536,7 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ul>
 <li>Mô hình hai hàng ghế song song: <span class="math inline">\(y = \beta_0 + \beta_1 x + \delta D\)</span>, với <span class="math inline">\(D\)</span> là biến giả. Khi <span class="math inline">\(D=0\)</span>, chặn là <span class="math inline">\(\beta_0\)</span>; khi <span class="math inline">\(D=1\)</span>, chặn là <span class="math inline">\(\beta_0+\delta\)</span>. Hệ số <span class="math inline">\(\delta\)</span> chính là <strong>khoảng cách giữa hai hàng</strong> — chênh lệch chặn.</li>
