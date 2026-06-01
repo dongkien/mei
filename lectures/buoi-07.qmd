@@ -110,6 +110,16 @@ Thấy chưa con: lương–nữ hay điểm vui–tập đàn, **cùng một tr
 4. **Có tương tác thì đừng đọc hệ số lẻ** — như Buổi 6, phải gộp lại mới ra đúng độ dốc của từng nhóm.
 :::
 
+::: {.callout-tip}
+## 🇻🇳 Chuyện nước mình — lương thành thị và nông thôn
+
+Cùng một người, cùng số năm đi học, làm việc ở **thành phố** thường lương cao hơn ở **nông thôn** — vì giá cả, vì loại công việc khác nhau. Muốn đưa "thành thị hay nông thôn" vào mô hình, mình dùng đúng **biến giả** hôm nay: đặt *thanhthi = 1* nếu sống ở đô thị, *= 0* nếu ở nông thôn.
+
+Hệ số của biến giả đó cho biết: hai người **giống hệt nhau** (cùng học vấn, cùng kinh nghiệm) nhưng một người ở phố, một người ở quê, thì lương chênh nhau trung bình bao nhiêu.
+
+Và nếu bố ngờ rằng *mỗi năm đi học* ở thành phố "đáng giá" hơn ở quê, bố thêm một **biến tương tác** (Buổi 6) giữa học vấn và thành thị — cho phép độ dốc khác nhau giữa hai nơi. 🌱
+:::
+
 ## Thấy bằng số
 
 Tự tay con tạo một biến giả, đọc hệ số như một chênh lệch, rồi thêm một tương tác để hai nhóm có độ dốc riêng:

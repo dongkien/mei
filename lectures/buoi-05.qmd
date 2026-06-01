@@ -91,6 +91,16 @@ Nếu ngày thường con nhảy lúc 38 lúc 42 (lắc lư ±2 cái), thì **45
 3. **Đừng đi "săn" trị số p** — thử trăm mô hình rồi khoe cái nào p nhỏ. Đó là tự lừa mình.
 :::
 
+::: {.callout-tip}
+## 🇻🇳 Chuyện nước mình — khi "tỉnh nào cũng trên trung bình"
+
+Con để ý chuyện vui này: ngày trước, cộng tốc độ tăng trưởng kinh tế (GRDP) mà *từng tỉnh tự công bố*, tổng lại thường **cao hơn** mức tăng trưởng của cả nước tới 1,5–2%. Mà về toán thì điều đó gần như **không thể** — phần lớn không thể đều cao hơn mức trung bình của chính mình được, con nhỉ!
+
+Vì sao vậy? Vì con số tăng trưởng được dùng để **chấm điểm** lãnh đạo tỉnh. Khi một con số biến thành *thước đo để đánh giá người ta*, ai cũng có động cơ làm cho nó **đẹp lên một chút** — và nó thôi không còn đo trung thực nữa. (Các nhà khoa học gọi đây là **định luật Goodhart**.)
+
+Bài học cho con: ngoài câu *"thật hay chỉ là tình cờ?"*, còn một câu nữa luôn phải hỏi — *"ai làm ra con số này, và họ có lý do gì để nó đẹp không?"* Con số không phải lúc nào cũng vô tư đâu con.
+:::
+
 ## Thấy bằng số
 
 Tự tay con đọc cột sai số chuẩn, trị số t, p và khoảng tin cậy trong bảng kết quả:

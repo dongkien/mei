@@ -63,6 +63,16 @@ Mình ghép hai biến lại thành một biến mới (nhân chúng với nhau)
 3. **Có tương tác thì cũng ĐỪNG đọc từng hệ số đơn lẻ** — phải đọc *cùng nhau* mới ra nghĩa "còn tùy".
 :::
 
+::: {.callout-tip}
+## 🇻🇳 Chuyện nước mình — bón phân cho lúa và "quả đồi"
+
+Ở quê mình, bác nông dân nào cũng biết: ruộng lúa bón **quá ít** phân thì cây đói, năng suất thấp; bón **vừa đủ** thì lúa tốt bời bời; nhưng bón **quá nhiều** thì cây "lốp", dễ đổ, sâu bệnh, năng suất lại **tụt xuống**.
+
+Vẽ ra, quan hệ giữa *lượng phân* và *năng suất* không phải đường thẳng "càng nhiều càng tốt" — mà là một **đường cong quả đồi**: lên tới đỉnh rồi đi xuống. Muốn mô hình hiểu được, mình phải cho thêm số hạng **bình phương** (lượng phân²), đúng như bài hôm nay.
+
+Mà "vừa đủ" là bao nhiêu — còn **tùy** đất, tùy nước, tùy giống lúa. Đó chính là **biến tương tác** con vừa học: tác dụng của phân *tùy* vào điều kiện khác. 🌱
+:::
+
 ## Thấy bằng số
 
 Tự tay con uốn cong một đường — thử log, thêm bình phương, ghép tương tác:

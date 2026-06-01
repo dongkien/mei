@@ -102,6 +102,16 @@ Nếu bố ngây thơ coi **mọi lần đo đều chắc như nhau**, bố sẽ
 3. **Đừng quên bật.** Cái bẫy lớn nhất lại đơn giản nhất: chạy mô hình mà quên `, robust`, rồi tin vào sai số chuẩn cũ và reo "có ý nghĩa" nhầm. Bật mặc định cho khỏi quên.
 :::
 
+::: {.callout-tip}
+## 🇻🇳 Chuyện nước mình — chi tiêu của hộ nghèo và hộ giàu
+
+Con để ý nhé: nhà **thu nhập thấp** thì chi tiêu khá *giống nhau* và đều đặn — gần như tháng nào cũng cơm áo gạo tiền, ít chênh lệch. Nhưng nhà **thu nhập cao** thì chi tiêu *vung vãi* rộng hơn nhiều — nhà rước xe, nhà đi du lịch, nhà lại để dành gần hết.
+
+Vẽ phần dư theo thu nhập, mình sẽ thấy nó **loe ra như cái phễu**: chỗ thu nhập thấp các chấm bám sát đường, chỗ thu nhập cao các chấm tản rộng. Đó đúng là **phương sai sai số thay đổi** của bài hôm nay.
+
+Con số trung bình (thu nhập tăng thì chi tiêu tăng bao nhiêu) **vẫn đúng**; chỉ là *mức tin cậy* bị tính sai nếu mình quên. Cách bố dặn: cứ **bật sai số chuẩn vững (robust)** là yên tâm. 🌱
+:::
+
 ## Thấy bằng số
 
 Tự tay con vẽ cái phễu phần dư, rồi bật công tắc robust và xem cột sai số chuẩn đổi mà hệ số đứng yên:

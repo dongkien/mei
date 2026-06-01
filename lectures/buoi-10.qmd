@@ -123,12 +123,24 @@ Lần cuối trong khoá, con tự tay chạm thử ba cánh cửa — một mô
 - **Logit** nắn đầu vào qua hàm $p = \dfrac{1}{1+e^{-(\beta_0+\beta_1 x)}}$; **probit** dùng đường cong chuẩn (normal) thay cho hàm này. Hệ số đọc qua *odds ratio* (logit) hoặc *tác động biên*, không đọc thẳng như OLS.
 - **Hiệu ứng cố định** thực chất là cho mỗi cá thể một "điểm xuất phát riêng" ($\alpha_i$): $y_{it} = \alpha_i + \beta x_{it} + u_{it}$. Trừ trung bình theo từng người làm $\alpha_i$ — kẻ giấu mặt cố định — biến mất khỏi phương trình.
 - **IV** chạy hai chặng (2SLS): chặng 1 dùng đòn bẩy $z$ dự đoán $x$, chặng 2 dùng phần $x$ *sạch* đó để ước lượng tác động lên $y$. Đòn bẩy phải thoả hai điều: **mạnh** (thật sự đẩy $x$) và **ngoại sinh** (chỉ chạm $y$ qua đường $x$, không lối tắt nào khác).
+:::
 
----
+## Cánh cửa lớn nhất — cuốn sách của bố và chị Ran
+
+Mấy cánh cửa hôm nay bố mới *hé* thôi: logit, dữ liệu bảng, đòn bẩy IV. Đằng sau chúng còn cả một dãy phòng nữa — **hồi quy gián đoạn (RDD)**, **khác biệt kép (DiD)**, **ghép cặp**, **đối chứng tổng hợp**… toàn những mẹo đẹp để chạm vào nhân quả.
+
+Tất cả những căn phòng đó, bố đã gói lại trong một cuốn sách — chính cuốn **"Bằng chứng đâu? Đọc thế giới bằng tư duy nhân quả"** con nhắc ở [Buổi 8](buoi-08.qmd), cuốn bố viết để dạy **chị Ran** (trong sách là cô bé **Ngân Giang** viết thư cho ông nội).
+
+Khoá này bố dạy con **ĐO** nhân quả bằng số liệu; cuốn sách dạy **ĐỌC** thế giới bằng tư duy nhân quả qua những câu chuyện — đồng xu ngẫu nhiên, thám tử truy nghi phạm, cà phê nấm và tuổi thọ… Hai thứ là hai mặt của cùng một đồng xu, Mei à.
+
+Khi nào con lớn hơn một chút, cầm cuốn sách của bố lên, con sẽ gặp lại **"kẻ thứ ba" (biến nhiễu)** như gặp người quen, rồi làm quen thêm RDD, IV, DiD như những người bạn mới. Lúc đó hai chị em con đọc chung một cuốn — bố mừng lắm.
+
+**Bố chốt cho con:** khoá này là cánh cửa đầu tiên; cuốn *"Bằng chứng đâu?"* của bố và chị Ran là cả dãy hành lang phía sau — khi nào sẵn sàng, con cứ mạnh dạn đẩy cửa bước vào.
+
+## Lời cuối bố gửi con
 
 Mei à, tới đây là hết khoá rồi con. Bố muốn nói với con điều này:
 
 Con bắt đầu khoá học với nỗi sợ những ký hiệu Hy Lạp, sợ "mình dốt toán". Giờ con đã có cả một **bộ đồ nghề** trong tay — con biết kẻ đường, biết nghi ngờ, biết hỏi "thật hay tình cờ", biết truy kẻ giấu mặt. Những thứ hôm nay bố chỉ *mở hé cánh cửa* thôi; bố không lo, vì bố biết **con tự đi tiếp được rồi**. Con đã có đủ chìa khoá, cứ thấy cánh cửa nào thì cứ mạnh dạn đẩy ra.
 
 Cảm ơn con đã ngồi học cùng bố suốt chặng đường này. Bố **tự hào về con** lắm, Mei à. 🌱
-:::

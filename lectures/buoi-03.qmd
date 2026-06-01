@@ -72,6 +72,16 @@ $$\hat{lương} = 4{,}0 + 0{,}4 \times \text{học} + 0{,}3 \times \text{kinh ng
 Nếu mình chỉ nhìn giờ ôn, mình có thể khen nhầm: "ôn nhiều nên điểm cao!" — trong khi thật ra bạn nào ôn nhiều cũng là bạn ngủ ngon. Muốn biết **riêng việc ôn** giúp được bao nhiêu, mình so các bạn **ngủ giống nhau** rồi mới xét ai ôn nhiều hơn. Đưa cả "giờ ôn" và "giờ ngủ" vào mô hình là làm đúng việc đó. 🌱
 :::
 
+::: {.callout-tip}
+## 🇻🇳 Chuyện nước mình — con số "mỗi năm học +5%" của Việt Nam
+
+Con có biết người ta từng đo thử ngay ở nước mình chưa? Năm xưa, ba nhà kinh tế của Ngân hàng Thế giới lấy số liệu khảo sát hộ gia đình ngay sau Đổi Mới (1992–93), chạy đúng một mô hình hồi quy bội như mình vừa học: **lương (đã lấy log) ~ số năm học + tuổi + tuổi² + vùng + ngành**.
+
+Kết quả hồi đó: mỗi năm đi học thêm gắn với lương cao hơn **~5%** thôi — thấp hơn nhiều nước. Rồi kinh tế mở cửa dần, đo lại những năm sau: con số nhích lên **7–8%**. Và khi dùng thêm mẹo "cao tay" để trị **kẻ giấu mặt** (mình sẽ học ở [Buổi 8](buoi-08.qmd)), con số thật có thể lên tới **14–18%**.
+
+Thấy không con: cùng một câu hỏi *"học thêm một năm lợi bao nhiêu"*, nhưng câu trả lời lớn dần khi (1) đất nước đổi thay và (2) mình đo **cẩn thận hơn**. Một con số hồi quy lẻ chỉ là *một bức ảnh chụp nhanh* — xếp nhiều bức lại mới thấy cả câu chuyện.
+:::
+
 ::: {.callout-warning}
 ## ⚠️ Cái bẫy bố dặn con tránh
 Hồi quy bội chỉ giữ cố định được **những thứ mình ĐO và ĐƯA VÀO**. Nếu có một nguyên nhân quan trọng mà mình *quên* hoặc *không đo được* (ví dụ: sự chăm chỉ bẩm sinh), nó vẫn lẻn vào làm lệch con số. Cái bẫy "kẻ giấu mặt" này lớn tới mức bố dành hẳn **[Buổi 8](buoi-08.qmd)** để kể cho con.
